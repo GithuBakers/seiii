@@ -1,4 +1,4 @@
-package cn.edu.nju.tagmakers.countsnju.logic;
+package cn.edu.nju.tagmakers.countsnju.logic.service;
 
 /**
  * Description:

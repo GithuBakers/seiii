@@ -7,5 +7,5 @@ package cn.edu.nju.tagmakers.countsnju.logic.controller;
  * @author xxz
  * Created on 04/06/2018
  */
-public class UserController {
+public class UserRestController {
 }
