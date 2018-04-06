@@ -1,5 +1,6 @@
 package cn.edu.nju.tagmakers.countsnju.entity;
 
+import cn.edu.nju.tagmakers.countsnju.entity.user.Role;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

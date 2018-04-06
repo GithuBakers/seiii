@@ -39,8 +39,23 @@ public class WorkerService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * 获取某一任务的详情
+     *
+     * @param taskName 任务名
+     */
     public WorkerTaskDetailVO getTaskDetail(String taskName) {
         return new WorkerTaskDetailVO(service.findByID(taskName));
+    }
+
+    /**
+     * 接受某一任务
+     *
+     * @param taskName 接受的任务名
+     */
+    public boolean receiveTask(String taskName) {
+        //TODO:
+        return false;
     }
 
 

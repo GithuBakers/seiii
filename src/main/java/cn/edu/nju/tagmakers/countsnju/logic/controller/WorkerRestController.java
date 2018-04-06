@@ -45,4 +45,14 @@ public class WorkerRestController {
     }
 
 
+    @RequestMapping("/task/received_task/{task_name}")
+    public boolean receiveTask(@PathVariable(value = "task_name") String taskName) {
+//        SecurityContextHolder.getContext().getAuthentication()
+        //TODO:
+        return false;
+    }
+
+//    public
+
+
 }
