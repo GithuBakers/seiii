@@ -31,6 +31,7 @@ public class InitiatorTaskVO {
     private Boolean isFinished;
 
     public InitiatorTaskVO(Task task) {
+        taskVOBasicInformation = new TaskVOBasicInformation(task);
         //TODO：从task构造vo
     }
 }

@@ -17,4 +17,6 @@ public class Initiator extends User {
      */
     @JsonIgnore
     private List<String> taskNames;
+
+
 }

@@ -1,6 +1,6 @@
 package cn.edu.nju.tagmakers.countsnju.data.dao;
 
-import cn.edu.nju.tagmakers.countsnju.entity.User;
+import cn.edu.nju.tagmakers.countsnju.entity.user.User;
 import cn.edu.nju.tagmakers.countsnju.filter.UserFilter;
 import org.springframework.stereotype.Component;
 

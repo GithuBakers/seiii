@@ -1,6 +1,7 @@
 package cn.edu.nju.tagmakers.countsnju.entity.vo;
 
 import cn.edu.nju.tagmakers.countsnju.entity.Task;
+import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
@@ -35,7 +36,7 @@ public class WorkerTaskDetailVO {
     private String requirement;
 
 
-    public WorkerTaskDetailVO(Task task) {
+    public WorkerTaskDetailVO(Task task, Worker worker) {
         //TODO:
     }
 }

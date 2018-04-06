@@ -27,22 +27,42 @@ import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
  * update: 调整了属性的命名
  * @author xxz
  * modified on 03/21/2018
+ *
+ * Update:
+ * 增加了userID这个字段
+ * @author xxz
+ * Created on 04/07/2018
  */
 @JsonAutoDetect(fieldVisibility = ANY)
 public class Tag extends Entity implements Serializable {
     private static final long serialVersionUID = 7L;
-    //全部tag的唯一性标识，tagID=bareID_id
+    /**
+     * 全部tag的唯一性标识，tagID=bareID_id
+     */
     @JsonIgnore
     private String tagID;
-    //编号（比如某一张图的第几个标签)
+    /**
+     * 编号（比如某一张图的第几个标签)
+     */
     @JsonProperty(value = "id")
     private String numberID;
-    //原图id
+    /**
+     * 原图id
+     */
     @JsonIgnore
     private String bareID;
+
+    @JsonProperty(value = "mark")
     private Mark mark;
+
     @JsonUnwrapped
     private Comment comment;
+
+    /**
+     * 做标注的工人的ID
+     */
+    @JsonIgnore
+    private String userID;
 
     public Tag() {
 
