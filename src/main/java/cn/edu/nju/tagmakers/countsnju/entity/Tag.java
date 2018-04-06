@@ -29,7 +29,7 @@ import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
  * modified on 03/21/2018
  */
 @JsonAutoDetect(fieldVisibility = ANY)
-public class Tag implements Serializable {
+public class Tag extends Entity implements Serializable {
     private static final long serialVersionUID = 7L;
     //全部tag的唯一性标识，tagID=bareID_id
     @JsonIgnore
@@ -96,5 +96,15 @@ public class Tag implements Serializable {
 
     public void setBareID(String bareID) {
         this.bareID = bareID;
+    }
+
+    /**
+     * 获取实体对象的主键
+     *
+     * @return id
+     */
+    @Override
+    public String getPrimeKey() {
+        return tagID;
     }
 }

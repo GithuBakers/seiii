@@ -34,4 +34,6 @@ dependencies {
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile('org.springframework.restdocs:spring-restdocs-mockmvc')
 	testCompile('org.springframework.security:spring-security-test')
+	compile'org.testng:testng:6.8.17'
+	testCompile('org.mockito:mockito-core:2.+')
 }
