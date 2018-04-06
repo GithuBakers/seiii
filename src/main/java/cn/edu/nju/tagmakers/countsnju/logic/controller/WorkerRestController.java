@@ -1,7 +1,9 @@
 package cn.edu.nju.tagmakers.countsnju.logic.controller;
 
+import cn.edu.nju.tagmakers.countsnju.entity.Bare;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerTaskDetailVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerTaskVO;
+import cn.edu.nju.tagmakers.countsnju.logic.service.UserService;
 import cn.edu.nju.tagmakers.countsnju.logic.service.WorkerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,9 +26,12 @@ public class WorkerRestController {
 
     private WorkerService workerService;
 
+    private UserService userService;
+
     @Autowired
-    public WorkerRestController(WorkerService workerService) {
+    public WorkerRestController(WorkerService workerService, UserService userService) {
         this.workerService = workerService;
+        this.userService = userService;
     }
 
     /**
@@ -52,7 +57,11 @@ public class WorkerRestController {
         return false;
     }
 
-//    public
+    @RequestMapping("/task/received_task/{task_name}")
+    public List<Bare> getBareList(@PathVariable(value = "task_name") String taskName) {
+//        Worker worker= userService((XXXXUserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getUsername()
+        return null;
+    }
 
 
 }
