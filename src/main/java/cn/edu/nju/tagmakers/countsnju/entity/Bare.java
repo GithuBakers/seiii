@@ -1,0 +1,140 @@
+package cn.edu.nju.tagmakers.countsnju.entity;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.io.Serializable;
+
+/**
+ * Description:
+ * 不含标注的图片
+ *
+ * @author xxz
+ * Created on 03/17/2018
+ * <p>
+ * Update:增加了clone方法
+ * @author wym
+ * Last modified on 03/19/2018
+ * <p>
+ * update:增加了状态字段
+ * @author xxz
+ * modified on
+ */
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+public class Bare implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 图片ID
+     */
+    @JsonProperty(value = "id")
+    private String id;
+    /**
+     * 图片名
+     */
+    @JsonProperty(value = "name")
+    private String name;
+    /**
+     * 缩略图URL
+     */
+    @JsonProperty(value = "url_small")
+    private String thumbnail;
+    /**
+     * 小缩略图URL
+     */
+    @JsonProperty(value = "url_ex_small")
+    private String exThumbnail;
+    /**
+     * 原图URL
+     */
+    @JsonProperty(value = "raw")
+    private String raw;
+
+    /**
+     * 原图状态
+     */
+    @JsonIgnore
+    private BareState state = BareState.UNMARKED;
+
+    /**
+     * 需要做的标注类型
+     */
+    @JsonProperty(value = "mark_type")
+    private MarkType markType = MarkType.DEFAULT;
+
+    public Bare() {
+
+    }
+
+    /**
+     * 替换clone方法的构造器
+     *
+     * @param toClone 要拷贝的对象
+     */
+    public Bare(Bare toClone) {
+        this.exThumbnail = toClone.getExThumbnail();
+        this.id = toClone.getId();
+        this.name = toClone.getName();
+        this.raw = toClone.getRaw();
+        this.thumbnail = toClone.getThumbnail();
+        this.state = toClone.getState();
+        this.markType = toClone.getMarkType();
+    }
+
+    public BareState getState() {
+        return state;
+    }
+
+    public void setState(BareState state) {
+        this.state = state;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
+    public String getExThumbnail() {
+        return exThumbnail;
+    }
+
+    public void setExThumbnail(String exThumbnail) {
+        this.exThumbnail = exThumbnail;
+    }
+
+    public String getRaw() {
+        return raw;
+    }
+
+    public void setRaw(String raw) {
+        this.raw = raw;
+    }
+
+    public MarkType getMarkType() {
+        return markType;
+    }
+
+    public void setMarkType(MarkType markType) {
+        this.markType = markType;
+    }
+}
