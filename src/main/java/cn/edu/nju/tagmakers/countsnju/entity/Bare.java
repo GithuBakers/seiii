@@ -20,9 +20,12 @@ import java.io.Serializable;
  * update:增加了状态字段
  * @author xxz
  * modified on
+ * Update:增加了获取主键方法
+ * @author wym
+ * Last modified on 04/06/2018
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public class Bare implements Serializable {
+public class Bare extends Entity implements Serializable{
     private static final long serialVersionUID = 1L;
 
     /**
@@ -136,5 +139,16 @@ public class Bare implements Serializable {
 
     public void setMarkType(MarkType markType) {
         this.markType = markType;
+    }
+
+
+    /**
+     * 获取实体对象的主键
+     *
+     * @return id
+     */
+    @Override
+    public String getPrimeKey() {
+        return id;
     }
 }
