@@ -42,9 +42,9 @@ public class InitiatorDAO extends DAO<Initiator,InitiatorFilter>{
      */
     @Override
     protected void setChanges(Initiator ori, Initiator cur) {
-        if(cur.getAvatar()!=null)ori.setAvatar(cur.getAvatar());
-        if(cur.getNickName()!=null)ori.setNickName(cur.getNickName());
-        if(cur.getPassword()!=null)ori.setPassword(cur.getPassword());
-        if(cur.getRole()!=Role.DEFAULT)ori.setRole(cur.getRole());
+        if(cur.getAvatar() != null)ori.setAvatar(cur.getAvatar());
+        if(cur.getNickName() != null)ori.setNickName(cur.getNickName());
+        if(cur.getPassword() != null)ori.setPassword(cur.getPassword());
+        if(cur.getRole() != Role.DEFAULT)ori.setRole(cur.getRole());
     }
 }

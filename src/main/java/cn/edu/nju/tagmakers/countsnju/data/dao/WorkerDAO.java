@@ -42,9 +42,14 @@ public class WorkerDAO extends DAO<Worker,WorkerFilter>{
      */
     @Override
     protected void setChanges(Worker ori, Worker cur) {
-        if(cur.getAvatar()!=null)ori.setAvatar(cur.getAvatar());
-        if(cur.getNickName()!=null)ori.setNickName(cur.getNickName());
-        if(cur.getPassword()!=null)ori.setPassword(cur.getPassword());
-        if(cur.getRole()!=Role.DEFAULT)ori.setRole(cur.getRole());
+        if(cur.getAvatar() != null)ori.setAvatar(cur.getAvatar());
+        if(cur.getNickName() != null)ori.setNickName(cur.getNickName());
+        if(cur.getPassword() != null)ori.setPassword(cur.getPassword());
+        if(cur.getRole() != Role.DEFAULT)ori.setRole(cur.getRole());
+
+        if(cur.getBareNames().size() > 0)ori.setBareNames(new ArrayList<>(cur.getBareNames()));
+        if(cur.getTaskNames().size() > 0)ori.setTaskNames(new ArrayList<>(cur.getTaskNames()));
+        if(cur.getCredit() > 0)ori.setCredit(cur.getCredit());
+        if(cur.getRank() > 0)ori.setRank(cur.getRank());
     }
 }
