@@ -76,13 +76,13 @@ public class Bare extends Entity<Bare> implements Serializable{
      * @param toCopy 要拷贝的对象
      */
     public Bare(Bare toCopy) {
-        this.exThumbnail = toCopy.getExThumbnail();
-        this.id = toCopy.getId();
-        this.name = toCopy.getName();
-        this.raw = toCopy.getRaw();
-        this.thumbnail = toCopy.getThumbnail();
-        this.state = toCopy.getState();
-        this.markType = toCopy.getMarkType();
+        this.exThumbnail = toCopy.exThumbnail;
+        this.id = toCopy.id;
+        this.name = toCopy.name;
+        this.raw = toCopy.raw;
+        this.thumbnail = toCopy.thumbnail;
+        this.state = toCopy.state;
+        this.markType = toCopy.markType;
     }
 
     public BareState getState() {

@@ -11,7 +11,7 @@ import java.util.List;
  * Description:
  * 用于鉴权的用户信息
  *
- * @author WYM
+ * @author xxz
  * Created on 04/07/2018
  */
 public class XXXXUserDetails implements UserDetails {

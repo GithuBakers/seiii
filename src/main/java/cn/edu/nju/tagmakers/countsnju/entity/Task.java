@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Description:
@@ -20,9 +22,37 @@ import java.util.Map;
  *
  * @author xxz
  * Created on 04/07/2018
+ *
+ * Update:增加了拷贝和构造
+ * @author xxz
+ * Modified on 04/07/2018
+ *
+ * Update:数据结构nullptr异常
+ * @author xxz
+ * Modified on 04/07/2018
  */
 
-public class Task {
+public class Task extends Entity<Task>{
+    public Task(){
+
+    }
+
+    public Task(Task toCopy){
+        this.taskName = toCopy.taskName;
+        this.initiatorName = toCopy.initiatorName;
+        this.cover = toCopy.cover;
+        this.type = toCopy.type;
+        this.dataSet = toCopy.dataSet;
+        this.aim = toCopy.aim;
+        this.limit = toCopy.limit;
+        this.reward = toCopy.reward;
+        this.result = toCopy.result;
+        this.requirement = toCopy.requirement;
+        this.isFinished = toCopy.isFinished;
+        this.userMarked = toCopy.userMarked;
+        this.bareMarked = toCopy.bareMarked;
+    }
+
     /**
      * 任务的唯一标识
      */
@@ -183,7 +213,8 @@ public class Task {
     }
 
     public Map<String, Integer> getUserMarked() {
-        return userMarked;
+
+        return Optional.ofNullable(userMarked).orElse(new ConcurrentHashMap<>());
     }
 
     public void setUserMarked(Map<String, Integer> userMarked) {
@@ -191,7 +222,7 @@ public class Task {
     }
 
     public Map<String, Integer> getBareMarked() {
-        return bareMarked;
+        return Optional.ofNullable(bareMarked).orElse(new ConcurrentHashMap<>());
     }
 
     public void setBareMarked(Map<String, Integer> bareMarked) {
@@ -204,5 +235,25 @@ public class Task {
 
     public void setFinished(Boolean finished) {
         isFinished = finished;
+    }
+
+    /**
+     * 获取实体对象的主键
+     *
+     * @return id
+     */
+    @Override
+    public String getPrimeKey() {
+        return taskName;
+    }
+
+    /**
+     * 为了不与clone冲突产生这个方法，调用构造器实现
+     *
+     * @return 新的对象
+     */
+    @Override
+    public Task copy() {
+        return new Task(this);
     }
 }

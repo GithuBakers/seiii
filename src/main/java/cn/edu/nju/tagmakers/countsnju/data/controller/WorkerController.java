@@ -1,7 +1,9 @@
 package cn.edu.nju.tagmakers.countsnju.data.controller;
 
+import cn.edu.nju.tagmakers.countsnju.data.dao.WorkerDAO;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import cn.edu.nju.tagmakers.countsnju.filter.WorkerFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,6 +17,13 @@ import java.util.List;
  */
 @Component
 public class WorkerController implements DataController<Worker, WorkerFilter> {
+    private final WorkerDAO workerDAO;
+
+    @Autowired
+    public WorkerController(WorkerDAO dao){
+        this.workerDAO = dao;
+    }
+
     /**
      * 增加一个对象
      *
@@ -23,7 +32,7 @@ public class WorkerController implements DataController<Worker, WorkerFilter> {
      */
     @Override
     public Worker add(Worker obj) {
-        return null;
+        return workerDAO.add(obj);
     }
 
     /**
@@ -34,7 +43,7 @@ public class WorkerController implements DataController<Worker, WorkerFilter> {
      */
     @Override
     public Worker update(Worker obj) {
-        return null;
+        return workerDAO.update(obj);
     }
 
     /**
@@ -45,7 +54,7 @@ public class WorkerController implements DataController<Worker, WorkerFilter> {
      */
     @Override
     public List<Worker> find(WorkerFilter filter) {
-        return null;
+        return workerDAO.find(filter);
     }
 
     /**
@@ -56,7 +65,7 @@ public class WorkerController implements DataController<Worker, WorkerFilter> {
      */
     @Override
     public boolean delete(String id) {
-        return false;
+        return workerDAO.delete(id);
     }
 
     /**
@@ -66,6 +75,6 @@ public class WorkerController implements DataController<Worker, WorkerFilter> {
      */
     @Override
     public Worker findByID(String id) {
-        return null;
+        return workerDAO.findByID(id);
     }
 }

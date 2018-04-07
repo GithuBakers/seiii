@@ -3,12 +3,14 @@ package cn.edu.nju.tagmakers.countsnju.data.dao;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Initiator;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Role;
 import cn.edu.nju.tagmakers.countsnju.filter.InitiatorFilter;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Component
 public class InitiatorDAO extends DAO<Initiator,InitiatorFilter>{
     public InitiatorDAO(){
         map = new ConcurrentHashMap<>();

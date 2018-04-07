@@ -1,7 +1,9 @@
 package cn.edu.nju.tagmakers.countsnju.data.controller;
 
+import cn.edu.nju.tagmakers.countsnju.data.dao.InitiatorDAO;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Initiator;
 import cn.edu.nju.tagmakers.countsnju.filter.InitiatorFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,6 +17,13 @@ import java.util.List;
  */
 @Component
 public class InitiatorController implements DataController<Initiator, InitiatorFilter> {
+    private final InitiatorDAO initiatorDAO;
+
+    @Autowired
+    public InitiatorController(InitiatorDAO dao){
+        this.initiatorDAO = dao;
+    }
+
     /**
      * 增加一个对象
      *
@@ -23,7 +32,7 @@ public class InitiatorController implements DataController<Initiator, InitiatorF
      */
     @Override
     public Initiator add(Initiator obj) {
-        return null;
+        return initiatorDAO.add(obj);
     }
 
     /**
@@ -34,7 +43,7 @@ public class InitiatorController implements DataController<Initiator, InitiatorF
      */
     @Override
     public Initiator update(Initiator obj) {
-        return null;
+        return initiatorDAO.update(obj);
     }
 
     /**
@@ -45,7 +54,7 @@ public class InitiatorController implements DataController<Initiator, InitiatorF
      */
     @Override
     public List<Initiator> find(InitiatorFilter filter) {
-        return null;
+        return initiatorDAO.find(filter);
     }
 
     /**
@@ -56,7 +65,7 @@ public class InitiatorController implements DataController<Initiator, InitiatorF
      */
     @Override
     public boolean delete(String id) {
-        return false;
+        return initiatorDAO.delete(id);
     }
 
     /**
@@ -66,6 +75,6 @@ public class InitiatorController implements DataController<Initiator, InitiatorF
      */
     @Override
     public Initiator findByID(String id) {
-        return null;
+        return initiatorDAO.findByID(id);
     }
 }

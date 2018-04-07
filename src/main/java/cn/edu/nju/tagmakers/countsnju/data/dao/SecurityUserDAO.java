@@ -2,9 +2,11 @@ package cn.edu.nju.tagmakers.countsnju.data.dao;
 
 import cn.edu.nju.tagmakers.countsnju.filter.SecurityUserFilter;
 import cn.edu.nju.tagmakers.countsnju.security.SecurityUser;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public class SecurityUserDAO extends DAO<SecurityUser,SecurityUserFilter>{
     /**
      * 复合查找符合条件的对象

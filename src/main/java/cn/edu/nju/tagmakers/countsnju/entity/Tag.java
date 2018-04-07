@@ -73,10 +73,12 @@ public class Tag extends Entity<Tag> implements Serializable {
      * @param toCopy 要拷贝的对象
      */
     public Tag(Tag toCopy) {
-        this.comment = toCopy.getComment();
-        this.mark = toCopy.getMark();
-        this.numberID = toCopy.getNumberID();
-        this.userID = toCopy.getUserID();
+        this.comment = toCopy.comment;
+        this.mark = toCopy.mark;
+        this.numberID = toCopy.numberID;
+        this.userID = toCopy.userID;
+        this.bareID = toCopy.bareID;
+        this.tagID = toCopy.tagID;
     }
 
     public String getTagID() {

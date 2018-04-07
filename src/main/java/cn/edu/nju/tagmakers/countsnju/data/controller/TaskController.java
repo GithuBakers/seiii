@@ -1,7 +1,9 @@
 package cn.edu.nju.tagmakers.countsnju.data.controller;
 
+import cn.edu.nju.tagmakers.countsnju.data.dao.TaskDAO;
 import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,6 +17,14 @@ import java.util.List;
  */
 @Component
 public class TaskController implements DataController<Task, TaskFilter> {
+    private final TaskDAO taskDAO;
+
+    @Autowired
+    public TaskController(TaskDAO taskDAO) {
+        this.taskDAO = taskDAO;
+    }
+
+
     /**
      * 增加一个对象
      *
@@ -23,7 +33,7 @@ public class TaskController implements DataController<Task, TaskFilter> {
      */
     @Override
     public Task add(Task obj) {
-        return null;
+        return taskDAO.add(obj);
     }
 
     /**
@@ -34,7 +44,7 @@ public class TaskController implements DataController<Task, TaskFilter> {
      */
     @Override
     public Task update(Task obj) {
-        return null;
+        return taskDAO.update(obj);
     }
 
     /**
@@ -45,7 +55,7 @@ public class TaskController implements DataController<Task, TaskFilter> {
      */
     @Override
     public List<Task> find(TaskFilter filter) {
-        return null;
+        return taskDAO.find(filter);
     }
 
     /**
@@ -56,7 +66,7 @@ public class TaskController implements DataController<Task, TaskFilter> {
      */
     @Override
     public boolean delete(String id) {
-        return false;
+        return taskDAO.delete(id);
     }
 
     /**
@@ -64,6 +74,6 @@ public class TaskController implements DataController<Task, TaskFilter> {
      */
     @Override
     public Task findByID(String id) {
-        return null;
+        return taskDAO.findByID(id);
     }
 }
