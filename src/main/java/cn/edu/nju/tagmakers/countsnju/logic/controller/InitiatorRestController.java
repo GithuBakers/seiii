@@ -2,9 +2,13 @@ package cn.edu.nju.tagmakers.countsnju.logic.controller;
 
 import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.InitiatorTaskVO;
+import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
 import cn.edu.nju.tagmakers.countsnju.logic.service.InitiatorService;
+import cn.edu.nju.tagmakers.countsnju.logic.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import util.SecurityUtility;
 
 import javax.websocket.server.PathParam;
 import java.util.List;
@@ -22,8 +26,9 @@ public class InitiatorRestController {
 
     private final InitiatorService initiatorService;
 
+
     @Autowired
-    public InitiatorRestController(InitiatorService initiatorService) {
+    public InitiatorRestController(InitiatorService initiatorService, TaskService taskService) {
         this.initiatorService = initiatorService;
     }
 
@@ -34,8 +39,7 @@ public class InitiatorRestController {
      */
     @RequestMapping(value = "/task/running_task", method = RequestMethod.POST)
     public boolean addTask(@RequestBody Task task) {
-        initiatorService.createTask(task);
-        return false;
+        return initiatorService.createTask(task);
     }
 
     /**
@@ -45,8 +49,9 @@ public class InitiatorRestController {
      */
     @RequestMapping(value = "/task", method = RequestMethod.GET)
     public List<InitiatorTaskVO> getTasks(@PathParam(value = "finished") boolean isFinished) {
-        //TODO
-        return null;
+        TaskFilter filter = new TaskFilter();
+        filter.setFinished(isFinished);
+        return initiatorService.findInitiatorTask(filter);
     }
 
     /**
@@ -56,8 +61,8 @@ public class InitiatorRestController {
      */
     @RequestMapping(value = "/task/{task_name}", method = RequestMethod.GET)
     public Task getTaskByName(@PathVariable(value = "task_name") String taskName) {
-        //TODO
-        return null;
+        String initiatorName = SecurityUtility.getUserName(SecurityContextHolder.getContext());
+        return initiatorService.findTaskByName(taskName, initiatorName);
     }
 
     /**
@@ -65,7 +70,8 @@ public class InitiatorRestController {
      */
     @RequestMapping(value = "/task/finished_task", method = RequestMethod.POST)
     public Task finishTask(@RequestBody String taskName) {
-        return initiatorService.finishTask(taskName);
+        String initiatorName = SecurityUtility.getUserName(SecurityContextHolder.getContext());
+        return initiatorService.finishTask(taskName, initiatorName);
     }
 
 

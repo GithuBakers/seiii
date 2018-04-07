@@ -2,6 +2,7 @@ package cn.edu.nju.tagmakers.countsnju.logic.service;
 
 import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.InitiatorTaskVO;
+import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,21 +32,22 @@ public class InitiatorService {
      *
      * @param task 需要添加的任务
      */
-    public void createTask(Task task) {
+    public boolean createTask(Task task) {
         taskService.addTask(task);
+        return true;
     }
 
 
     /**
      * 结束一项任务
-     *
      * @param taskName 任务名
+     * @param initiatorName 企图结束任务的用户名
      */
-    public Task finishTask(String taskName) {
-        Task toFinish = taskService.findByID(taskName);
-        //TODO: 改变状态
-        taskService.updateTask(toFinish);
-        return toFinish;
+    public Task finishTask(String taskName, String initiatorName) {
+        if (!taskService.findByID(taskName).equals(initiatorName)) {
+            throw new PermissionDeniedException("这不是你的任务");
+        }
+        return taskService.finishTask(taskName);
     }
 
     /**
@@ -60,5 +62,20 @@ public class InitiatorService {
                 .map(InitiatorTaskVO::new)
                 .collect(Collectors.toList());
     }
+
+    /**
+     * 查看自己发起的某一任务的详情
+     *
+     * @param taskName      任务名
+     * @param initiatorName 发起者名
+     */
+    public Task findTaskByName(String taskName, String initiatorName) {
+        Task ret = taskService.findByID(taskName);
+        if (!ret.getInitiatorName().equals(initiatorName)) {
+            throw new PermissionDeniedException("这不是你创建的任务！");
+        }
+        return ret;
+    }
+
 
 }

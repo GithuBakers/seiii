@@ -12,12 +12,9 @@ import java.util.Map;
  *
  * @author xxz
  * Created on 04/06/2018
- */
-
-/**
+ * <p>
  * Update:
  * 增加了任务状态（是否已完成
- *
  * @author xxz
  * Created on 04/07/2018
  */
