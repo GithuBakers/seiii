@@ -1,5 +1,6 @@
 package cn.edu.nju.tagmakers.countsnju.logic.service;
 
+import cn.edu.nju.tagmakers.countsnju.data.controller.WorkerController;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerTaskDetailVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerTaskVO;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
@@ -19,12 +20,15 @@ import java.util.stream.Collectors;
 @Component
 public class WorkerService {
 
-    private TaskService service;
+    private TaskService taskService;
+
+    private WorkerController workerController;
 
 
     @Autowired
-    public WorkerService(TaskService service) {
-        this.service = service;
+    public WorkerService(TaskService taskService, WorkerController workerController) {
+        this.taskService = taskService;
+        this.workerController = workerController;
     }
 
     /**
@@ -34,7 +38,7 @@ public class WorkerService {
      */
     public List<WorkerTaskVO> findWorkerTask(TaskFilter taskFilter) {
 
-        return service.findTask(taskFilter).stream()
+        return taskService.findTask(taskFilter).stream()
                 .map(WorkerTaskVO::new)
                 .collect(Collectors.toList());
     }
@@ -45,15 +49,17 @@ public class WorkerService {
      * @param taskName 任务名
      */
     public WorkerTaskDetailVO getTaskDetail(String taskName) {
-        return new WorkerTaskDetailVO(service.findByID(taskName));
+        //TODO:
+        return null;
     }
 
     /**
      * 接受某一任务
      *
-     * @param taskName 接受的任务名
+     * @param workerName 参与者名
+     * @param taskName   接受的任务名
      */
-    public boolean receiveTask(String taskName) {
+    public boolean receiveTask(String taskName, String workerName) {
         //TODO:
         return false;
     }

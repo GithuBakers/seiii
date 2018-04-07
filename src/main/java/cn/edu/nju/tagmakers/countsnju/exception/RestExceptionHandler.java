@@ -44,4 +44,11 @@ public class RestExceptionHandler {
     public RestErrorInformation messageErrorHandler(HttpMessageNotReadableException e) {
         return new RestErrorInformation(e.getMessage());
     }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(PermissionDeniedException.class)
+    public RestErrorInformation permissionErrorHandler(PermissionDeniedException e) {
+        return new RestErrorInformation(e.getMessage());
+    }
+
 }
