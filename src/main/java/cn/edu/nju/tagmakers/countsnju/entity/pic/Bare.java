@@ -1,5 +1,6 @@
-package cn.edu.nju.tagmakers.countsnju.entity;
+package cn.edu.nju.tagmakers.countsnju.entity.pic;
 
+import cn.edu.nju.tagmakers.countsnju.entity.Entity;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -25,7 +26,7 @@ import java.io.Serializable;
  * Last modified on 04/06/2018
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public class Bare extends Entity<Bare> implements Serializable{
+public class Bare extends Entity<Bare> implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -158,7 +159,7 @@ public class Bare extends Entity<Bare> implements Serializable{
      * @return 新的对象
      */
     @Override
-    public Bare copy(){
+    public Bare copy() {
         return new Bare(this);
     }
 }

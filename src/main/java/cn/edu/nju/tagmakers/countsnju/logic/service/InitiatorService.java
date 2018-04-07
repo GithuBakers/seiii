@@ -1,6 +1,6 @@
 package cn.edu.nju.tagmakers.countsnju.logic.service;
 
-import cn.edu.nju.tagmakers.countsnju.entity.Task;
+import cn.edu.nju.tagmakers.countsnju.entity.user.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.InitiatorTaskVO;
 import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;

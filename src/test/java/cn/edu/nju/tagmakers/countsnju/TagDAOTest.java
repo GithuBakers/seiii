@@ -2,8 +2,8 @@ package cn.edu.nju.tagmakers.countsnju;
 
 
 import cn.edu.nju.tagmakers.countsnju.data.dao.TagDAO;
-import cn.edu.nju.tagmakers.countsnju.entity.Comment;
-import cn.edu.nju.tagmakers.countsnju.entity.Tag;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.Comment;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.Tag;
 import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
 import cn.edu.nju.tagmakers.countsnju.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

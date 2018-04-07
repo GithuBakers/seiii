@@ -14,6 +14,7 @@ import java.util.List;
  * @author xxz
  * Created on 04/07/2018
  */
+@Deprecated
 public class XXXXUserDetails implements UserDetails {
 
     private List<GrantedAuthority> authorities;

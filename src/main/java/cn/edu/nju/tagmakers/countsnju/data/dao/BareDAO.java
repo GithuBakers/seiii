@@ -1,8 +1,8 @@
 package cn.edu.nju.tagmakers.countsnju.data.dao;
 
-import cn.edu.nju.tagmakers.countsnju.entity.Bare;
-import cn.edu.nju.tagmakers.countsnju.entity.BareState;
-import cn.edu.nju.tagmakers.countsnju.entity.MarkType;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.BareState;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
 import cn.edu.nju.tagmakers.countsnju.filter.BareFilter;
 import org.springframework.stereotype.Component;
 

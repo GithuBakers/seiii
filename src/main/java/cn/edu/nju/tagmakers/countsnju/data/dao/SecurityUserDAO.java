@@ -42,7 +42,7 @@ public class SecurityUserDAO extends DAO<SecurityUser,SecurityUserFilter>{
             throw new PermissionDeniedException("密码和原有的密码不符，请重新输入");
         }
 
-        SecurityUser user = new SecurityUser(userID,newPassword, (List<GrantedAuthority>) oriSecurityUser.getAuthorities());
+        SecurityUser user = new SecurityUser(userID, newPassword, (List<GrantedAuthority>) oriSecurityUser.getAuthorities());
         update(user);
         return true;
     }

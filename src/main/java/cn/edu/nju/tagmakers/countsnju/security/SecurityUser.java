@@ -17,13 +17,13 @@ public class SecurityUser extends Entity<SecurityUser> implements UserDetails {
 
      构造器
 
-    **********************************/
+     **********************************/
     public SecurityUser(){
 
     }
 
     //下面两个用于更新秘密吗的方法
-    public SecurityUser(String securityUserName,String securityPassword,List<GrantedAuthority> authorities){
+    public SecurityUser(String securityUserName, String securityPassword, List<GrantedAuthority> authorities) {
         this.securityUserName = securityUserName;
         this.securityPassword = securityPassword;
         this.authorities = new ArrayList<>(authorities);

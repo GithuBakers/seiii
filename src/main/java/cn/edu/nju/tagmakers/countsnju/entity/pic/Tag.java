@@ -1,5 +1,7 @@
-package cn.edu.nju.tagmakers.countsnju.entity;
+package cn.edu.nju.tagmakers.countsnju.entity.pic;
 
+import cn.edu.nju.tagmakers.countsnju.entity.Entity;
+import cn.edu.nju.tagmakers.countsnju.entity.Mark;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -27,7 +29,7 @@ import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
  * update: 调整了属性的命名
  * @author xxz
  * modified on 03/21/2018
- *
+ * <p>
  * Update:
  * 增加了userID这个字段
  * @author xxz
@@ -67,6 +69,7 @@ public class Tag extends Entity<Tag> implements Serializable {
     public Tag() {
 
     }
+
     /**
      * 用于代替clone方法的构造器
      *

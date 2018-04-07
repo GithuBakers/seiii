@@ -1,10 +1,12 @@
 package cn.edu.nju.tagmakers.countsnju.entity.vo;
 
-import cn.edu.nju.tagmakers.countsnju.entity.Task;
+import cn.edu.nju.tagmakers.countsnju.entity.user.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+
+import java.util.Map;
 
 /**
  * Description:
@@ -38,6 +40,23 @@ public class WorkerReceivedTaskVO {
     private boolean isFinished;
 
     public WorkerReceivedTaskVO(Task task, Worker worker) {
+        basicInformation = new TaskVOBasicInformation(task);
+
+        Map<String, Integer> userMarked = task.getUserMarked();
+        for (int num : userMarked.values()) {
+            markNumber += num;
+        }
+
+        totalReward = markNumber / 10 * task.getReward();
+
+        if (task.getFinished()) {
+            isFinished = true;
+        } else {
+            String userID = worker.getUserID();
+            if (userMarked.get(userID) == task.getLimit()) {
+                isFinished = true;
+            }
+        }
         //TODO;
     }
 }

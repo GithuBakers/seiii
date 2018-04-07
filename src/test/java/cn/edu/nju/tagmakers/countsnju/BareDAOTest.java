@@ -2,7 +2,7 @@ package cn.edu.nju.tagmakers.countsnju;
 
 
 import cn.edu.nju.tagmakers.countsnju.data.dao.BareDAO;
-import cn.edu.nju.tagmakers.countsnju.entity.Bare;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
 import cn.edu.nju.tagmakers.countsnju.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

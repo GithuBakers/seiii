@@ -1,9 +1,9 @@
 package cn.edu.nju.tagmakers.countsnju.logic.service;
 
-import cn.edu.nju.tagmakers.countsnju.entity.Bare;
-import cn.edu.nju.tagmakers.countsnju.entity.BareState;
-import cn.edu.nju.tagmakers.countsnju.entity.Image;
-import cn.edu.nju.tagmakers.countsnju.entity.Tag;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.BareState;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.Image;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.Tag;
 import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
 import cn.edu.nju.tagmakers.countsnju.exception.NotFoundException;
 import cn.edu.nju.tagmakers.countsnju.filter.BareFilter;

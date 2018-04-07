@@ -1,5 +1,6 @@
-package cn.edu.nju.tagmakers.countsnju.entity;
+package cn.edu.nju.tagmakers.countsnju.entity.pic;
 
+import cn.edu.nju.tagmakers.countsnju.entity.Mark;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 import java.io.Serializable;
@@ -21,6 +22,7 @@ import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 
 public class Description extends Mark implements Serializable {
     private static final long serialVersionUID = 3L;
+
     public Description() {
         type = MarkType.DESC;
     }

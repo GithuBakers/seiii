@@ -1,7 +1,7 @@
 package cn.edu.nju.tagmakers.countsnju.data.dao;
 
-import cn.edu.nju.tagmakers.countsnju.entity.MarkType;
-import cn.edu.nju.tagmakers.countsnju.entity.Task;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
+import cn.edu.nju.tagmakers.countsnju.entity.user.Task;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
 import org.springframework.stereotype.Component;
 

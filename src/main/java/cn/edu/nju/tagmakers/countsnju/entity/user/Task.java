@@ -1,5 +1,8 @@
-package cn.edu.nju.tagmakers.countsnju.entity;
+package cn.edu.nju.tagmakers.countsnju.entity.user;
 
+import cn.edu.nju.tagmakers.countsnju.entity.Entity;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -20,22 +23,22 @@ import java.util.concurrent.ConcurrentHashMap;
  * 增加了任务状态（是否已完成
  * @author xxz
  * Created on 04/07/2018
- *
+ * <p>
  * Update:增加了拷贝和构造
  * @author xxz
  * Modified on 04/07/2018
- *
+ * <p>
  * Update:数据结构nullptr异常
  * @author xxz
  * Modified on 04/07/2018
  */
 
-public class Task extends Entity<Task>{
-    public Task(){
+public class Task extends Entity<Task> {
+    public Task() {
 
     }
 
-    public Task(Task toCopy){
+    public Task(Task toCopy) {
         this.taskName = toCopy.taskName;
         this.initiatorName = toCopy.initiatorName;
         this.cover = toCopy.cover;

@@ -1,7 +1,7 @@
 package cn.edu.nju.tagmakers.countsnju.data.controller;
 
 import cn.edu.nju.tagmakers.countsnju.data.dao.BareDAO;
-import cn.edu.nju.tagmakers.countsnju.entity.Bare;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.filter.BareFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

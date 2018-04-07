@@ -1,7 +1,7 @@
 package cn.edu.nju.tagmakers.countsnju.filter;
 
-import cn.edu.nju.tagmakers.countsnju.entity.BareState;
-import cn.edu.nju.tagmakers.countsnju.entity.MarkType;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.BareState;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
 
 /**
  * Description:

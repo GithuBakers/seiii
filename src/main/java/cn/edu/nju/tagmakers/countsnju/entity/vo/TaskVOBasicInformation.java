@@ -1,7 +1,7 @@
 package cn.edu.nju.tagmakers.countsnju.entity.vo;
 
-import cn.edu.nju.tagmakers.countsnju.entity.MarkType;
-import cn.edu.nju.tagmakers.countsnju.entity.Task;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
+import cn.edu.nju.tagmakers.countsnju.entity.user.Task;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -34,6 +34,9 @@ public class TaskVOBasicInformation {
 
 
     public TaskVOBasicInformation(Task task) {
+        taskName = task.getTaskName();
+        cover = task.getCover();
+        type = task.getType();
         //TODO;
     }
 }

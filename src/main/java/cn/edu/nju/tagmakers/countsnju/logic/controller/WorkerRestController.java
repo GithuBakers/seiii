@@ -1,7 +1,7 @@
 package cn.edu.nju.tagmakers.countsnju.logic.controller;
 
-import cn.edu.nju.tagmakers.countsnju.entity.Bare;
-import cn.edu.nju.tagmakers.countsnju.entity.Image;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.Image;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerReceivedTaskDetailVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerReceivedTaskVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerTaskDetailVO;

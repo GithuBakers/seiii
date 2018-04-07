@@ -1,9 +1,12 @@
 package cn.edu.nju.tagmakers.countsnju.entity.vo;
 
-import cn.edu.nju.tagmakers.countsnju.entity.Task;
+import cn.edu.nju.tagmakers.countsnju.entity.user.Task;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Description:
@@ -32,6 +35,17 @@ public class InitiatorTaskVO {
 
     public InitiatorTaskVO(Task task) {
         taskVOBasicInformation = new TaskVOBasicInformation(task);
+        Map<String, Integer> userMarked = task.getUserMarked();
+
+        //累加所有的标注量之后进行换算
+        int curAim = 0;
+        for (Integer num : userMarked.values()) {
+            curAim += num;
+        }
+        completeness = (float) (curAim / task.getAim());
+
+        //是否结束
+        isFinished = task.getFinished();
         //TODO：从task构造vo
     }
 }

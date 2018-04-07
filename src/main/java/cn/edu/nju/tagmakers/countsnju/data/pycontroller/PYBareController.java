@@ -1,7 +1,7 @@
 package cn.edu.nju.tagmakers.countsnju.data.pycontroller;
 
 import cn.edu.nju.tagmakers.countsnju.data.dao.BareDAO;
-import cn.edu.nju.tagmakers.countsnju.entity.Bare;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.filter.BareFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.File;
 import java.util.List;
 
 @RestController

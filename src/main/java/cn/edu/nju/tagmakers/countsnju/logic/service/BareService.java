@@ -1,7 +1,7 @@
 package cn.edu.nju.tagmakers.countsnju.logic.service;
 
 import cn.edu.nju.tagmakers.countsnju.data.controller.BareController;
-import cn.edu.nju.tagmakers.countsnju.entity.Bare;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.filter.BareFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;

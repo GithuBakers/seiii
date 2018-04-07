@@ -1,5 +1,7 @@
-package cn.edu.nju.tagmakers.countsnju.entity;
+package cn.edu.nju.tagmakers.countsnju.entity.pic;
 
+import cn.edu.nju.tagmakers.countsnju.entity.Mark;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

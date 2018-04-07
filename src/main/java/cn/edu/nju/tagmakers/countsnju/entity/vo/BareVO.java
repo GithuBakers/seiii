@@ -1,5 +1,6 @@
 package cn.edu.nju.tagmakers.countsnju.entity.vo;
 
+import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -12,6 +13,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class BareVO {
+    public BareVO(Bare bare) {
+        bareID = bare.getId();
+        name = bare.getName();
+        rawURL = bare.getRaw();
+    }
 
     /**
      * 原图ID

@@ -1,10 +1,10 @@
 package cn.edu.nju.tagmakers.countsnju.logic.service;
 
 import cn.edu.nju.tagmakers.countsnju.data.controller.WorkerController;
-import cn.edu.nju.tagmakers.countsnju.entity.Bare;
-import cn.edu.nju.tagmakers.countsnju.entity.Image;
-import cn.edu.nju.tagmakers.countsnju.entity.Tag;
-import cn.edu.nju.tagmakers.countsnju.entity.Task;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.Image;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.Tag;
+import cn.edu.nju.tagmakers.countsnju.entity.user.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerReceivedTaskDetailVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerReceivedTaskVO;
@@ -71,7 +71,7 @@ public class WorkerService {
         Task detail = taskService.findByID(taskName);
         if (detail.getUserMarked().get(workerName) == null
                 || detail.getUserMarked().get(workerName) < detail.getLimit()) {
-            return new WorkerTaskDetailVO(detail, workerController.findByID(workerName));
+            return new WorkerTaskDetailVO(detail);
         } else {
             throw new PermissionDeniedException("你暂时无法接受此任务");
         }
