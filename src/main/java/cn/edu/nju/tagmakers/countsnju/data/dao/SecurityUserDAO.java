@@ -5,10 +5,18 @@ import cn.edu.nju.tagmakers.countsnju.filter.SecurityUserFilter;
 import cn.edu.nju.tagmakers.countsnju.security.SecurityUser;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class SecurityUserDAO extends DAO<SecurityUser,SecurityUserFilter>{
+    public SecurityUserDAO() {
+        map = new ConcurrentHashMap<>();
+        filePath = "data" + File.separator + "SecurityUser.txt";
+        read();
+    }
+
     /**
      * 复合查找符合条件的对象
      *

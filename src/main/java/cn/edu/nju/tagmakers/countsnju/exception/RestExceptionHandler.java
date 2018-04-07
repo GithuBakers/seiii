@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.Arrays;
-
 /**
  * Description:
  *
@@ -27,11 +25,11 @@ public class RestExceptionHandler {
         return new RestErrorInformation(e.getMessage());
     }
 
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(NullPointerException.class)
-    public RestErrorInformation npHandler(NullPointerException e) {
-        return new RestErrorInformation(Arrays.toString(e.getStackTrace()));
-    }
+//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//    @ExceptionHandler(NullPointerException.class)
+//    public RestErrorInformation npHandler(NullPointerException e) {
+//        return new RestErrorInformation(Arrays.toString(e.getStackTrace()));
+//    }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidInputException.class)

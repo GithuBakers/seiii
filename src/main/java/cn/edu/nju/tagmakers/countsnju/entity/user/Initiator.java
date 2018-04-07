@@ -42,7 +42,9 @@ public class Initiator extends User {
         this.role = toCopy.getRole();
 
         //发起者字段
-        this.taskNames = new LinkedList<>(toCopy.taskNames);
+        if (toCopy.taskNames != null) {
+            this.taskNames = new LinkedList<>(toCopy.taskNames);
+        }
     }
 
 
