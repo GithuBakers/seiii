@@ -152,6 +152,9 @@ public class WorkerService {
         toUpdate.getBareMarked().putIfAbsent(image.getBare().getId(), 1);
         int tmp = toUpdate.getBareMarked().get(image.getBare().getId());
         tmp++;
+        if (tmp > toUpdate.getLimit()) {
+            throw new PermissionDeniedException("你已经做了足够多了！换个任务试一试吧");
+        }
         toUpdate.getBareMarked().put(image.getBare().getId(), tmp);
 
         //将任务列表中工人的标注次数加一
