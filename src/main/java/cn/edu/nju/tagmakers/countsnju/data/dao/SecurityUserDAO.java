@@ -3,7 +3,6 @@ package cn.edu.nju.tagmakers.countsnju.data.dao;
 import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.filter.SecurityUserFilter;
 import cn.edu.nju.tagmakers.countsnju.security.SecurityUser;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -42,7 +41,7 @@ public class SecurityUserDAO extends DAO<SecurityUser,SecurityUserFilter>{
             throw new PermissionDeniedException("密码和原有的密码不符，请重新输入");
         }
 
-        SecurityUser user = new SecurityUser(userID, newPassword, (List<GrantedAuthority>) oriSecurityUser.getAuthorities());
+        SecurityUser user = new SecurityUser(userID, newPassword, oriSecurityUser.getAuthorities());
         update(user);
         return true;
     }

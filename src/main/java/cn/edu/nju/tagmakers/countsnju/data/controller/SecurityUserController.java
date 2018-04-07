@@ -7,6 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
+/**
+ * Update:
+ * 与UserDetailService整合了
+ *
+ * @author WYM
+ * Created on 04/07/2018
+ */
+@Deprecated
 public class SecurityUserController implements DataController<SecurityUser,SecurityUserFilter>{
     private final SecurityUserDAO securityUserDAO;
 

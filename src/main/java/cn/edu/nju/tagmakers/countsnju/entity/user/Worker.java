@@ -10,13 +10,27 @@ import java.util.Optional;
 
 /**
  * Description:
+ * 众包工人
  *
  * @author xxz
  * Created on 04/06/2018
+ * <p>
+ * Update:
+ * 增加了从user到众包工人的构造方法（用于注册）
+ * @author xxz
+ * Created on 04/07/2018
  */
 public class Worker extends User {
-    public Worker(){
+    public Worker() {
 
+    }
+
+    public Worker(User user) {
+        this.userID = user.getUserID();
+        this.avatar = user.getAvatar();
+        this.password = user.getPassword();
+        this.nickName = user.getNickName();
+        this.role = user.getRole();
     }
 
     /**
@@ -30,7 +44,7 @@ public class Worker extends User {
     @JsonIgnore
     private List<String> taskNames;
 
-    public Worker(Worker toCopy){
+    private Worker(Worker toCopy) {
         //公共字段
         this.userID = toCopy.getUserID();
         this.avatar = toCopy.getAvatar();
@@ -84,7 +98,7 @@ public class Worker extends User {
     }
 
     @Override
-    public Worker copy(){
+    public Worker copy() {
         return new Worker(this);
     }
 }

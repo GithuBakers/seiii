@@ -9,16 +9,31 @@ import java.util.Optional;
 
 /**
  * Description:
+ * 发起者
  *
  * @author xxz
  * Created on 04/06/2018
+ * <p>
+ * Update:
+ * 增加从user到initiator的构造器（用于注册）
+ * @author xxz
+ * Created on 04/07/2018
  */
 public class Initiator extends User {
-    public Initiator(){
+    public Initiator() {
 
     }
 
-    public Initiator(Initiator toCopy){
+    public Initiator(User user) {
+        //公共字段
+        this.userID = user.getUserID();
+        this.avatar = user.getAvatar();
+        this.password = user.getPassword();
+        this.nickName = user.getNickName();
+        this.role = user.getRole();
+    }
+
+    private Initiator(Initiator toCopy) {
         //公共字段
         this.userID = toCopy.getUserID();
         this.avatar = toCopy.getAvatar();
@@ -29,6 +44,7 @@ public class Initiator extends User {
         //发起者字段
         this.taskNames = new LinkedList<>(toCopy.taskNames);
     }
+
 
     /**
      * 发起者发起的任务们

@@ -9,21 +9,25 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
+
+/**
+ * Update:
+ * 创建类
+ *
+ * @author WYM
+ * Created on 04/07/2018
+ */
 
 public class SecurityUser extends Entity<SecurityUser> implements UserDetails {
     /**********************************
 
      构造器
 
-     **********************************/
-    public SecurityUser(){
-
-    }
+     *********************************/
 
     //下面两个用于更新秘密吗的方法
-    public SecurityUser(String securityUserName, String securityPassword, List<GrantedAuthority> authorities) {
+    public SecurityUser(String securityUserName, String securityPassword, Collection<? extends GrantedAuthority> authorities){
         this.securityUserName = securityUserName;
         this.securityPassword = securityPassword;
         this.authorities = new ArrayList<>(authorities);
