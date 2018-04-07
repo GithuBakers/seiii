@@ -47,6 +47,21 @@ public class WorkerService {
 
 
     /**
+     * 按ID查找个人信息
+     */
+    public Worker findWorkerByName(String workerName) {
+        return workerController.findByID(workerName);
+    }
+
+    /**
+     * 更新个人信息
+     */
+    public boolean update(Worker worker) {
+        workerController.update(worker);
+        return true;
+    }
+
+    /**
      * 工人查看的任务列表(还未结束 && 还未达到上限
      *
      * @param taskFilter 筛选条件

@@ -1,7 +1,9 @@
 package cn.edu.nju.tagmakers.countsnju.logic.controller;
 
+import cn.edu.nju.tagmakers.countsnju.entity.user.Initiator;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.InitiatorTaskVO;
+import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
 import cn.edu.nju.tagmakers.countsnju.logic.service.InitiatorService;
 import cn.edu.nju.tagmakers.countsnju.logic.service.TaskService;
@@ -32,6 +34,35 @@ public class InitiatorRestController {
         this.initiatorService = initiatorService;
     }
 
+
+    /**
+     * 获取个人信息
+     *
+     * @param username 用户名
+     */
+    @RequestMapping(value = "/information/{user_name}", method = RequestMethod.GET)
+    public Initiator getInfo(@PathVariable(value = "user_name") String username) {
+        String initiatorName = SecurityUtility.getUserName(SecurityContextHolder.getContext());
+
+        if (!initiatorName.equals(username)) {
+            throw new PermissionDeniedException("无权限访问别人的信息！");
+        }
+        return initiatorService.findInitiatorByName(username);
+
+    }
+
+    /**
+     * 更新个人信息
+     */
+    @RequestMapping(value = "/information/{user_name}", method = RequestMethod.POST)
+    public boolean updateInfo(@PathVariable(value = "user_name") String username, @RequestBody Initiator initiator) {
+        Initiator toUpdate = new Initiator();
+        //允许修改的字段
+        toUpdate.setUserID(SecurityUtility.getUserName(SecurityContextHolder.getContext()));
+        toUpdate.setAvatar(initiator.getAvatar());
+        toUpdate.setNickName(initiator.getNickName());
+        return initiatorService.update(toUpdate);
+    }
     /**
      * 新增（新开始一个任务)
      *

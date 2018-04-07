@@ -2,10 +2,12 @@ package cn.edu.nju.tagmakers.countsnju.logic.controller;
 
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Image;
+import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerReceivedTaskDetailVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerReceivedTaskVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerTaskDetailVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerTaskVO;
+import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
 import cn.edu.nju.tagmakers.countsnju.logic.service.WorkerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,34 @@ public class WorkerRestController {
         this.workerService = workerService;
     }
 
+    /**
+     * 获取个人信息
+     *
+     * @param username 用户名
+     */
+    @RequestMapping(value = "/information/{user_name}", method = RequestMethod.GET)
+    public Worker getInfo(@PathVariable(value = "user_name") String username) {
+        String workerName = SecurityUtility.getUserName(SecurityContextHolder.getContext());
+
+        if (!workerName.equals(username)) {
+            throw new PermissionDeniedException("无权限访问别人的信息！");
+        }
+        return workerService.findWorkerByName(username);
+
+    }
+
+    /**
+     * 更新个人信息
+     */
+    @RequestMapping(value = "/information/{user_name}", method = RequestMethod.POST)
+    public boolean updateInfo(@PathVariable(value = "user_name") String username, @RequestBody Worker worker) {
+        Worker toUpdate = new Worker();
+        //允许修改的字段
+        toUpdate.setUserID(SecurityUtility.getUserName(SecurityContextHolder.getContext()));
+        toUpdate.setAvatar(worker.getAvatar());
+        toUpdate.setNickName(worker.getNickName());
+        return workerService.update(toUpdate);
+    }
     /**
      * 查看所有能参加的任务列表
      */

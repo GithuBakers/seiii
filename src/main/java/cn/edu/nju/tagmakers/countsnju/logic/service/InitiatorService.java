@@ -1,5 +1,7 @@
 package cn.edu.nju.tagmakers.countsnju.logic.service;
 
+import cn.edu.nju.tagmakers.countsnju.data.controller.InitiatorController;
+import cn.edu.nju.tagmakers.countsnju.entity.user.Initiator;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.InitiatorTaskVO;
 import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
@@ -22,9 +24,28 @@ public class InitiatorService {
 
     private TaskService taskService;
 
+    private InitiatorController initiatorController;
+
     @Autowired
-    public InitiatorService(TaskService taskService) {
+    public InitiatorService(TaskService taskService, InitiatorController initiatorController) {
         this.taskService = taskService;
+        this.initiatorController = initiatorController;
+    }
+
+
+    /**
+     * 按ID查找发起人
+     */
+    public Initiator findInitiatorByName(String initiatorName) {
+        return initiatorController.findByID(initiatorName);
+    }
+
+    /**
+     * 更新发起者信息
+     */
+    public boolean update(Initiator initiator) {
+        initiatorController.update(initiator);
+        return true;
     }
 
     /**
