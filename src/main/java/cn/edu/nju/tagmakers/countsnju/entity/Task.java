@@ -14,6 +14,14 @@ import java.util.Map;
  * Created on 04/06/2018
  */
 
+/**
+ * Update:
+ * 增加了任务状态（是否已完成
+ *
+ * @author xxz
+ * Created on 04/07/2018
+ */
+
 public class Task {
     /**
      * 任务的唯一标识
@@ -74,6 +82,12 @@ public class Task {
      */
     @JsonProperty(value = "requirement")
     private String requirement;
+
+    /**
+     * 是否已完成
+     */
+    @JsonProperty(value = "finished")
+    private Boolean isFinished;
 
     /**
      * user和已经标注的数量
@@ -182,5 +196,13 @@ public class Task {
 
     public void setBareMarked(Map<String, Integer> bareMarked) {
         this.bareMarked = bareMarked;
+    }
+
+    public Boolean getFinished() {
+        return isFinished;
+    }
+
+    public void setFinished(Boolean finished) {
+        isFinished = finished;
     }
 }
