@@ -17,8 +17,20 @@ import java.io.Serializable;
  * Last modified on 04/06/2018
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public class User extends Entity implements Serializable {
+public class User extends Entity<User> implements Serializable {
     private static final long serialVersionUID = 70L;
+
+    public User(){
+
+    }
+
+    public User(User toCopy){
+        this.userID = toCopy.getUserID();
+        this.avatar = toCopy.getAvatar();
+        this.password = toCopy.getPassword();
+        this.nickName = toCopy.getNickName();
+        this.role = toCopy.getRole();
+    }
 
     @JsonProperty(value = "user_name")
     private String userID;
@@ -83,5 +95,15 @@ public class User extends Entity implements Serializable {
     @Override
     public String getPrimeKey() {
         return userID;
+    }
+
+    /**
+     * 为了不与clone冲突产生这个方法，调用构造器实现
+     *
+     * @return 新的对象
+     */
+    @Override
+    public User copy() {
+        return new User(this);
     }
 }

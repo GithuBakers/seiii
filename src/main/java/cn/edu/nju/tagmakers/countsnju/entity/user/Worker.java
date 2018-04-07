@@ -1,6 +1,7 @@
 package cn.edu.nju.tagmakers.countsnju.entity.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
@@ -16,4 +17,10 @@ public class Worker extends User {
      */
     @JsonIgnore
     private List<String> taskNames;
+
+    @JsonProperty
+    private int credit;
+
+    @JsonProperty
+    private int rank;
 }

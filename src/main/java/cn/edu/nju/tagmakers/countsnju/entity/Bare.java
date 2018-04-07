@@ -25,7 +25,7 @@ import java.io.Serializable;
  * Last modified on 04/06/2018
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public class Bare extends Entity implements Serializable{
+public class Bare extends Entity<Bare> implements Serializable{
     private static final long serialVersionUID = 1L;
 
     /**
@@ -73,16 +73,16 @@ public class Bare extends Entity implements Serializable{
     /**
      * 替换clone方法的构造器
      *
-     * @param toClone 要拷贝的对象
+     * @param toCopy 要拷贝的对象
      */
-    public Bare(Bare toClone) {
-        this.exThumbnail = toClone.getExThumbnail();
-        this.id = toClone.getId();
-        this.name = toClone.getName();
-        this.raw = toClone.getRaw();
-        this.thumbnail = toClone.getThumbnail();
-        this.state = toClone.getState();
-        this.markType = toClone.getMarkType();
+    public Bare(Bare toCopy) {
+        this.exThumbnail = toCopy.getExThumbnail();
+        this.id = toCopy.getId();
+        this.name = toCopy.getName();
+        this.raw = toCopy.getRaw();
+        this.thumbnail = toCopy.getThumbnail();
+        this.state = toCopy.getState();
+        this.markType = toCopy.getMarkType();
     }
 
     public BareState getState() {
@@ -150,5 +150,15 @@ public class Bare extends Entity implements Serializable{
     @Override
     public String getPrimeKey() {
         return id;
+    }
+
+    /**
+     * 为了不与clone冲突产生这个方法，调用构造器实现
+     *
+     * @return 新的对象
+     */
+    @Override
+    public Bare copy(){
+        return new Bare(this);
     }
 }

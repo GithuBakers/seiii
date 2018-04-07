@@ -34,7 +34,7 @@ import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
  * Created on 04/07/2018
  */
 @JsonAutoDetect(fieldVisibility = ANY)
-public class Tag extends Entity implements Serializable {
+public class Tag extends Entity<Tag> implements Serializable {
     private static final long serialVersionUID = 7L;
     /**
      * 全部tag的唯一性标识，tagID=bareID_id
@@ -70,12 +70,13 @@ public class Tag extends Entity implements Serializable {
     /**
      * 用于代替clone方法的构造器
      *
-     * @param toClone 要拷贝的对象
+     * @param toCopy 要拷贝的对象
      */
-    public Tag(Tag toClone) {
-        this.comment = toClone.getComment();
-        this.mark = toClone.getMark();
-        this.numberID = toClone.getNumberID();
+    public Tag(Tag toCopy) {
+        this.comment = toCopy.getComment();
+        this.mark = toCopy.getMark();
+        this.numberID = toCopy.getNumberID();
+        this.userID = toCopy.getUserID();
     }
 
     public String getTagID() {
@@ -118,6 +119,18 @@ public class Tag extends Entity implements Serializable {
         this.bareID = bareID;
     }
 
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
+
     /**
      * 获取实体对象的主键
      *
@@ -126,5 +139,15 @@ public class Tag extends Entity implements Serializable {
     @Override
     public String getPrimeKey() {
         return tagID;
+    }
+
+    /**
+     * 为了不与clone冲突产生这个方法，调用构造器实现
+     *
+     * @return 新的对象
+     */
+    @Override
+    public Tag copy() {
+        return new Tag(this);
     }
 }

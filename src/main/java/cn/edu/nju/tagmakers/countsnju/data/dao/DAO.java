@@ -21,6 +21,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * Update:重构
  * @author wym
  * Last modified on 04/06/2018
+ * Update:深拷贝
+ * @author wym
+ * Last modified on 04/06/2018
  */
 public abstract class DAO<T extends Entity, U extends Filter> {
     ConcurrentHashMap<String,T> map;
@@ -40,9 +43,11 @@ public abstract class DAO<T extends Entity, U extends Filter> {
         if (checkStringEqualsNull(obj.getPrimeKey())) {
             throw new InvalidInputException("操作：添加 非法输入：空ID");
         }
-        map.put(obj.getPrimeKey(), obj);
+        T toCopy = (T) obj.copy();
+        T ret = (T) obj.copy();
+        map.put(obj.getPrimeKey(), toCopy);
         writeObject(map, filePath);
-        return obj;
+        return ret;
     }
 
     /**
@@ -85,11 +90,12 @@ public abstract class DAO<T extends Entity, U extends Filter> {
         }
 
         //实现
-        T ori = map.get(obj.getPrimeKey());
-        setChanges(ori, obj);
-        map.put(ori.getPrimeKey(), ori);
+        T toCopy = (T) map.get(obj.getPrimeKey()).copy();
+        setChanges(toCopy, obj);
+        map.put(toCopy.getPrimeKey(), toCopy);
         writeObject(map, filePath);
-        return ori;
+        T ret = (T) map.get(obj.getPrimeKey()).copy();
+        return ret;
     }
 
     /**
@@ -112,7 +118,7 @@ public abstract class DAO<T extends Entity, U extends Filter> {
             return null;
         }
         if (map.containsKey(id))
-            return map.get(id);
+            return (T) map.get(id).copy();
         return null;
     }
 
