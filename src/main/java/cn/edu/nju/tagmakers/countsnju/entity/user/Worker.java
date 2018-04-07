@@ -19,6 +19,17 @@ public class Worker extends User {
 
     }
 
+    /**
+     * 已标注的图片(ID)列表
+     */
+    private List<String> bareIDs;
+
+    /**
+     * 已接受的任务列表
+     */
+    @JsonIgnore
+    private List<String> taskNames;
+
     public Worker(Worker toCopy){
         //公共字段
         this.userID = toCopy.getUserID();
@@ -29,21 +40,10 @@ public class Worker extends User {
 
         //工人字段
         this.taskNames = new LinkedList<>(toCopy.taskNames);
-        this.bareNames = new LinkedList<>(toCopy.bareNames);
+        this.bareIDs = new LinkedList<>(toCopy.bareIDs);
         this.credit = toCopy.credit;
         this.rank = toCopy.rank;
     }
-
-    /**
-     * 已接受的任务列表
-     */
-    @JsonIgnore
-    private List<String> taskNames;
-
-    /**
-     * 已标注的图片(ID)列表
-     */
-    private List<String> bareNames;
 
     @JsonProperty
     private int credit;
@@ -59,12 +59,12 @@ public class Worker extends User {
         this.taskNames = taskNames;
     }
 
-    public List<String> getBareNames() {
-        return Optional.ofNullable(bareNames).orElse(new ArrayList<>());
+    public List<String> getBareIDs() {
+        return Optional.ofNullable(bareIDs).orElse(new ArrayList<>());
     }
 
-    public void setBareNames(List<String> bareNames) {
-        this.bareNames = bareNames;
+    public void setBareIDs(List<String> bareIDs) {
+        this.bareIDs = bareIDs;
     }
 
     public int getCredit() {

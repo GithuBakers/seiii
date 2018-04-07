@@ -62,7 +62,7 @@ public class Tag extends Entity<Tag> implements Serializable {
      * 做标注的工人的ID
      */
     @JsonIgnore
-    private String userID;
+    private String workerID;
 
     public Tag() {
 
@@ -76,7 +76,7 @@ public class Tag extends Entity<Tag> implements Serializable {
         this.comment = toCopy.comment;
         this.mark = toCopy.mark;
         this.numberID = toCopy.numberID;
-        this.userID = toCopy.userID;
+        this.workerID = toCopy.workerID;
         this.bareID = toCopy.bareID;
         this.tagID = toCopy.tagID;
     }
@@ -125,12 +125,12 @@ public class Tag extends Entity<Tag> implements Serializable {
         return serialVersionUID;
     }
 
-    public String getUserID() {
-        return userID;
+    public String getWorkerID() {
+        return workerID;
     }
 
-    public void setUserID(String userID) {
-        this.userID = userID;
+    public void setWorkerID(String workerID) {
+        this.workerID = workerID;
     }
 
     /**
