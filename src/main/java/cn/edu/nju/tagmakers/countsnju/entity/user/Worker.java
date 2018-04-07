@@ -2,9 +2,9 @@ package cn.edu.nju.tagmakers.countsnju.entity.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sun.corba.se.spi.orbutil.threadpool.Work;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,8 +28,8 @@ public class Worker extends User {
         this.role = toCopy.getRole();
 
         //工人字段
-        this.taskNames = toCopy.taskNames;
-        this.bareNames = toCopy.bareNames;
+        this.taskNames = new LinkedList<>(toCopy.taskNames);
+        this.bareNames = new LinkedList<>(toCopy.bareNames);
         this.credit = toCopy.credit;
         this.rank = toCopy.rank;
     }

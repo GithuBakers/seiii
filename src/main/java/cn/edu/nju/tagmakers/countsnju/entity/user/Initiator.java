@@ -3,6 +3,7 @@ package cn.edu.nju.tagmakers.countsnju.entity.user;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +27,7 @@ public class Initiator extends User {
         this.role = toCopy.getRole();
 
         //发起者字段
-        this.taskNames = toCopy.taskNames;
+        this.taskNames = new LinkedList<>(toCopy.taskNames);
     }
 
     /**

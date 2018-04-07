@@ -3,6 +3,7 @@ package cn.edu.nju.tagmakers.countsnju.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -46,8 +47,8 @@ public class Task extends Entity<Task>{
         this.result = toCopy.result;
         this.requirement = toCopy.requirement;
         this.isFinished = toCopy.isFinished;
-        this.userMarked = toCopy.userMarked;
-        this.bareMarked = toCopy.bareMarked;
+        this.userMarked = new HashMap<>(toCopy.userMarked);
+        this.bareMarked = new HashMap<>(toCopy.bareMarked);
     }
 
     /**
