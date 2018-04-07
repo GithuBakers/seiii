@@ -16,4 +16,9 @@ public class Worker extends User {
      */
     @JsonIgnore
     private List<String> taskNames;
+
+    /**
+     * 已标注的图片(ID)列表
+     */
+    private List<String> bareNames;
 }
