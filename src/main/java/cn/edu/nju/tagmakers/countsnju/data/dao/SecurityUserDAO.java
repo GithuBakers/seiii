@@ -1,5 +1,6 @@
 package cn.edu.nju.tagmakers.countsnju.data.dao;
 
+import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.filter.SecurityUserFilter;
 import cn.edu.nju.tagmakers.countsnju.security.SecurityUser;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,7 @@ public class SecurityUserDAO extends DAO<SecurityUser,SecurityUserFilter>{
      */
     @Override
     public List<SecurityUser> find(SecurityUserFilter filter) {
+        //这个类中不需要filter
         return null;
     }
 
@@ -27,6 +29,20 @@ public class SecurityUserDAO extends DAO<SecurityUser,SecurityUserFilter>{
      */
     @Override
     protected void setChanges(SecurityUser ori, SecurityUser cur) {
+        //仅仅负责更新密码的操作,默认这里的都是合法的密码
+        ori.setSecurityPassword(cur.getSecurityPassword());
+    }
 
+    public boolean updatePassword(String userID,String oriPassword,String newPassword){
+        String actualOriPassword = findByID(userID).getPassword();
+        //验证输入的原有密码是否正确
+        if(!actualOriPassword.equals(oriPassword)){
+            throw new PermissionDeniedException("密码和原有的密码不符，请重新输入");
+        }
+        SecurityUser user = new SecurityUser();
+        user.setSecurityUserName(userID);
+        user.setSecurityPassword(newPassword);
+        update(user);
+        return true;
     }
 }

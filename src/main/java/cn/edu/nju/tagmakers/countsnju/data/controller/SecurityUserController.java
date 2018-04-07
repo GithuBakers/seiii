@@ -68,4 +68,8 @@ public class SecurityUserController implements DataController<SecurityUser,Secur
     public SecurityUser findByID(String id) {
         return null;
     }
+
+    public boolean updatePassword(String userID, String oriPassword, String newPassword) {
+        return false;
+    }
 }

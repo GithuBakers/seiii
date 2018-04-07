@@ -47,14 +47,14 @@ public class TaskDAO extends DAO<Task,TaskFilter>{
         if(cur.getInitiatorName() != null)ori.setInitiatorName(cur.getInitiatorName());
         if(cur.getCover() != null)ori.setCover(cur.getCover());
         if(cur.getType() != MarkType.DEFAULT)ori.setType(cur.getType());
-        if(cur.getDataSet().size() > 0)ori.setDataSet(cur.getDataSet());
+        if(cur.getDataSet().size() > 0)ori.setDataSet(new ArrayList<>(cur.getDataSet()));
         if(cur.getAim() != 0)ori.setAim(cur.getAim());
         if(cur.getLimit() != 0)ori.setLimit(cur.getLimit());
         if(cur.getReward() != 0)ori.setReward(cur.getReward());
         if(cur.getResult() != null)ori.setResult(cur.getResult());
         if(cur.getRequirement() != null)ori.setRequirement(cur.getRequirement());
         if(cur.getFinished())ori.setFinished(true);
-        if(cur.getUserMarked().size() > 0)ori.setUserMarked(cur.getUserMarked());
-        if(cur.getBareMarked().size() > 0)ori.setBareMarked(cur.getBareMarked());
+        if(cur.getUserMarked().size() > 0)ori.setUserMarked(new ConcurrentHashMap<>(cur.getUserMarked()));
+        if(cur.getBareMarked().size() > 0)ori.setBareMarked(new ConcurrentHashMap<>(cur.getBareMarked()));
     }
 }

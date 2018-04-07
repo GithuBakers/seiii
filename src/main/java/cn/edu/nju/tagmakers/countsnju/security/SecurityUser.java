@@ -7,6 +7,34 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 
 public class SecurityUser extends Entity<SecurityUser> implements UserDetails {
+    public SecurityUser(){
+
+    }
+
+    public SecurityUser(SecurityUser user){
+        this.securityUserName = user.securityUserName;
+        this.securityPassword = user.securityPassword;
+    }
+
+    private String securityUserName;
+    private String securityPassword;
+
+    public String getSecurityUserName() {
+        return securityUserName;
+    }
+
+    public void setSecurityUserName(String securityUserName) {
+        this.securityUserName = securityUserName;
+    }
+
+    public String getSecurityPassword() {
+        return securityPassword;
+    }
+
+    public void setSecurityPassword(String securityPassword) {
+        this.securityPassword = securityPassword;
+    }
+
     /**
      * 获取实体对象的主键
      *
@@ -14,7 +42,7 @@ public class SecurityUser extends Entity<SecurityUser> implements UserDetails {
      */
     @Override
     public String getPrimeKey() {
-        return null;
+        return securityUserName;
     }
 
     /**
@@ -24,7 +52,7 @@ public class SecurityUser extends Entity<SecurityUser> implements UserDetails {
      */
     @Override
     public SecurityUser copy() {
-        return null;
+        return new SecurityUser(this);
     }
 
     /**
@@ -44,7 +72,7 @@ public class SecurityUser extends Entity<SecurityUser> implements UserDetails {
      */
     @Override
     public String getPassword() {
-        return null;
+        return securityPassword;
     }
 
     /**
@@ -54,7 +82,7 @@ public class SecurityUser extends Entity<SecurityUser> implements UserDetails {
      */
     @Override
     public String getUsername() {
-        return null;
+        return securityUserName;
     }
 
     /**
@@ -66,7 +94,7 @@ public class SecurityUser extends Entity<SecurityUser> implements UserDetails {
      */
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     /**
@@ -77,7 +105,7 @@ public class SecurityUser extends Entity<SecurityUser> implements UserDetails {
      */
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     /**
@@ -89,7 +117,7 @@ public class SecurityUser extends Entity<SecurityUser> implements UserDetails {
      */
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     /**
@@ -100,6 +128,6 @@ public class SecurityUser extends Entity<SecurityUser> implements UserDetails {
      */
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }
