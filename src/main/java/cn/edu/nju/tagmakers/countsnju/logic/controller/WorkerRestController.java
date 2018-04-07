@@ -6,10 +6,12 @@ import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerReceivedTaskDetailVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerReceivedTaskVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerTaskDetailVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerTaskVO;
-import cn.edu.nju.tagmakers.countsnju.logic.service.UserService;
+import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
 import cn.edu.nju.tagmakers.countsnju.logic.service.WorkerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import util.SecurityUtility;
 
 import java.util.List;
 
@@ -28,10 +30,10 @@ public class WorkerRestController {
     private WorkerService workerService;
 
 
-    @Autowired
-    public WorkerRestController(WorkerService workerService, UserService userService) {
-        this.workerService = workerService;
 
+    @Autowired
+    public WorkerRestController(WorkerService workerService) {
+        this.workerService = workerService;
     }
 
     /**
@@ -39,8 +41,10 @@ public class WorkerRestController {
      */
     @RequestMapping(value = "/task_list", method = RequestMethod.GET)
     public List<WorkerTaskVO> getTaskList() {
-        //TODO: 查询还在继续的
-        return null;
+        String workerName = SecurityUtility.getUserName(SecurityContextHolder.getContext());
+        TaskFilter filter = new TaskFilter();
+        filter.setFinished(false);
+        return workerService.findWorkerTask(filter, workerName);
     }
 
 
@@ -51,7 +55,8 @@ public class WorkerRestController {
      */
     @RequestMapping(value = "/task/{task_name}", method = RequestMethod.GET)
     public WorkerTaskDetailVO getTaskDetail(@PathVariable(value = "task_name") String taskName) {
-        return workerService.getTaskDetail(taskName);
+        String workerName = SecurityUtility.getUserName(SecurityContextHolder.getContext());
+        return workerService.getTaskDetail(taskName, workerName);
     }
 
 
@@ -62,9 +67,8 @@ public class WorkerRestController {
      */
     @RequestMapping(value = "/task/received_task/{task_name}", method = RequestMethod.POST)
     public boolean receiveTask(@PathVariable(value = "task_name") String taskName) {
-//        SecurityContextHolder.getContext().getAuthentication()
-        //TODO:
-        return false;
+        String workerName = SecurityUtility.getUserName(SecurityContextHolder.getContext());
+        return workerService.receiveTask(taskName, workerName);
     }
 
     /**
@@ -74,9 +78,9 @@ public class WorkerRestController {
      */
     @RequestMapping(value = "/task/received_task/img/{task_name}", method = RequestMethod.GET)
     public List<Bare> getBareList(@PathVariable(value = "task_name") String taskName) {
-//        Worker worker= userService((XXXXUserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getUsername()
-        //TODO:
-        return null;
+        String workerName = SecurityUtility.getUserName(SecurityContextHolder.getContext());
+
+        return workerService.getBares(taskName, workerName);
     }
 
     /**
@@ -90,9 +94,9 @@ public class WorkerRestController {
     public boolean submitImage(@PathVariable(value = "task_name") String taskName,
                                @PathVariable(value = "img_id") String imgID,
                                @RequestBody Image image) {
-        //TODO: add worker name
+        String workerName = SecurityUtility.getUserName(SecurityContextHolder.getContext());
 
-        return false;
+        return workerService.submitTag(image, taskName, workerName);
 
     }
 
@@ -101,16 +105,19 @@ public class WorkerRestController {
      */
     @RequestMapping(value = "/task/received_task", method = RequestMethod.GET)
     public List<WorkerReceivedTaskVO> getReceivedTask() {
-        //TODO:根据worker name筛选
-        return null;
+        String workerName = SecurityUtility.getUserName(SecurityContextHolder.getContext());
+
+        return workerService.getReceivedTasks(workerName);
     }
 
     /**
      * 获取某一已接受任务的详细信息
      */
     @RequestMapping(value = "/task/received_task/{task_name}", method = RequestMethod.GET)
-    public WorkerReceivedTaskDetailVO getReceivedTaskDetail() {
-        return null;
+    public WorkerReceivedTaskDetailVO getReceivedTaskDetail(@PathVariable String taskName) {
+        String workerName = SecurityUtility.getUserName(SecurityContextHolder.getContext());
+
+        return workerService.getReceivedTaskDetails(taskName, workerName);
     }
 
 

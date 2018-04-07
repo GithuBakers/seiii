@@ -44,11 +44,12 @@ public class InitiatorService {
      * @param initiatorName 企图结束任务的用户名
      */
     public Task finishTask(String taskName, String initiatorName) {
-        if (!taskService.findByID(taskName).equals(initiatorName)) {
+        if (!isOwner(taskName, initiatorName)) {
             throw new PermissionDeniedException("这不是你的任务");
         }
         return taskService.finishTask(taskName);
     }
+
 
     /**
      * 按条件查找任务列表
@@ -70,12 +71,15 @@ public class InitiatorService {
      * @param initiatorName 发起者名
      */
     public Task findTaskByName(String taskName, String initiatorName) {
-        Task ret = taskService.findByID(taskName);
-        if (!ret.getInitiatorName().equals(initiatorName)) {
+
+        if (!isOwner(taskName, initiatorName)) {
             throw new PermissionDeniedException("这不是你创建的任务！");
         }
-        return ret;
+        return taskService.findByID(taskName);
     }
 
+    private boolean isOwner(String taskName, String initiatorName) {
+        return taskService.findByID(taskName).getInitiatorName().equals(initiatorName);
+    }
 
 }
