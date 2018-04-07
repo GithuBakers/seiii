@@ -1,39 +1,62 @@
 package cn.edu.nju.tagmakers.countsnju.security;
 
 import cn.edu.nju.tagmakers.countsnju.entity.Entity;
+import cn.edu.nju.tagmakers.countsnju.entity.user.RoleAdmin;
+import cn.edu.nju.tagmakers.countsnju.entity.user.RoleWorker;
+import cn.edu.nju.tagmakers.countsnju.entity.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 public class SecurityUser extends Entity<SecurityUser> implements UserDetails {
+    /**********************************
+
+     构造器
+
+    **********************************/
     public SecurityUser(){
 
+    }
+
+    //下面两个用于更新秘密吗的方法
+    public SecurityUser(String securityUserName,String securityPassword,List<GrantedAuthority> authorities){
+        this.securityUserName = securityUserName;
+        this.securityPassword = securityPassword;
+        this.authorities = new ArrayList<>(authorities);
     }
 
     public SecurityUser(SecurityUser user){
         this.securityUserName = user.securityUserName;
         this.securityPassword = user.securityPassword;
+        this.authorities = new ArrayList<>(user.authorities);
+    }
+
+    //用于add方法新建一个SecurityUser
+    public SecurityUser(User user) {
+        authorities = new ArrayList<>();
+        securityPassword = user.getPassword();
+        securityUserName = user.getUserID();
+
+        switch (user.getRole()) {
+            case ADMIN:
+                authorities.add(new RoleAdmin());
+                break;
+            case WORKER:
+                authorities.add(new RoleWorker());
+                break;
+            case INITIATOR:
+                authorities.add(new RoleWorker());
+                break;
+        }
     }
 
     private String securityUserName;
     private String securityPassword;
-
-    public String getSecurityUserName() {
-        return securityUserName;
-    }
-
-    public void setSecurityUserName(String securityUserName) {
-        this.securityUserName = securityUserName;
-    }
-
-    public String getSecurityPassword() {
-        return securityPassword;
-    }
-
-    public void setSecurityPassword(String securityPassword) {
-        this.securityPassword = securityPassword;
-    }
+    private List<GrantedAuthority> authorities;
 
     /**
      * 获取实体对象的主键
@@ -62,7 +85,7 @@ public class SecurityUser extends Entity<SecurityUser> implements UserDetails {
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return authorities;
     }
 
     /**
