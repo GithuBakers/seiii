@@ -13,6 +13,51 @@ const noProxy = process.env.NO_PROXY === 'true';
 // 代码中会兼容本地 service mock 以及部署站点的静态数据
 const proxy = {
   // 支持值为 Object 和 Array
+
+  'POST /v2/api/user': {
+    $desc: '注册',
+    $params: {
+      user_name: {
+        desc: '用户名',
+        exp: 'kunduin',
+      },
+      role: {
+        desc: '身份(worker, admin, initiator)',
+        exp: 'worker',
+      },
+      password: {
+        desc: '加密后',
+        exp: 'fefjafreajfeaofa',
+      },
+      avator: {
+        desc:'头像',
+        exp:"https://fjioagjreafjea"
+      },
+      nick_name: {
+        desc:"昵称",
+        exp:"kunduin_nick"
+      },
+    },
+    $body:true
+  },
+  'POST /v2/api/tokens': {
+    $desc: '登录',
+    $params: {
+      user_name: {
+        desc: '用户名',
+        exp: 'kunduin',
+      },
+      password: {
+        desc: '加密后',
+        exp: 'fefjafreajfeaofa',
+      },
+    },
+    $body:{
+      "role":"work",
+      "token":"efwwsbgadsf"
+    }
+  },
+
   'GET /api/currentUser': {
     $desc: '获取当前用户接口',
     $params: {
@@ -137,4 +182,5 @@ const proxy = {
   },
 };
 
-export default (noProxy ? {} : delay(proxy, 1000));
+// export default (noProxy ? {} : delay(proxy, 1000));
+export default format(proxy);
