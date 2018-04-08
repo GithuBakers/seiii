@@ -17,7 +17,7 @@ import java.io.Serializable;
  * Last modified on 04/06/2018
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public abstract class User extends Entity<User> implements Serializable {
+public class User extends Entity<User> implements Serializable {
     private static final long serialVersionUID = 70L;
 
     @JsonProperty(value = "user_name")
@@ -91,5 +91,7 @@ public abstract class User extends Entity<User> implements Serializable {
      * @return 新的对象
      */
     @Override
-    public abstract User copy();
+    public User copy() {
+        throw new UnsupportedOperationException();
+    }
 }

@@ -53,8 +53,12 @@ public class Worker extends User {
         this.role = toCopy.getRole();
 
         //工人字段
-        this.taskNames = new LinkedList<>(toCopy.taskNames);
-        this.bareIDs = new LinkedList<>(toCopy.bareIDs);
+        if (toCopy.taskNames != null) {
+            this.taskNames = new LinkedList<>(toCopy.taskNames);
+        }
+        if (toCopy.bareIDs != null) {
+            this.bareIDs = new LinkedList<>(toCopy.bareIDs);
+        }
         this.credit = toCopy.credit;
         this.rank = toCopy.rank;
     }

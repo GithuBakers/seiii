@@ -50,8 +50,12 @@ public class Task extends Entity<Task> {
         this.result = toCopy.result;
         this.requirement = toCopy.requirement;
         this.isFinished = toCopy.isFinished;
-        this.userMarked = new HashMap<>(toCopy.userMarked);
-        this.bareMarked = new HashMap<>(toCopy.bareMarked);
+        if (toCopy.userMarked != null) {
+            this.userMarked = new HashMap<>(toCopy.userMarked);
+        }
+        if (toCopy.bareMarked != null) {
+            this.bareMarked = new HashMap<>(toCopy.bareMarked);
+        }
     }
 
     /**

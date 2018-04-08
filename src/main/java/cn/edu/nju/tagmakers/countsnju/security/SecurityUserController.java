@@ -49,6 +49,7 @@ public class SecurityUserController implements UserDetailsService {
 
     @RequestMapping(value = "/user/new_user", method = RequestMethod.POST)
     public boolean signUp(@RequestBody User user) {
+        user.setPassword("{noop}" + user.getPassword());
         SecurityUser securityUser = new SecurityUser(user);
         securityUserDAO.add(securityUser);
         switch (user.getRole()) {
