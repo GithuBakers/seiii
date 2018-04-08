@@ -1,6 +1,5 @@
 package util;
 
-import cn.edu.nju.tagmakers.countsnju.security.SecurityUser;
 import org.springframework.security.core.context.SecurityContext;
 
 /**
@@ -17,6 +16,8 @@ public class SecurityUtility {
      * @param context 安全上下文
      */
     public static String getUserName(SecurityContext context) {
-        return ((SecurityUser) context.getAuthentication().getDetails()).getUsername();
+
+        return (String) context.getAuthentication().getPrincipal();
+
     }
 }

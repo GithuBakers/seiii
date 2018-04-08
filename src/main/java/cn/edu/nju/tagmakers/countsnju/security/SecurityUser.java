@@ -4,6 +4,7 @@ import cn.edu.nju.tagmakers.countsnju.entity.Entity;
 import cn.edu.nju.tagmakers.countsnju.entity.user.RoleAdmin;
 import cn.edu.nju.tagmakers.countsnju.entity.user.RoleWorker;
 import cn.edu.nju.tagmakers.countsnju.entity.user.User;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -20,18 +21,10 @@ import java.util.List;
  */
 
 public class SecurityUser extends Entity<SecurityUser> implements UserDetails {
-    /**********************************
-
-     构造器
-
-     *********************************/
-
-    //下面两个用于更新秘密吗的方法
-    public SecurityUser(String securityUserName, String securityPassword, Collection<? extends GrantedAuthority> authorities){
-        this.securityUserName = securityUserName;
-        this.securityPassword = securityPassword;
-        this.authorities = new ArrayList<>(authorities);
-    }
+    @JsonProperty(value = "user_name")
+    private String securityUserName;
+    @JsonProperty(value = "password")
+    private String securityPassword;
 
     public SecurityUser(SecurityUser user){
         this.securityUserName = user.securityUserName;
@@ -58,8 +51,22 @@ public class SecurityUser extends Entity<SecurityUser> implements UserDetails {
         }
     }
 
-    private String securityUserName;
-    private String securityPassword;
+    public SecurityUser() {
+    }
+
+    /**********************************
+
+     构造器
+
+     *********************************/
+
+
+    //下面两个用于更新秘密吗的方法
+    public SecurityUser(String securityUserName, String securityPassword, Collection<? extends GrantedAuthority> authorities) {
+        this.securityUserName = securityUserName;
+        this.securityPassword = securityPassword;
+        this.authorities = new ArrayList<>(authorities);
+    }
     private List<GrantedAuthority> authorities;
 
     /**
