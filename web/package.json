@@ -1,5 +1,5 @@
 {
-  "name": "ant-design-pro",
+  "name": "COUNTS",
   "version": "1.2.1",
   "description": "An out-of-box UI solution for enterprise applications",
   "private": true,
@@ -94,8 +94,7 @@
       "prettier --wirter",
       "git add"
     ],
-    "**/*.{js,jsx}": "lint-staged:js",
-    "**/*.less": "stylelint --syntax less"
+    "**/*.{js,jsx}": "lint-staged:js"
   },
   "engines": {
     "node": ">=8.0.0"

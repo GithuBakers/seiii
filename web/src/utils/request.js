@@ -67,11 +67,36 @@ export default function request(url, options) {
 
   return fetch(url, newOptions)
     .then(checkStatus)
-    .then(response => {
+    .then(async response => {
       if (newOptions.method === 'DELETE' || response.status === 204) {
         return response.text();
       }
-      return response.json();
+
+      const data = await response.json();
+      const ret = {
+        token: undefined,
+        currentAuthority: undefined,
+        status: undefined,
+        ...data,
+      };
+
+      if (response.headers.get('Authorization')) {
+        ret.token = response.headers.get('Authorization');
+      }
+      if (response.headers.get('Roles')) {
+        ret.currentAuthority = response.headers.get('Roles');
+      }
+      if (url.includes('/login')) {
+        if (ret.status === 403) {
+          ret.status = 'error';
+        } else {
+          ret.status = 'ok';
+        }
+      }
+
+      console.log('ret', ret);
+
+      return ret;
     })
     .catch(e => {
       const { dispatch } = store;

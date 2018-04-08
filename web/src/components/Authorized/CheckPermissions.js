@@ -24,6 +24,7 @@ const checkPermissions = (authority, currentAuthority, target, Exception) => {
   if (!authority) {
     return target;
   }
+
   // 数组处理
   if (Array.isArray(authority)) {
     if (authority.indexOf(currentAuthority) >= 0) {
@@ -34,7 +35,17 @@ const checkPermissions = (authority, currentAuthority, target, Exception) => {
 
   // string 处理
   if (typeof authority === 'string') {
-    if (authority === currentAuthority) {
+    if (Array.isArray(currentAuthority)) {
+      let flag = false;
+      currentAuthority.forEach(element => {
+        if (authority === element) {
+          flag = true;
+        }
+      });
+      if (flag) {
+        return target;
+      }
+    } else if (authority === currentAuthority) {
       return target;
     }
     return Exception;

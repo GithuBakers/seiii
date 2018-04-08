@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { routerRedux, Link } from 'dva/router';
 import { Form, Input, Button, Select, Row, Col, Popover, Progress } from 'antd';
 import styles from './Register.less';
+import AvatarUpload from '../../components/AvatarUpload';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -164,6 +165,41 @@ export default class Register extends Component {
       <div className={styles.main}>
         <h3>注册</h3>
         <Form onSubmit={this.handleSubmit}>
+          <Row gutter={8}>
+            <Col span={17}>
+              <FormItem>
+                {getFieldDecorator('mail', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请输入邮箱地址！',
+                    },
+                    {
+                      type: 'email',
+                      message: '邮箱地址格式错误！',
+                    },
+                  ],
+                })(<Input size="large" placeholder="邮箱" />)}
+              </FormItem>
+              <FormItem>
+                {getFieldDecorator('mail', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请输入邮箱地址！',
+                    },
+                    {
+                      type: 'email',
+                      message: '邮箱地址格式错误！',
+                    },
+                  ],
+                })(<Input size="large" placeholder="邮箱" />)}
+              </FormItem>
+            </Col>
+            <Col span={7}>
+              <AvatarUpload />
+            </Col>
+          </Row>
           <FormItem>
             {getFieldDecorator('mail', {
               rules: [

@@ -72,6 +72,32 @@ export const getRouterData = app => {
     '/': {
       component: dynamicWrapper(app, ['user', 'login'], () => import('../layouts/BasicLayout')),
     },
+    '/worker/my-task': {
+      component: dynamicWrapper(app, ['form'], () => import('../routes/Worker/MyTask')),
+    },
+    '/worker/setting': {
+      component: dynamicWrapper(app, ['form'], () => import('../routes/Worker/Setting')),
+    },
+    '/worker/task-list': {
+      component: dynamicWrapper(app, ['form'], () => import('../routes/Worker/TaskList')),
+    },
+    '/worker/worker-profile': {
+      component: dynamicWrapper(app, ['form'], () => import('../routes/Worker/WorkerProfile')),
+    },
+    '/initiator/initiator-Profile': {
+      component: dynamicWrapper(app, ['form'], () =>
+        import('../routes/Initiator/InitiatorProfile')
+      ),
+    },
+    '/initiator/new-task': {
+      component: dynamicWrapper(app, ['form'], () => import('../routes/Initiator/NewTask')),
+    },
+    '/initiator/setting': {
+      component: dynamicWrapper(app, ['form'], () => import('../routes/Initiator/Setting')),
+    },
+    '/initiator/my-task': {
+      component: dynamicWrapper(app, ['form'], () => import('../routes/Initiator/MyTask')),
+    },
     '/dashboard/analysis': {
       component: dynamicWrapper(app, ['chart'], () => import('../routes/Dashboard/Analysis')),
     },

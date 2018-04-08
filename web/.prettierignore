@@ -2,3 +2,4 @@
 **/*.svg
 package.json
 index.ejs
+*.less

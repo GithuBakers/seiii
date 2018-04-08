@@ -4,27 +4,78 @@ const menuData = [
   {
     name: 'dashboard',
     icon: 'dashboard',
-    path: 'dashboard',
-    children: [
-      {
-        name: '分析页',
-        path: 'analysis',
-      },
-      {
-        name: '监控页',
-        path: 'monitor',
-      },
-      {
-        name: '工作台',
-        path: 'workplace',
-        // hideInBreadcrumb: true,
-        // hideInMenu: true,
-      },
-    ],
+    path: 'dashboard/analysis',
+    // children: [
+    //   {
+    //     name: '分析页',
+    //     path: 'analysis',
+    //   },
+    //   {
+    //     name: '监控页',
+    //     path: 'monitor',
+    //   },
+    //   {
+    //     name: '工作台',
+    //     path: 'workplace',
+    //     // hideInBreadcrumb: true,
+    //     // hideInMenu: true,
+    //   },
+    // ],
   },
+  {
+    name: '任务市场',
+    icon: 'appstore-o',
+    authority: 'WORKER',
+    path: 'worker/task-list',
+  },
+  {
+    name: '我的任务',
+    icon: 'profile',
+    authority: 'WORKER',
+    path: 'worker/my-task',
+  },
+  {
+    name: '任务列表',
+    icon: 'profile',
+    authority: 'INITIATOR',
+    path: 'initiator/my-task',
+  },
+  {
+    name: '新增任务',
+    icon: 'form',
+    authority: 'INITIATOR',
+    path: 'initiator/new-task',
+  },
+
+  {
+    name: '我的信息',
+    icon: 'user',
+    authority: 'WORKER',
+    path: 'worker/worker-profile',
+  },
+  {
+    name: '我的信息',
+    icon: 'user',
+    authority: 'INITIATOR',
+    path: 'initiator/initiator-profile',
+  },
+  {
+    name: '个人设置',
+    icon: 'setting',
+    authority: 'WORKER',
+    path: 'worker/setting',
+  },
+  {
+    name: '个人设置',
+    icon: 'setting',
+    authority: 'INITIATOR',
+    path: 'initiator/setting',
+  },
+
   {
     name: '表单页',
     icon: 'form',
+    authority: 'ADMIN',
     path: 'form',
     children: [
       {
@@ -37,7 +88,7 @@ const menuData = [
       },
       {
         name: '高级表单',
-        authority: 'admin',
+        authority: 'ADMIN',
         path: 'advanced-form',
       },
     ],
@@ -45,6 +96,7 @@ const menuData = [
   {
     name: '列表页',
     icon: 'table',
+    authority: 'ADMIN',
     path: 'list',
     children: [
       {
@@ -81,6 +133,7 @@ const menuData = [
   },
   {
     name: '详情页',
+    authority: 'ADMIN',
     icon: 'profile',
     path: 'profile',
     children: [
@@ -91,12 +144,13 @@ const menuData = [
       {
         name: '高级详情页',
         path: 'advanced',
-        authority: 'admin',
+        authority: 'ADMIN',
       },
     ],
   },
   {
     name: '结果页',
+    authority: 'ADMIN',
     icon: 'check-circle-o',
     path: 'result',
     children: [
@@ -113,6 +167,7 @@ const menuData = [
   {
     name: '异常页',
     icon: 'warning',
+    authority: 'ADMIN',
     path: 'exception',
     children: [
       {
@@ -138,7 +193,8 @@ const menuData = [
     name: '账户',
     icon: 'user',
     path: 'user',
-    authority: 'guest',
+    authority: 'ADMIN',
+
     children: [
       {
         name: '登录',

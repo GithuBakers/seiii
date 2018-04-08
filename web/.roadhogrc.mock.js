@@ -71,28 +71,31 @@ const proxy = {
   'GET /api/fake_chart_data': getFakeChartData,
   'GET /api/profile/basic': getProfileBasicData,
   'GET /api/profile/advanced': getProfileAdvancedData,
-  'POST /api/login/account': (req, res) => {
-    const { password, userName, type } = req.body;
-    if (password === '888888' && userName === 'admin') {
+  'POST /api/v2/login': (req, res) => {
+    const { password, user_name } = req.body;
+    if (password === '888888' && user_name === 'admin') {
+      res.append('Roles', ['ADMIN']);
       res.send({
-        status: 'ok',
-        type,
-        currentAuthority: 'admin',
+        status: 200,
       });
       return;
     }
-    if (password === '123456' && userName === 'user') {
+    if (password === '1' && user_name === 'worker') {
+      res.append('Roles', ['WORKER']);
       res.send({
-        status: 'ok',
-        type,
-        currentAuthority: 'user',
+        status: 200,
+      });
+      return;
+    }
+    if (password === '1' && user_name === 'initiator') {
+      res.append('Roles', ['INITIATOR']);
+      res.send({
+        status: 200,
       });
       return;
     }
     res.send({
-      status: 'error',
-      type,
-      currentAuthority: 'guest',
+      status: 403,
     });
   },
   'POST /api/register': (req, res) => {
