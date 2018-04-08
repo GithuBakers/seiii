@@ -17,6 +17,14 @@ public class SecurityUserDAO extends DAO<SecurityUser,SecurityUserFilter>{
         read();
     }
 
+    @Override
+    public synchronized SecurityUser add(SecurityUser obj) {
+        if (findByID(obj.getPrimeKey()) != null) {
+            throw new PermissionDeniedException("对不起，该用户已注册");
+        }
+        return super.add(obj);
+    }
+
     /**
      * 复合查找符合条件的对象
      *
