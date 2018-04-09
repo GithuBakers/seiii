@@ -6,10 +6,8 @@ import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.io.Serializable;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -33,7 +31,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * Modified on 04/07/2018
  */
 
-public class Task extends Entity<Task> {
+public class Task extends Entity<Task> implements Serializable {
+    private static final long serialVersionUID = 80L;
+
     public Task() {
 
     }
@@ -170,7 +170,7 @@ public class Task extends Entity<Task> {
     }
 
     public List<Bare> getDataSet() {
-        return dataSet;
+        return Optional.ofNullable(dataSet).orElse(new ArrayList<>());
     }
 
     public void setDataSet(List<Bare> dataSet) {

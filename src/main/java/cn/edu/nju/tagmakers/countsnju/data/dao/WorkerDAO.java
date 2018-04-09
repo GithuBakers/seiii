@@ -10,6 +10,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Description:
+ * 工人类的DAO
+ *
+ * @author wym
+ * Created on 04/06/2018
+ * <p>
+ * Update:
+ * @author wym
+ * Last modified on
+ */
 @Component
 public class WorkerDAO extends DAO<Worker,WorkerFilter>{
     public WorkerDAO(){
@@ -45,7 +56,7 @@ public class WorkerDAO extends DAO<Worker,WorkerFilter>{
         if(cur.getAvatar() != null)ori.setAvatar(cur.getAvatar());
         if(cur.getNickName() != null)ori.setNickName(cur.getNickName());
         if(cur.getPassword() != null)ori.setPassword(cur.getPassword());
-        if(cur.getRole() != Role.DEFAULT)ori.setRole(cur.getRole());
+//        if(cur.getRole() != Role.DEFAULT)ori.setRole(cur.getRole());
 
         if (cur.getBareIDs().size() > 0) ori.setBareIDs(new ArrayList<>(cur.getBareIDs()));
         if(cur.getTaskNames().size() > 0)ori.setTaskNames(new ArrayList<>(cur.getTaskNames()));

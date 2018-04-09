@@ -37,6 +37,5 @@ public class TaskVOBasicInformation {
         taskName = task.getTaskName();
         cover = task.getCover();
         type = task.getType();
-        //TODO;
     }
 }

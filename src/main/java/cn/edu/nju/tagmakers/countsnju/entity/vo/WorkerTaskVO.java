@@ -26,6 +26,7 @@ public class WorkerTaskVO {
     private int reward;
 
     public WorkerTaskVO(Task task) {
-        //TODO
+        taskVOBasicInformation = new TaskVOBasicInformation(task);
+        reward = task.getReward();
     }
 }

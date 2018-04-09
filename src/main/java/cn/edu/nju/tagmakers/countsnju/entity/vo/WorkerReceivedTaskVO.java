@@ -57,6 +57,5 @@ public class WorkerReceivedTaskVO {
                 isFinished = true;
             }
         }
-        //TODO;
     }
 }

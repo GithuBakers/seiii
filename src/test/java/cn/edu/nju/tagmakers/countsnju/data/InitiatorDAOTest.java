@@ -1,4 +1,4 @@
-package cn.edu.nju.tagmakers.countsnju;
+package cn.edu.nju.tagmakers.countsnju.data;
 
 import cn.edu.nju.tagmakers.countsnju.data.dao.InitiatorDAO;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Role;

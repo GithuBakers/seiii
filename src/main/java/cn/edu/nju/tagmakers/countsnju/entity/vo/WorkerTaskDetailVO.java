@@ -41,6 +41,21 @@ public class WorkerTaskDetailVO {
         limit = task.getLimit();
         reward = task.getReward();
         requirement = task.getRequirement();
-        //TODO:
+    }
+
+    public TaskVOBasicInformation getTaskVOBasicInformation() {
+        return taskVOBasicInformation;
+    }
+
+    public int getLimit() {
+        return limit;
+    }
+
+    public int getReward() {
+        return reward;
+    }
+
+    public String getRequirement() {
+        return requirement;
     }
 }

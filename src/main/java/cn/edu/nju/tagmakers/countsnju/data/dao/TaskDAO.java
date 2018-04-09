@@ -1,6 +1,5 @@
 package cn.edu.nju.tagmakers.countsnju.data.dao;
 
-import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Task;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
 import org.springframework.stereotype.Component;
@@ -10,6 +9,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Description:
+ * 任务类的DAO
+ *
+ * @author wym
+ * Created on 04/06/2018
+ * <p>
+ * Update: 修改枚举类的判断
+ * @author wym
+ * Last modified on 04/08/2018
+ */
 @Component
 public class TaskDAO extends DAO<Task,TaskFilter>{
     public TaskDAO(){
@@ -42,11 +52,10 @@ public class TaskDAO extends DAO<Task,TaskFilter>{
      */
     @Override
     protected void setChanges(Task ori, Task cur) {
-        //todo:这里是否要做int类型的默认值
         if(cur.getTaskName() != null)ori.setTaskName(cur.getTaskName());
         if(cur.getInitiatorName() != null)ori.setInitiatorName(cur.getInitiatorName());
         if(cur.getCover() != null)ori.setCover(cur.getCover());
-        if(cur.getType() != MarkType.DEFAULT)ori.setType(cur.getType());
+        if (cur.getType() != null) ori.setType(cur.getType());
         if(cur.getDataSet().size() > 0)ori.setDataSet(new ArrayList<>(cur.getDataSet()));
         if(cur.getAim() != 0)ori.setAim(cur.getAim());
         if(cur.getLimit() != 0)ori.setLimit(cur.getLimit());
