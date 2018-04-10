@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -62,17 +61,19 @@ public class WorkerService {
     }
 
     /**
-     * 工人查看的任务列表(还未结束 && 还未达到上限
+     * 工人查看的任务列表(还未结束 && 还未接受
      *
      * @param taskFilter 筛选条件
      */
     public List<WorkerTaskVO> findWorkerTask(TaskFilter taskFilter, String workerName) {
 
         return taskService.findTask(taskFilter).stream()
-                .filter(task -> Optional.ofNullable(
-                        task.getUserMarked().get(workerName))
-                        .orElse(0)
-                        < task.getLimit())
+                .filter(task -> {
+                    Worker worker = workerController.findByID(workerName);
+                    //还未接受任务
+                    return !worker.getTaskIDs().contains(task.getPrimeKey());
+
+                })
                 .map(WorkerTaskVO::new)
                 .collect(Collectors.toList());
     }
@@ -112,12 +113,12 @@ public class WorkerService {
                 || toReceive.getUserMarked().get(workerName) < toReceive.getLimit()) {
 
             //将任务加入工人的任务列表
-            List<String> taskList = workerController.findByID(workerName).getTaskNames();
+            List<String> taskList = workerController.findByID(workerName).getTaskIDs();
             if (!taskList.contains(taskID)) {
                 taskList.add(taskID);
             }
             Worker worker = workerController.findByID(workerName);
-            worker.setTaskNames(taskList);
+            worker.setTaskIDs(taskList);
             workerController.update(worker);
 
             //在任务的userMarked中添加此工人
@@ -195,7 +196,7 @@ public class WorkerService {
 
     public List<WorkerReceivedTaskVO> getReceivedTasks(String workerName) {
         Worker worker = workerController.findByID(workerName);
-        return workerController.findByID(workerName).getTaskNames().parallelStream()
+        return workerController.findByID(workerName).getTaskIDs().parallelStream()
                 .map(taskService::findByID)
                 .map(task -> new WorkerReceivedTaskVO(task, worker))
                 .collect(Collectors.toList());
@@ -205,7 +206,7 @@ public class WorkerService {
     public WorkerReceivedTaskDetailVO getReceivedTaskDetails(String taskID, String workerName) {
         Task task = taskService.findByID(taskID);
         Worker worker = workerController.findByID(workerName);
-        if (!worker.getTaskNames().contains(taskID)) {
+        if (!worker.getTaskIDs().contains(taskID)) {
             throw new PermissionDeniedException("这不是你的任务！");
         }
         return new WorkerReceivedTaskDetailVO(task, worker);

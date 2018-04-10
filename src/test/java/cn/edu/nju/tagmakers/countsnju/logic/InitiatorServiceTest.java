@@ -10,22 +10,20 @@ import cn.edu.nju.tagmakers.countsnju.entity.vo.InitiatorTaskVO;
 import cn.edu.nju.tagmakers.countsnju.exception.NotFoundException;
 import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
-import cn.edu.nju.tagmakers.countsnju.logic.service.TaskService;
 import cn.edu.nju.tagmakers.countsnju.logic.service.InitiatorService;
+import cn.edu.nju.tagmakers.countsnju.logic.service.TaskService;
 import cn.edu.nju.tagmakers.countsnju.security.SecurityUserController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 @ContextConfiguration(classes = CountsnjuApplication.class)
 @SpringBootTest
@@ -42,7 +40,7 @@ public class InitiatorServiceTest extends AbstractTestNGSpringContextTests {
     private Initiator testInitiator;
     private Task testTask;
 
-    @BeforeSuite
+    @BeforeClass
     public void setUp() {
         testInitiator = new Initiator();
         testInitiator.setUserID("wym");

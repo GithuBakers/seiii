@@ -1,6 +1,5 @@
 package cn.edu.nju.tagmakers.countsnju.data.dao;
 
-import cn.edu.nju.tagmakers.countsnju.entity.user.Role;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import cn.edu.nju.tagmakers.countsnju.filter.WorkerFilter;
 import org.springframework.stereotype.Component;
@@ -59,7 +58,7 @@ public class WorkerDAO extends DAO<Worker,WorkerFilter>{
 //        if(cur.getRole() != Role.DEFAULT)ori.setRole(cur.getRole());
 
         if (cur.getBareIDs().size() > 0) ori.setBareIDs(new ArrayList<>(cur.getBareIDs()));
-        if(cur.getTaskNames().size() > 0)ori.setTaskNames(new ArrayList<>(cur.getTaskNames()));
+        if (cur.getTaskIDs().size() > 0) ori.setTaskIDs(new ArrayList<>(cur.getTaskIDs()));
         if(cur.getCredit() > 0)ori.setCredit(cur.getCredit());
         if(cur.getRank() > 0)ori.setRank(cur.getRank());
     }
