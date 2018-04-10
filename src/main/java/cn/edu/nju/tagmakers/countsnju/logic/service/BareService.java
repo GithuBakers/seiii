@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
-import util.Counter;
 
 import java.util.List;
 
@@ -44,8 +43,8 @@ public class BareService {
     }
 
     public void addBare(Bare bare) {
-        //todo:记得调用这个方法
-        bare.setId(Counter.getBareCounter());
+        //设置ID交给前端啦
+//        bare.setId(Counter.getBareCounter());
         bareController.add(bare);
     }
 

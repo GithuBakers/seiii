@@ -2,6 +2,7 @@ package cn.edu.nju.tagmakers.countsnju.logic.service;
 
 import cn.edu.nju.tagmakers.countsnju.data.controller.TaskController;
 import cn.edu.nju.tagmakers.countsnju.data.controller.WorkerController;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import cn.edu.nju.tagmakers.countsnju.exception.FileIOException;
@@ -37,18 +38,26 @@ public class TaskService {
 
     private WorkerController workerController;
 
+    private BareService bareService;
+
     @Autowired
-    public TaskService(TaskController taskController, WorkerController workerController) {
+    public TaskService(TaskController taskController, WorkerController workerController, BareService bareService) {
         this.taskController = taskController;
         this.workerController = workerController;
+        this.bareService = bareService;
     }
 
     /**
      * 添加一项新任务
      *
+     * 将数据集的每一项增加至bare
+     *
      * @param task 需要添加的任务
      */
     public void addTask(Task task) {
+        for (Bare bare : task.getDataSet()) {
+            bareService.addBare(bare);
+        }
         taskController.add(task);
     }
 
