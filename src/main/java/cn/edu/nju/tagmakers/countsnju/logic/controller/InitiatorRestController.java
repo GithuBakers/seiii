@@ -88,21 +88,21 @@ public class InitiatorRestController {
     /**
      * 获取某一任务的详情
      *
-     * @param taskName 任务名
+     * @param taskID 任务名
      */
-    @RequestMapping(value = "/task/{task_name}", method = RequestMethod.GET)
-    public Task getTaskByName(@PathVariable(value = "task_name") String taskName) {
+    @RequestMapping(value = "/task/{task_id}", method = RequestMethod.GET)
+    public Task getTaskByName(@PathVariable(value = "task_id") String taskID) {
         String initiatorName = SecurityUtility.getUserName(SecurityContextHolder.getContext());
-        return initiatorService.findTaskByName(taskName, initiatorName);
+        return initiatorService.findTaskByName(taskID, initiatorName);
     }
 
     /**
-     * @param taskName 结束某一任务
+     * @param taskID 结束某一任务
      */
     @RequestMapping(value = "/task/finished_task", method = RequestMethod.POST)
-    public Task finishTask(@RequestBody String taskName) {
+    public Task finishTask(@RequestBody String taskID) {
         String initiatorName = SecurityUtility.getUserName(SecurityContextHolder.getContext());
-        return initiatorService.finishTask(taskName, initiatorName);
+        return initiatorService.finishTask(taskID, initiatorName);
     }
 
 

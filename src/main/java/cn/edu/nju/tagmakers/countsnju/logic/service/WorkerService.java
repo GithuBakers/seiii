@@ -80,10 +80,10 @@ public class WorkerService {
     /**
      * 获取某一任务的详情
      *
-     * @param taskName 任务名
+     * @param taskID 任务名
      */
-    public WorkerTaskDetailVO getTaskDetail(String taskName, String workerName) {
-        Task detail = taskService.findByID(taskName);
+    public WorkerTaskDetailVO getTaskDetail(String taskID, String workerName) {
+        Task detail = taskService.findByID(taskID);
         if (detail.getUserMarked().get(workerName) == null
                 || detail.getUserMarked().get(workerName) < detail.getLimit()) {
             return new WorkerTaskDetailVO(detail);
@@ -102,10 +102,10 @@ public class WorkerService {
      * 在任务的userMarked中添加此工人
      *
      * @param workerName 参与者名
-     * @param taskName   接受的任务名
+     * @param taskID   接受的任务名
      */
-    public boolean receiveTask(String taskName, String workerName) {
-        Task toReceive = taskService.findByID(taskName);
+    public boolean receiveTask(String taskID, String workerName) {
+        Task toReceive = taskService.findByID(taskID);
 
         //查看是否有权限
         if (toReceive.getUserMarked().get(workerName) == null
@@ -113,8 +113,8 @@ public class WorkerService {
 
             //将任务加入工人的任务列表
             List<String> taskList = workerController.findByID(workerName).getTaskNames();
-            if (!taskList.contains(taskName)) {
-                taskList.add(taskName);
+            if (!taskList.contains(taskID)) {
+                taskList.add(taskID);
             }
             Worker worker = workerController.findByID(workerName);
             worker.setTaskNames(taskList);
@@ -133,11 +133,11 @@ public class WorkerService {
     /**
      * 返回工人需要完成的图片
      *
-     * @param taskName   任务名
+     * @param taskID   任务名
      * @param workerName 工人名
      */
-    public List<Bare> getBares(String taskName, String workerName) {
-        return calculateBares(taskService.findByID(taskName),
+    public List<Bare> getBares(String taskID, String workerName) {
+        return calculateBares(taskService.findByID(taskID),
                 workerController.findByID(workerName),
                 10);
     }
@@ -157,11 +157,11 @@ public class WorkerService {
      * 将标记加入数据层
      *
      * @param image      图片
-     * @param taskName   任务名
+     * @param taskID   任务名
      * @param workerName 工人名
      */
-    public boolean submitTag(Image image, String taskName, String workerName) {
-        Task toUpdate = taskService.findByID(taskName);
+    public boolean submitTag(Image image, String taskID, String workerName) {
+        Task toUpdate = taskService.findByID(taskID);
         //在任务的图片列表中将标注次数加一
         //如果缺失，则这是第一次标注
         toUpdate.getBareMarked().putIfAbsent(image.getBare().getId(), 1);
@@ -202,10 +202,10 @@ public class WorkerService {
     }
 
 
-    public WorkerReceivedTaskDetailVO getReceivedTaskDetails(String taskName, String workerName) {
-        Task task = taskService.findByID(taskName);
+    public WorkerReceivedTaskDetailVO getReceivedTaskDetails(String taskID, String workerName) {
+        Task task = taskService.findByID(taskID);
         Worker worker = workerController.findByID(workerName);
-        if (!worker.getTaskNames().contains(taskName)) {
+        if (!worker.getTaskNames().contains(taskID)) {
             throw new PermissionDeniedException("这不是你的任务！");
         }
         return new WorkerReceivedTaskDetailVO(task, worker);
