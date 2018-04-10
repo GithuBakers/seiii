@@ -105,7 +105,7 @@ public class WorkerServiceTest extends AbstractTestNGSpringContextTests {
         TaskFilter filter = new TaskFilter();
         filter.setFinished(false);
         filter.setInitiatorName("wym");
-        assertTrue(workerService.findWorkerTask(filter, randomizedID).size() > 0);
+        assertTrue(workerService.findWorkerTask(filter, randomizedID) != null);
     }
 
     @Test
@@ -157,7 +157,7 @@ public class WorkerServiceTest extends AbstractTestNGSpringContextTests {
         assertTrue(success);
     }
 
-    @Test
+    @Test(dependsOnMethods = "receiveTaskTest1")
     public void getDetailTest() {
         WorkerReceivedTaskDetailVO vo = workerService.getReceivedTaskDetails(testTask.getTaskName(), testWorker.getUserID());
         assertEquals(vo.getLimit(), 10);
@@ -167,7 +167,7 @@ public class WorkerServiceTest extends AbstractTestNGSpringContextTests {
     //在工人提交修改后查询
     public void getBareTest() {
         List<Bare> list = workerService.getBares(testTask.getTaskName(), testWorker.getUserID());
-        assertTrue(list.size() > 0);
+        assertTrue(list != null);
     }
 
     @Test(dependsOnMethods = "receiveTaskTest1")
