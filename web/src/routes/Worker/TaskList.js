@@ -1,77 +1,47 @@
-import React, { PureComponent } from 'react';
-import { connect } from 'dva';
-import {
-  Form,
-  Input,
-  DatePicker,
-  Select,
-  Button,
-  Card,
-  InputNumber,
-  Radio,
-  Icon,
-  Tooltip,
-  Row,
-  Col,
-  List,
-} from 'antd';
+import React, {PureComponent} from 'react';
+import {connect} from 'dva';
+import {Card, DatePicker, Form, Input, List, Select,} from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import styles from './style.less';
-import moment from 'moment/moment';
 
 const FormItem = Form.Item;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 
-@connect(({ loading }) => ({
-  loading: loading.effects['form/submitRegularForm'],
+@connect(({taskMarket, loading}) => ({
+  taskMarket,
+  loading: loading.effects['taskMarket/submitRegularForm'],
 }))
-@Form.create()
 export default class BasicForms extends PureComponent {
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         this.props.dispatch({
-          type: 'form/submitRegularForm',
-          payload: values,
+          type: 'taskMarket/fetchTaskList',
         });
       }
     });
   };
   render() {
-    const cardList = list ? (
+
+    const {taskList, selectedTask} = this.props.taskMarket;
+    const cardList = taskList ? (
       <List
         rowKey="id"
         loading={loading}
         grid={{ gutter: 24, xl: 4, lg: 3, md: 3, sm: 2, xs: 1 }}
-        dataSource={list}
+        dataSource={taskList}
         renderItem={item => (
           <List.Item>
             <Card
               className={styles.card}
               hoverable
-              cover={<img alt={item.title} src={item.cover} />}
+              cover={<img alt={item.cover} src={item.cover}/>}
             >
               <Card.Meta
-                title={<a href="#">{item.title}</a>}
-                description={<Ellipsis lines={2}>{item.subDescription}</Ellipsis>}
-              />
-              <div className={styles.cardItemContent}>
-                <span>{moment(item.updatedAt).fromNow()}</span>
-                <div className={styles.avatarList}>
-                  <AvatarList size="mini">
-                    {item.members.map((member, i) => (
-                      <AvatarList.Item
-                        key={`${item.id}-avatar-${i}`}
-                        src={member.avatar}
-                        tips={member.name}
-                      />
-                    ))}
-                  </AvatarList>
-                </div>
-              </div>
+                title={<a href="#">{item.task_name}</a>}/>
             </Card>
           </List.Item>
         )}
