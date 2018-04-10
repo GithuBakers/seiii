@@ -23,6 +23,7 @@ import {
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 import styles from './MyTask.less';
+import { routerRedux } from 'dva/router';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -111,16 +112,6 @@ export default class MyTask extends PureComponent {
       </div>
     );
 
-    const menu = (
-      <Menu>
-        <Menu.Item>
-          <a>编辑</a>
-        </Menu.Item>
-        <Menu.Item>
-          <a>删除</a>
-        </Menu.Item>
-      </Menu>
-    );
 
     const deleteTask = async taskName => {
       // await this.props.dispatch({
@@ -236,7 +227,15 @@ export default class MyTask extends PureComponent {
               bodyStyle={{ padding: '0 32px 40px 32px' }}
               extra={extraContent}
             >
-              <Button type="dashed" style={{ width: '100%', marginBottom: 8 }} icon="plus">
+              <Button
+                onClick={() => this.props.dispatch(
+                  routerRedux.push({
+                  pathname: '/initiator/new-task',
+                }))}
+                type="dashed"
+                style={{ width: '100%', marginBottom: 8 }}
+                icon="plus"
+              >
                 添加
               </Button>
               <List

@@ -5,7 +5,11 @@
   margin-bottom: -24px;
 
   .card {
+    overflow: hidden;
     :global {
+      .ant-card{
+        overflow: hidden;
+      }
       .ant-card-meta-title {
         margin-bottom: 4px;
         & > a {
@@ -39,9 +43,9 @@
     & > span {
       color: @text-color-secondary;
       flex: 1;
-      font-size: 12px;
+      font-size: 18px;
     }
-    .avatarList {
+    .tag {
       flex: 0 1 auto;
     }
   }
