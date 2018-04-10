@@ -1,7 +1,6 @@
 package cn.edu.nju.tagmakers.countsnju.data.dao;
 
 import cn.edu.nju.tagmakers.countsnju.entity.user.Task;
-import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
 import org.springframework.stereotype.Component;
 
@@ -42,7 +41,7 @@ public class TaskDAO extends DAO<Task,TaskFilter>{
             taskList = new ArrayList<>(map.values());
             return taskList;
         }
-        return null;
+        throw new UnsupportedOperationException("小温来写代码啦！！！！");
     }
 
     /**

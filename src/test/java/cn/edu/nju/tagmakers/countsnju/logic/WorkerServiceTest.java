@@ -20,11 +20,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static org.testng.Assert.*;
 
@@ -44,11 +45,13 @@ public class WorkerServiceTest extends AbstractTestNGSpringContextTests {
     private Task testTask;
     private Bare bare1;
     private Bare bare2;
+    private String randomizedID;
 
-    @BeforeSuite
+    @BeforeClass
     public void setUp() {
         testWorker = new Worker();
-        testWorker.setUserID("1");
+        randomizedID = randomizedID + new Random(System.currentTimeMillis()).nextInt() + "";
+        testWorker.setUserID(randomizedID);
         testWorker.setNickName("拔丝地瓜");
         testWorker.setRole(Role.WORKER);
         testWorker.setPassword("123");
@@ -56,22 +59,23 @@ public class WorkerServiceTest extends AbstractTestNGSpringContextTests {
         testWorker.setRank(1);
 
         bare1 = new Bare();
-        bare1.setId("图1");
+        bare1.setId("图1" + new Random(System.currentTimeMillis()).nextInt() + "");
         bare2 = new Bare();
-        bare2.setId("图2");
+        bare2.setId("图2" + new Random(System.currentTimeMillis()).nextInt() + "");
         List<Bare> dataSet = new ArrayList<>();
         dataSet.add(bare1);
         dataSet.add(bare2);
 
         testTask = new Task();
-        testTask.setTaskName("TaskService for test");
+        testTask.setTaskID(randomizedID);
+        testTask.setTaskName(randomizedID);
         testTask.setType(MarkType.DESC);
         testTask.setAim(100);
         testTask.setFinished(false);
-        testTask.setLimit(2);
+        testTask.setLimit(10);
         testTask.setCover("no cover");
         testTask.setReward(10);
-        testTask.setInitiatorName("xxz");
+        testTask.setInitiatorName(randomizedID);
         testTask.setRequirement("打倒辣鸡翔哲");
         testTask.setResult("no result");
         testTask.setDataSet(dataSet);
@@ -85,7 +89,7 @@ public class WorkerServiceTest extends AbstractTestNGSpringContextTests {
     @Test
     //查找存在的工人
     public void findTest1() {
-        Worker temp = workerService.findWorkerByName("1");
+        Worker temp = workerService.findWorkerByName(randomizedID);
         assertEquals(temp.getNickName(), "拔丝地瓜");
     }
 
@@ -101,31 +105,31 @@ public class WorkerServiceTest extends AbstractTestNGSpringContextTests {
         TaskFilter filter = new TaskFilter();
         filter.setFinished(false);
         filter.setInitiatorName("wym");
-        assertTrue(workerService.findWorkerTask(filter, "1").size() > 0);
+        assertTrue(workerService.findWorkerTask(filter, randomizedID).size() > 0);
     }
 
     @Test
     //正常接受任务
     public void receiveTaskTest1() {
-        workerService.receiveTask("TaskService for test", "1");
+        workerService.receiveTask(randomizedID, randomizedID);
     }
 
     @Test(expectedExceptions = NotFoundException.class)
     //不存在的任务
     public void receiveTaskTest2() {
-        workerService.receiveTask("不存在", "1");
+        workerService.receiveTask("不存在", randomizedID);
     }
 
     @Test(expectedExceptions = NotFoundException.class)
     //不存在的用户接受存在的任务
     public void receiveTaskTest3() {
-        workerService.receiveTask("TaskService for test", "不存在");
+        workerService.receiveTask(randomizedID, "不存在");
     }
 
     @Test(dependsOnMethods = "receiveTaskTest1", expectedExceptions = PermissionDeniedException.class)
     //同一个用户接受重复任务
     public void receiveTaskTest4() {
-        workerService.receiveTask("TaskService for test", "1");
+        workerService.receiveTask(randomizedID, randomizedID);
     }
 
     @Test
@@ -143,8 +147,8 @@ public class WorkerServiceTest extends AbstractTestNGSpringContextTests {
         image1.setType(MarkType.DESC);
         Tag tag1 = new Tag();
         tag1.setBareID("图1");
-        tag1.setTagID("tag 1");
-        tag1.setWorkerID("1");
+        tag1.setTagID("tag 1" + randomizedID);
+        tag1.setWorkerID(randomizedID);
         tag1.setNumberID("01");
         List<Tag> tagList = new ArrayList<>();
         tagList.add(tag1);

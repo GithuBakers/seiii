@@ -10,6 +10,7 @@ import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerReceivedTaskDetailVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerReceivedTaskVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerTaskDetailVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerTaskVO;
+import cn.edu.nju.tagmakers.countsnju.exception.NotFoundException;
 import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -107,15 +109,23 @@ public class WorkerService {
      */
     public boolean receiveTask(String taskID, String workerName) {
         Task toReceive = taskService.findByID(taskID);
-
+        if (toReceive == null) {
+            throw new NotFoundException("没有此任务");
+        }
         //查看是否有权限
         if (toReceive.getUserMarked().get(workerName) == null
                 || toReceive.getUserMarked().get(workerName) < toReceive.getLimit()) {
 
             //将任务加入工人的任务列表
-            List<String> taskList = workerController.findByID(workerName).getTaskIDs();
+            Worker receiver = workerController.findByID(workerName);
+            if (receiver == null) {
+                throw new NotFoundException("没有此任务");
+            }
+            List<String> taskList = receiver.getTaskIDs();
             if (!taskList.contains(taskID)) {
                 taskList.add(taskID);
+            } else {
+                throw new PermissionDeniedException("重复接受某一任务");
             }
             Worker worker = workerController.findByID(workerName);
             worker.setTaskIDs(taskList);
@@ -168,21 +178,28 @@ public class WorkerService {
         Worker worker = workerController.findByID(workerName);
         //在任务的图片列表中将标注次数加一
         //如果缺失，则这是第一次标注
-        toUpdate.getBareMarked().putIfAbsent(image.getBare().getId(), 1);
-        int tmp = toUpdate.getBareMarked().get(image.getBare().getId());
-        tmp++;
-        if (tmp > toUpdate.getLimit()) {
-            throw new PermissionDeniedException("你已经做了足够多了！换个任务试一试吧");
-        }
-        toUpdate.getBareMarked().put(image.getBare().getId(), tmp);
+        updateBareMarked(image, toUpdate);
 
         //将任务列表中工人的标注次数加一
         //如果缺失，则这是第一个标注
-        toUpdate.getUserMarked().putIfAbsent(workerName, 0);
+        updateUserMarked(image, workerName, toUpdate, worker);
+
+        taskService.updateTask(toUpdate);
+        workerController.update(worker);
+
+        List<Tag> tagList = image.getTags();
+        tagList.parallelStream().forEach(tag -> tag.setWorkerID(workerName));
+        tagList.parallelStream().forEach(tagService::addTag);
+        return true;
+    }
+
+    private void updateUserMarked(Image image, String workerName, Task toUpdate, Worker worker) {
+        Map<String, Integer> userMarked = toUpdate.getUserMarked();
+        userMarked.putIfAbsent(workerName, 0);
         //否则增加1
-        int tmp1 = toUpdate.getUserMarked().get(workerName);
+        int tmp1 = userMarked.get(workerName);
         tmp1++;
-        toUpdate.getUserMarked().put(workerName, tmp1);
+        userMarked.put(workerName, tmp1);
         //是否要获得40%的奖励
         if (tmp1 % 10 == 0) {
             int reward = worker.getCredit();
@@ -193,14 +210,19 @@ public class WorkerService {
         List<String> bareIDs = worker.getBareIDs();
         bareIDs.add(image.getBare().getId());
         worker.setBareIDs(bareIDs);
+        toUpdate.setUserMarked(userMarked);
+    }
 
-        taskService.updateTask(toUpdate);
-        workerController.update(worker);
-
-        List<Tag> tagList = image.getTags();
-        tagList.parallelStream().forEach(tag -> tag.setWorkerID(workerName));
-        tagList.parallelStream().forEach(tagService::addTag);
-        return true;
+    private void updateBareMarked(Image image, Task toUpdate) {
+        Map<String, Integer> bareMarked = toUpdate.getBareMarked();
+        bareMarked.putIfAbsent(image.getBare().getId(), 0);
+        int tmp = bareMarked.get(image.getBare().getId());
+        tmp++;
+        if (tmp > toUpdate.getLimit()) {
+            throw new PermissionDeniedException("你已经做了足够多了！换个任务试一试吧");
+        }
+        bareMarked.put(image.getBare().getId(), tmp);
+        toUpdate.setBareMarked(bareMarked);
     }
 
     public List<WorkerReceivedTaskVO> getReceivedTasks(String workerName) {
@@ -233,7 +255,7 @@ public class WorkerService {
         List<Bare> ret = new LinkedList<>();
         //"随机算法"
         for (int i = 0; i < number; i++) {
-            int random = new Random(System.currentTimeMillis()).nextInt() % task.getDataSet().size();
+            int random = Math.abs(new Random(System.currentTimeMillis()).nextInt()) % task.getDataSet().size();
             Bare bare = task.getDataSet().get(random);
             if (!ret.contains(bare) && !worker.getBareIDs().contains(bare.getId())) {
                 ret.add(bare);

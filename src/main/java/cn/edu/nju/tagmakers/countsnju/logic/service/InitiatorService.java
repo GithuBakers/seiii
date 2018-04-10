@@ -100,7 +100,11 @@ public class InitiatorService {
     }
 
     private boolean isOwner(String taskID, String initiatorName) {
-        return taskService.findByID(taskID).getInitiatorName().equals(initiatorName);
+        Task toLookUp = taskService.findByID(taskID);
+        if (toLookUp == null) {
+            throw new PermissionDeniedException("没有此任务！");
+        }
+        return toLookUp.getInitiatorName().equals(initiatorName);
     }
 
 }

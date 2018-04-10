@@ -22,6 +22,7 @@ import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static org.testng.Assert.*;
 
@@ -50,14 +51,15 @@ public class InitiatorServiceTest extends AbstractTestNGSpringContextTests {
         testInitiator.setRole(Role.INITIATOR);
 
         Bare bare1 = new Bare();
-        bare1.setId("图1");
+        bare1.setId("图1" + new Random(System.currentTimeMillis()).nextInt());
         Bare bare2 = new Bare();
-        bare2.setId("图2");
+        bare2.setId("图2" + new Random(System.currentTimeMillis() + 10086).nextInt());
         List<Bare> dataSet = new ArrayList<>();
         dataSet.add(bare1);
         dataSet.add(bare2);
 
         testTask = new Task();
+        testTask.setTaskID(String.valueOf(new Random(System.currentTimeMillis()).nextInt()));
         testTask.setInitiatorName("wym");
         testTask.setTaskName("TaskService for test");
         testTask.setType(MarkType.DESC);
@@ -66,14 +68,18 @@ public class InitiatorServiceTest extends AbstractTestNGSpringContextTests {
         testTask.setLimit(2);
         testTask.setCover("no cover");
         testTask.setReward(10);
-        testTask.setInitiatorName("xxz");
         testTask.setRequirement("打倒辣鸡翔哲");
         testTask.setResult("no result");
         testTask.setDataSet(dataSet);
         testTask.setType(MarkType.DESC);
 
         //先注册
-        securityUserController.signUp(testInitiator);
+        try {
+            securityUserController.signUp(testInitiator);
+        } catch (PermissionDeniedException e) {
+            //如果测试之前跑过了，那么用户重复注册可能会引起异常
+            System.out.println("继续！");
+        }
     }
 
     @Test
@@ -107,6 +113,7 @@ public class InitiatorServiceTest extends AbstractTestNGSpringContextTests {
     //正常更新用户
     public void updateInitiatorTest1() {
         testInitiator.setNickName("巨无霸");
+        initiatorService.update(testInitiator);
         Initiator temp = initiatorService.findInitiatorByName(testInitiator.getUserID());
         assertEquals(temp.getNickName(), "巨无霸");
     }
@@ -118,7 +125,7 @@ public class InitiatorServiceTest extends AbstractTestNGSpringContextTests {
         assertEquals(temp.getResult(), testTask.getResult());
     }
 
-    @Test
+    @Test(expectedExceptions = PermissionDeniedException.class)
     //查找不存在的任务
     public void findTaskTest2() {
         Task temp = initiatorService.findTaskByName("不存在", testInitiator.getPrimeKey());
@@ -153,7 +160,7 @@ public class InitiatorServiceTest extends AbstractTestNGSpringContextTests {
         if (res == null) {
             throw new NotFoundException("在结束任务的测试中没有能找到任务");
         } else {
-            assertEquals(java.util.Optional.ofNullable(res.getFinished()), true);
+            assertEquals(res.getFinished(), Boolean.TRUE);
         }
     }
 }

@@ -9,6 +9,8 @@ public class FileCreator {
     /**
      * 创建要读写的文件
      *
+     * 必须是多级目录！！不能直接在项目同级的地方创建目录！！！
+     *
      * @param path 要读写文件的路径
      */
     public static void createFile(String path) {

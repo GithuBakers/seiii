@@ -14,6 +14,8 @@ import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
+import java.util.Random;
+
 import static org.testng.AssertJUnit.assertEquals;
 
 /**
@@ -36,6 +38,8 @@ public class TaskServiceTest extends AbstractTestNGSpringContextTests {
     public void setUp() {
         task1 = new Task();
         task2 = new Task();
+        task1.setTaskID(new Random(System.currentTimeMillis()).nextInt() + "");
+        task2.setTaskID(new Random(System.currentTimeMillis() + 10086).nextInt() + "");
         task1.setTaskName("TaskService for test");
         task1.setType(MarkType.DESC);
         task1.setAim(100);
@@ -90,6 +94,7 @@ public class TaskServiceTest extends AbstractTestNGSpringContextTests {
     //更新原本不存在的对象
     public void updateTest3() {
         Task temp = new Task();
+        temp.setTaskID(new Random(System.currentTimeMillis()).nextInt() + "");
         temp.setTaskName("不存在的对象");
         service.updateTask(temp);
     }
