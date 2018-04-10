@@ -91,11 +91,11 @@ public class TaskService {
      * <p>
      * 在数据层更新
      *
-     * @param taskName 要结束的任务名
+     * @param taskID 要结束的任务名
      * @return 结束后任务信息
      */
-    public Task finishTask(String taskName) {
-        Task toFinish = findByID(taskName);
+    public Task finishTask(String taskID) {
+        Task toFinish = findByID(taskID);
         //更改状态为已完成
         toFinish.setFinished(true);
         //发放奖励

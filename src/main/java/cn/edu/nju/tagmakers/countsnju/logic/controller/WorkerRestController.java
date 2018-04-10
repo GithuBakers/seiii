@@ -83,8 +83,8 @@ public class WorkerRestController {
      *
      * @param taskName 任务名
      */
-    @RequestMapping(value = "/task/{task_name}", method = RequestMethod.GET)
-    public WorkerTaskDetailVO getTaskDetail(@PathVariable(value = "task_name") String taskName) {
+    @RequestMapping(value = "/task/{task_id}", method = RequestMethod.GET)
+    public WorkerTaskDetailVO getTaskDetail(@PathVariable(value = "task_id") String taskName) {
         String workerName = SecurityUtility.getUserName(SecurityContextHolder.getContext());
         return workerService.getTaskDetail(taskName, workerName);
     }
@@ -95,8 +95,8 @@ public class WorkerRestController {
      *
      * @param taskName 任务名
      */
-    @RequestMapping(value = "/task/received_task/{task_name}", method = RequestMethod.POST)
-    public boolean receiveTask(@PathVariable(value = "task_name") String taskName) {
+    @RequestMapping(value = "/task/received_task/{task_id}", method = RequestMethod.POST)
+    public boolean receiveTask(@PathVariable(value = "task_id") String taskName) {
         String workerName = SecurityUtility.getUserName(SecurityContextHolder.getContext());
         return workerService.receiveTask(taskName, workerName);
     }
@@ -106,8 +106,8 @@ public class WorkerRestController {
      *
      * @param taskName 任务名
      */
-    @RequestMapping(value = "/task/received_task/img/{task_name}", method = RequestMethod.GET)
-    public List<Bare> getBareList(@PathVariable(value = "task_name") String taskName) {
+    @RequestMapping(value = "/task/received_task/img/{task_id}", method = RequestMethod.GET)
+    public List<Bare> getBareList(@PathVariable(value = "task_id") String taskName) {
         String workerName = SecurityUtility.getUserName(SecurityContextHolder.getContext());
 
         return workerService.getBares(taskName, workerName);
@@ -120,8 +120,8 @@ public class WorkerRestController {
      * @param imgID    图片名
      * @param image    （含标注的）图片
      */
-    @RequestMapping(value = "/task/received_task/{task_name}/{img_id}", method = RequestMethod.POST)
-    public boolean submitImage(@PathVariable(value = "task_name") String taskName,
+    @RequestMapping(value = "/task/received_task/{task_id}/{img_id}", method = RequestMethod.POST)
+    public boolean submitImage(@PathVariable(value = "task_id") String taskName,
                                @PathVariable(value = "img_id") String imgID,
                                @RequestBody Image image) {
         String workerName = SecurityUtility.getUserName(SecurityContextHolder.getContext());
@@ -143,8 +143,8 @@ public class WorkerRestController {
     /**
      * 获取某一已接受任务的详细信息
      */
-    @RequestMapping(value = "/task/received_task/{task_name}", method = RequestMethod.GET)
-    public WorkerReceivedTaskDetailVO getReceivedTaskDetail(@PathVariable String taskName) {
+    @RequestMapping(value = "/task/received_task/{task_id}", method = RequestMethod.GET)
+    public WorkerReceivedTaskDetailVO getReceivedTaskDetail(@PathVariable(value = "task_id") String taskName) {
         String workerName = SecurityUtility.getUserName(SecurityContextHolder.getContext());
 
         return workerService.getReceivedTaskDetails(taskName, workerName);

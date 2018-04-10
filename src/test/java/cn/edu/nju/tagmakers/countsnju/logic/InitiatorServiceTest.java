@@ -2,23 +2,15 @@ package cn.edu.nju.tagmakers.countsnju.logic;
 
 import cn.edu.nju.tagmakers.countsnju.CountsnjuApplication;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
-import cn.edu.nju.tagmakers.countsnju.entity.pic.Image;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
-import cn.edu.nju.tagmakers.countsnju.entity.pic.Tag;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Initiator;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Role;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Task;
-import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
-import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerReceivedTaskDetailVO;
-import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerReceivedTaskVO;
 import cn.edu.nju.tagmakers.countsnju.exception.NotFoundException;
 import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
-import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
-import cn.edu.nju.tagmakers.countsnju.logic.service.TaskService;
 import cn.edu.nju.tagmakers.countsnju.logic.service.InitiatorService;
-import cn.edu.nju.tagmakers.countsnju.logic.service.WorkerService;
+import cn.edu.nju.tagmakers.countsnju.logic.service.TaskService;
 import cn.edu.nju.tagmakers.countsnju.security.SecurityUserController;
-import com.sun.org.apache.xml.internal.security.Init;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
@@ -29,9 +21,7 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 @ContextConfiguration(classes = CountsnjuApplication.class)
 @SpringBootTest
@@ -122,7 +112,7 @@ public class InitiatorServiceTest extends AbstractTestNGSpringContextTests {
     public void receiveTaskTest3() {
     }
 
-    @Test(dependsOnMethods = "receiveTaskTest1", expectedExceptions = PermissionDeniedException.class)
+    @Test(dependsOnMethods = "receiveTaskTest2", expectedExceptions = PermissionDeniedException.class)
     //同一个用户接受重复任务
     public void receiveTaskTest4() {
     }
@@ -139,7 +129,7 @@ public class InitiatorServiceTest extends AbstractTestNGSpringContextTests {
     public void getDetailTest() {
     }
 
-    @Test(dependsOnMethods = "receiveTaskTest1")
+    @Test(dependsOnMethods = "receiveTaskTest2")
     //在发起者发起任务之后查询
     public void getRiseTaskTest() {
     }
