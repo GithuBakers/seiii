@@ -79,7 +79,7 @@ export const getRouterData = app => {
       component: dynamicWrapper(app, ['form'], () => import('../routes/Worker/Setting')),
     },
     '/worker/task-list': {
-      component: dynamicWrapper(app, ['form'], () => import('../routes/Worker/TaskList')),
+      component: dynamicWrapper(app, ['taskMarket'], () => import('../routes/Worker/TaskList')),
     },
     '/worker/worker-profile': {
       component: dynamicWrapper(app, ['form'], () => import('../routes/Worker/WorkerProfile')),

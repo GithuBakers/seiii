@@ -37,7 +37,7 @@ const proxy = {
       'list|5-7': [
         {
           task_name: () => mockjs.Random.cname(),
-          cover: () => mockjs.Random.image('600x400', 'TASK'),
+          cover: () => mockjs.Random.image('600x300', 'TASK'),
           type: () => typeList[mockjs.Random.integer(0, 2)],
           completeness: () => mockjs.Random.integer(0, 100) / 100, //达标比例
           finished: true, //状态
@@ -57,9 +57,10 @@ const proxy = {
     }
   },
   'GET /api/v2/initiator/task/1': mockjs.mock({
+    task_id: () => mockjs.Random.string(), //达标比例
     task_name: () => mockjs.Random.cname() + 'task',
     initiator_name: () => mockjs.Random.cname(),
-    cover: () => mockjs.Random.image('600x400', '#894FC4', '#FFF', 'TASK1'),
+    cover: () => mockjs.Random.image('600x300', '#894FC4', '#FFF', 'TASK1'),
     type: () => typeList[mockjs.Random.integer(0, 2)],
     'aim|50-2000': 1,
     'limit|100-500': 1,
@@ -70,10 +71,34 @@ const proxy = {
     result: () => mockjs.mock('@url'), //结果所在地
     finished: false, //状态
   }),
+  'GET /api/v2/worker/task/1': mockjs.mock({
+    task_id: () => mockjs.Random.string(), //达标比例
+    task_name: () => mockjs.Random.cname() + 'task',
+    cover: () => mockjs.Random.image('600x300', '#894FC4', '#FFF', 'TASK1'),
+    type: () => typeList[mockjs.Random.integer(0, 2)],
+    'limit|100-500': 1,
+    'reward|200-300': 1,
+    requirement: () => mockjs.Random.sentence(), //任务要求
+  }),
+  'GET /api/v2/worker/task_list': (req, res) => {
+    let list = {
+      'list|15-17': [
+        {
+          task_name: () => mockjs.Random.cname(),
+          cover: () => mockjs.Random.image('600x300', '#894FC4','#FFF', 'LIST'),
+          type: () => typeList[mockjs.Random.integer(0, 2)],
+          task_id: () => mockjs.Random.string(), //达标比例
+          'reward|100': 1, //状态
+        },
+      ],
+    };
+    res.send(JSON.stringify(mockjs.mock(list).list));
+  },
+  'POST /api/v2/worker/task/received_task/1': true,
   'POST /api/v2/initiator/task/finished_task': mockjs.mock({
     task_name: () => mockjs.Random.cname() + 'task',
     initiator_name: () => mockjs.Random.cname(),
-    cover: () => mockjs.Random.image('600x400', '#894FC4', '#FFF', 'TASK1'),
+    cover: () => mockjs.Random.image('600x300', '#894FC4', '#FFF', 'TASK1'),
     type: () => typeList[mockjs.Random.integer(0, 2)],
     'aim|50-2000': 1,
     'limit|100-500': 1,
