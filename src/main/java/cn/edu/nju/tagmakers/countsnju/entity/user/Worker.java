@@ -3,6 +3,7 @@ package cn.edu.nju.tagmakers.countsnju.entity.user;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,7 +21,9 @@ import java.util.Optional;
  * @author xxz
  * Created on 04/07/2018
  */
-public class Worker extends User {
+public class Worker extends User implements Serializable {
+    private static final long serialVersionUID = 60L;
+
     public Worker() {
 
     }

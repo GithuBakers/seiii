@@ -34,6 +34,17 @@ public class WorkerReceivedTaskDetailVO {
         taskVO = new WorkerReceivedTaskVO(task, worker);
         limit = task.getLimit();
         reward = task.getReward();
-        //TODO:
+    }
+
+    public WorkerReceivedTaskVO getTaskVO() {
+        return taskVO;
+    }
+
+    public int getLimit() {
+        return limit;
+    }
+
+    public int getReward() {
+        return reward;
     }
 }

@@ -1,4 +1,4 @@
-package cn.edu.nju.tagmakers.countsnju;
+package cn.edu.nju.tagmakers.countsnju.data;
 
 
 import cn.edu.nju.tagmakers.countsnju.data.dao.BareDAO;
@@ -34,7 +34,7 @@ public class BareDAOTest extends AbstractTestNGSpringContextTests{
     public void setUp(){
         bare1 = new Bare();
         bare1.setName("name_1");
-
+        bare1.setId("1");
         bare2 = new Bare();
     }
 

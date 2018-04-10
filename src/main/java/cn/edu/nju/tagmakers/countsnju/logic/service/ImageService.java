@@ -55,7 +55,6 @@ public class ImageService {
      * 添加一张图片（其实这应该是添加标注，因为暂时不支持添加图片）
      */
     public Image addImage(Image image) {
-        //
         if (image == null) {
             throw new InvalidInputException("操作：添加Image");
         }

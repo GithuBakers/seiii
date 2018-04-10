@@ -46,6 +46,5 @@ public class InitiatorTaskVO {
 
         //是否结束
         isFinished = task.getFinished();
-        //TODO：从task构造vo
     }
 }
