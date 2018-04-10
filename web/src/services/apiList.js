@@ -18,6 +18,7 @@ export async function register(params) {
 
 // INITIATOR
 export async function getInitiatorProfile(userName) {
+  console.log('init profile', userName);
   return request(`${version}/initiator/information/${userName}`);
 }
 
@@ -36,6 +37,7 @@ export async function createTask(params) {
 }
 
 export async function getInitiatorTask(finished) {
+  console.log(finished);
   return request(`${version}/initiator/task?finished=${finished}`);
 }
 

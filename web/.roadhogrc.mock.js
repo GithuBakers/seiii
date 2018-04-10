@@ -10,9 +10,79 @@ import { format, delay } from 'roadhog-api-doc';
 // 是否禁用代理
 const noProxy = process.env.NO_PROXY === 'true';
 
+const typeList = ['RECT', 'DESC', 'EDGE'];
+
 // 代码中会兼容本地 service mock 以及部署站点的静态数据
 const proxy = {
   // 支持值为 Object 和 Array
+  'GET /api/v2/worker/information/worker': mockjs.mock({
+    user_name: 'worker',
+    role: 'WORKER',
+    avatar: () => mockjs.Random.image('200x100', '#FF6600', 'W'),
+    nick_name: () => mockjs.Random.cname(),
+    'credit|1-100': 1,
+    'rank|1-10000': 1,
+  }),
+  'GET /api/v2/initiator/information/initiator': mockjs.mock({
+    user_name: 'initiator',
+    role: 'INITIATOR',
+    avatar: () => mockjs.Random.image('100x100', '#894FC4', '#FFF', 'I'),
+    nick_name: () => mockjs.Random.cname(),
+  }),
+  'POST /api/v2/initiator/information/initiator': true,
+  'POST /api/v2/worker/information/worker': true,
+  'POST /api/v2/initiator/task/running_task': true,
+  'GET /api/v2/initiator/task': (req, res) => {
+    let list = {
+      'list|5-7': [
+        {
+          task_name: () => mockjs.Random.cname(),
+          cover: () => mockjs.Random.image('600x400', 'TASK'),
+          type: () => typeList[mockjs.Random.integer(0, 2)],
+          completeness: () => mockjs.Random.integer(0, 100) / 100, //达标比例
+          finished: true, //状态
+        },
+      ],
+    };
+    if (req.query.finished === 'true') {
+      console.log('list', mockjs.mock(list));
+      res.send(JSON.stringify(mockjs.mock(list).list));
+    } else {
+      let unfinished = mockjs.mock(list);
+      unfinished.list.forEach(e => {
+        e.finished = false;
+        return e;
+      });
+      res.send(JSON.stringify(unfinished.list));
+    }
+  },
+  'GET /api/v2/initiator/task/1': mockjs.mock({
+    task_name: () => mockjs.Random.cname() + 'task',
+    initiator_name: () => mockjs.Random.cname(),
+    cover: () => mockjs.Random.image('600x400', '#894FC4', '#FFF', 'TASK1'),
+    type: () => typeList[mockjs.Random.integer(0, 2)],
+    'aim|50-2000': 1,
+    'limit|100-500': 1,
+    'reward|200-300': 1,
+    requirement: () => mockjs.Random.sentence(), //任务要求
+    'total_reward|2000-30000': 1,
+    completeness: () => mockjs.Random.float(0, 1), //达标比例
+    result: () => mockjs.mock('@url'), //结果所在地
+    finished: false, //状态
+  }),
+  'POST /api/v2/initiator/task/finished_task': mockjs.mock({
+    task_name: () => mockjs.Random.cname() + 'task',
+    initiator_name: () => mockjs.Random.cname(),
+    cover: () => mockjs.Random.image('600x400', '#894FC4', '#FFF', 'TASK1'),
+    type: () => typeList[mockjs.Random.integer(0, 2)],
+    'aim|50-2000': 1,
+    'limit|100-500': 1,
+    'reward|200-300': 1,
+    requirement: () => mockjs.Random.sentence(), //任务要求
+    'total_reward|2000-30000': 1,
+    completeness: () => mockjs.Random.float(0, 1), //达标比例
+    result: () => mockjs.mock('@url'), //结果所在地
+  }),
   'GET /api/currentUser': {
     $desc: '获取当前用户接口',
     $params: {

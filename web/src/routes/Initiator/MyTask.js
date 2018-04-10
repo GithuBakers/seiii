@@ -1,196 +1,268 @@
 import React, { PureComponent } from 'react';
+import moment from 'moment';
 import { connect } from 'dva';
+import { finishInitiatorTask } from '../../services/apiList';
 import {
-  Form,
-  Input,
-  DatePicker,
-  Select,
-  Button,
+  List,
   Card,
-  InputNumber,
+  Row,
+  Col,
   Radio,
+  Input,
+  Progress,
+  Button,
   Icon,
-  Tooltip,
+  Popconfirm,
+  Menu,
+  Avatar,
+  Tag,
+  Modal,
+  message,
 } from 'antd';
+
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import styles from './style.less';
 
-const FormItem = Form.Item;
-const { Option } = Select;
-const { RangePicker } = DatePicker;
-const { TextArea } = Input;
+import styles from './MyTask.less';
 
-@connect(({ loading }) => ({
-  submitting: loading.effects['form/submitRegularForm'],
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
+
+@connect(({ initiatorTask, loading }) => ({
+  initiatorTask,
+  loading: loading.models.initiatorTask,
+  // deleteLoading: loading.effects['initiatorTask/deleteTask'],
 }))
-@Form.create()
-export default class BasicForms extends PureComponent {
-  handleSubmit = e => {
-    e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        this.props.dispatch({
-          type: 'form/submitRegularForm',
-          payload: values,
-        });
-      }
-    });
+export default class MyTask extends PureComponent {
+  state = {
+    finished: false,
+    modalVisible: false,
   };
-  render() {
-    const { submitting } = this.props;
-    const { getFieldDecorator, getFieldValue } = this.props.form;
 
-    const formItemLayout = {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 7 },
+  async componentDidMount() {
+    await this.props.dispatch({
+      type: 'initiatorTask/fetchAllList',
+    });
+    await console.log('time');
+  }
+
+  render() {
+    const {
+      initiatorTask: {
+        finishedTaskList,
+        unfinishedTaskList,
+        finishedNumber,
+        unfinishedNumber,
+        allNumber,
+        selectedTask,
       },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 12 },
-        md: { span: 10 },
-      },
+      loading,
+    } = this.props;
+
+    const Info = ({ title, value, bordered }) => (
+      <div className={styles.headerInfo}>
+        <span>{title}</span>
+        <p>{value}</p>
+        {bordered && <em />}
+      </div>
+    );
+
+    const ListInfo = ({ title, value }) => (
+      <div style={{ padding: '20px 0' }}>
+        <Row>
+          <Col sm={10} xs={24}>
+            <div style={{ fontWeight: 'bold' }}>{title}</div>
+          </Col>
+          <Col sm={14} xs={24}>
+            <div>{value}</div>
+          </Col>
+        </Row>
+      </div>
+    );
+
+    const extraContent = (
+      <div className={styles.extraContent}>
+        <RadioGroup
+          defaultValue="unfinished"
+          onChange={e => this.setState({ finished: e.target.value === 'finished' })}
+        >
+          <RadioButton value="unfinished">进行中</RadioButton>
+          <RadioButton value="finished">已结束</RadioButton>
+        </RadioGroup>
+      </div>
+    );
+
+    const ListContent = ({ data: { completeness, finished } }) => (
+      <div>
+        <Progress
+          percent={completeness * 100}
+          status={finished ? undefined : 'active'}
+          strokeWidth={6}
+          style={{ width: 180 }}
+        />
+        {finished ? (
+          <Tag style={{ marginLeft: '15px' }} color="red">
+            已经结束
+          </Tag>
+        ) : (
+          <Tag style={{ marginLeft: '15px' }} color="blue">
+            尚未结束
+          </Tag>
+        )}
+      </div>
+    );
+
+    const menu = (
+      <Menu>
+        <Menu.Item>
+          <a>编辑</a>
+        </Menu.Item>
+        <Menu.Item>
+          <a>删除</a>
+        </Menu.Item>
+      </Menu>
+    );
+
+    const deleteTask = async taskName => {
+      // await this.props.dispatch({
+      //   type: 'initiatorTask/deleteTask',
+      //   payload: taskName,
+      // });
+      const hide = await message.loading('正在结束任务', 0);
+      await finishInitiatorTask(taskName);
+      await hide();
+      await this.setState({ modalVisible: false });
+      await this.props.dispatch({
+        type: 'initiatorTask/fetchAllList',
+      });
     };
 
-    const submitFormLayout = {
-      wrapperCol: {
-        xs: { span: 24, offset: 0 },
-        sm: { span: 10, offset: 7 },
-      },
+    const DetailModal = props => (
+      <Modal
+        width={600}
+        visible={this.state.modalVisible}
+        destroyOnClose="true"
+        onCancel={() => this.setState({ modalVisible: false })}
+        footer={null}
+      >
+        <div style={{ margin: '-24px' }}>
+          <img style={{ maxWidth: '600px', margin: '0 auto' }} src={selectedTask.cover} />
+          <div style={{ maxWidth: '500px', margin: '40px auto 50px', paddingBottom: '40px' }}>
+            <h1 style={{ textAlign: 'center' }}>{selectedTask.task_name}</h1>
+            <p style={{ textAlign: 'center' }}>by {selectedTask.initiator_name}</p>
+            <ListInfo title="任务详细要求" value={selectedTask.requirement} />
+            <ListInfo title="任务类型" value={selectedTask.type} />
+            <ListInfo title="目标标注人数" value={selectedTask.aim} />
+            <ListInfo title="总奖励" value={selectedTask.total_reward} />
+            <ListInfo
+              title="达标比例"
+              value={
+                <Progress
+                  percent={selectedTask.completeness * 100}
+                  status={selectedTask.finished ? undefined : 'active'}
+                  strokeWidth={6}
+                  style={{ width: 180 }}
+                />
+              }
+            />
+            <ListInfo
+              title="结果下载链接"
+              value={
+                <a url="selectedTask.result" download>
+                  点击下载
+                </a>
+              }
+            />
+            <ListInfo
+              title="是否结束"
+              value={
+                selectedTask.finished ? (
+                  <Tag color="red">已经结束</Tag>
+                ) : (
+                  <Tag color="blue">尚未结束</Tag>
+                )
+              }
+            />
+            {selectedTask.finished ? (
+              {}
+            ) : (
+              <Popconfirm
+                onConfirm={() => deleteTask(selectedTask.task_name)}
+                title="结束的任务可以在已结束界面再次查阅，但众包工人将不会提供新的数据，是否继续？"
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button style={{ width: '100%', marginTop: '30px' }} type="danger">
+                  结束任务
+                </Button>
+              </Popconfirm>
+            )}
+          </div>
+        </div>
+      </Modal>
+    );
+
+    const showDetail = async taskName => {
+      await this.props.dispatch({
+        type: 'initiatorTask/fetchSelectedTask',
+        payload: 1,
+      });
+      await this.setState({ modalVisible: true });
     };
 
     return (
-      <PageHeaderLayout
-        title="基础表单"
-        content="表单页用于向用户收集或验证信息，基础表单常见于数据项较少的表单场景。"
-      >
-        <Card bordered={false}>
-          <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
-            <FormItem {...formItemLayout} label="标题">
-              {getFieldDecorator('title', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入标题',
-                  },
-                ],
-              })(<Input placeholder="给目标起个名字" />)}
-            </FormItem>
-            <FormItem {...formItemLayout} label="起止日期">
-              {getFieldDecorator('date', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请选择起止日期',
-                  },
-                ],
-              })(<RangePicker style={{ width: '100%' }} placeholder={['开始日期', '结束日期']} />)}
-            </FormItem>
-            <FormItem {...formItemLayout} label="目标描述">
-              {getFieldDecorator('goal', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入目标描述',
-                  },
-                ],
-              })(
-                <TextArea
-                  style={{ minHeight: 32 }}
-                  placeholder="请输入你的阶段性工作目标"
-                  rows={4}
-                />
-              )}
-            </FormItem>
-            <FormItem {...formItemLayout} label="衡量标准">
-              {getFieldDecorator('standard', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入衡量标准',
-                  },
-                ],
-              })(<TextArea style={{ minHeight: 32 }} placeholder="请输入衡量标准" rows={4} />)}
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label={
-                <span>
-                  客户
-                  <em className={styles.optional}>
-                    （选填）
-                    <Tooltip title="目标的服务对象">
-                      <Icon type="info-circle-o" style={{ marginRight: 4 }} />
-                    </Tooltip>
-                  </em>
-                </span>
-              }
+      <div>
+        <DetailModal />
+        <PageHeaderLayout>
+          <div className={styles.standardList}>
+            <Card bordered={false}>
+              <Row>
+                <Col sm={8} xs={24}>
+                  <Info title="未结束任务" value={`${unfinishedNumber}个任务`} bordered />
+                </Col>
+                <Col sm={8} xs={24}>
+                  <Info title="已结束任务" value={`${finishedNumber}个任务`} bordered />
+                </Col>
+                <Col sm={8} xs={24}>
+                  <Info title="所有任务" value={`${allNumber}个任务`} />
+                </Col>
+              </Row>
+            </Card>
+
+            <Card
+              className={styles.listCard}
+              bordered={false}
+              title="标准列表"
+              style={{ marginTop: 24 }}
+              bodyStyle={{ padding: '0 32px 40px 32px' }}
+              extra={extraContent}
             >
-              {getFieldDecorator('client')(
-                <Input placeholder="请描述你服务的客户，内部客户直接 @姓名／工号" />
-              )}
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label={
-                <span>
-                  邀评人<em className={styles.optional}>（选填）</em>
-                </span>
-              }
-            >
-              {getFieldDecorator('invites')(
-                <Input placeholder="请直接 @姓名／工号，最多可邀请 5 人" />
-              )}
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label={
-                <span>
-                  权重<em className={styles.optional}>（选填）</em>
-                </span>
-              }
-            >
-              {getFieldDecorator('weight')(<InputNumber placeholder="请输入" min={0} max={100} />)}
-              <span>%</span>
-            </FormItem>
-            <FormItem {...formItemLayout} label="目标公开" help="客户、邀评人默认被分享">
-              <div>
-                {getFieldDecorator('public', {
-                  initialValue: '1',
-                })(
-                  <Radio.Group>
-                    <Radio value="1">公开</Radio>
-                    <Radio value="2">部分公开</Radio>
-                    <Radio value="3">不公开</Radio>
-                  </Radio.Group>
-                )}
-                <FormItem style={{ marginBottom: 0 }}>
-                  {getFieldDecorator('publicUsers')(
-                    <Select
-                      mode="multiple"
-                      placeholder="公开给"
-                      style={{
-                        margin: '8px 0',
-                        display: getFieldValue('public') === '2' ? 'block' : 'none',
-                      }}
-                    >
-                      <Option value="1">同事甲</Option>
-                      <Option value="2">同事乙</Option>
-                      <Option value="3">同事丙</Option>
-                    </Select>
-                  )}
-                </FormItem>
-              </div>
-            </FormItem>
-            <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
-              <Button type="primary" htmlType="submit" loading={submitting}>
-                提交
+              <Button type="dashed" style={{ width: '100%', marginBottom: 8 }} icon="plus">
+                添加
               </Button>
-              <Button style={{ marginLeft: 8 }}>保存</Button>
-            </FormItem>
-          </Form>
-        </Card>
-      </PageHeaderLayout>
+              <List
+                size="large"
+                rowKey="id"
+                loading={loading}
+                dataSource={this.state.finished ? finishedTaskList : unfinishedTaskList}
+                renderItem={item => (
+                  <List.Item
+                    className={styles.list}
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => showDetail(item.task_name)}
+                  >
+                    <List.Item.Meta
+                      avatar={<Avatar src={item.cover} shape="square" size="large" />}
+                      title={<a href={item.href}>{item.task_name}</a>}
+                      description={`标注类型: ${item.type}`}
+                    />
+                    <ListContent data={item} />
+                  </List.Item>
+                )}
+              />
+            </Card>
+          </div>
+        </PageHeaderLayout>
+      </div>
     );
   }
 }

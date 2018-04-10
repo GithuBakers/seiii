@@ -42,9 +42,10 @@ function checkStatus(response) {
  * @param  {object} [options] The options we want to pass to "fetch"
  * @return {object}           An object containing either "data" or "err"
  */
-export default function request(url, options) {
+export default async function request(url, options) {
   const defaultOptions = {
     credentials: 'include',
+    method: 'GET',
   };
   const newOptions = { ...defaultOptions, ...options };
   if (newOptions.method === 'POST' || newOptions.method === 'PUT') {
@@ -65,58 +66,66 @@ export default function request(url, options) {
     }
   }
 
-  return fetch(url, newOptions)
-    .then(checkStatus)
-    .then(async response => {
-      if (newOptions.method === 'DELETE' || response.status === 204) {
-        return response.text();
-      }
+  const response = await fetch(url, newOptions);
+  try {
+    await checkStatus(response);
+    if (newOptions.method === 'DELETE' || response.status === 204) {
+      return response.text();
+    }
 
-      const data = await response.json();
-      const ret = {
-        token: undefined,
-        currentAuthority: undefined,
-        status: undefined,
-        ...data,
-      };
+    const data = await response.json();
+    console.log('data', data);
 
-      if (response.headers.get('Authorization')) {
-        ret.token = response.headers.get('Authorization');
-      }
-      if (response.headers.get('Roles')) {
-        ret.currentAuthority = response.headers.get('Roles');
-      }
-      if (url.includes('/login')) {
-        if (ret.status === 403) {
-          ret.status = 'error';
-        } else {
-          ret.status = 'ok';
-        }
-      }
+    if (Array.isArray(data)) {
+      return data;
+    }
 
-      console.log('ret', ret);
+    let ret = {
+      token: undefined,
+      currentAuthority: undefined,
+      status: undefined,
+      ...data,
+    };
 
-      return ret;
-    })
-    .catch(e => {
-      const { dispatch } = store;
-      const status = e.name;
-      if (status === 401) {
-        dispatch({
-          type: 'login/logout',
-        });
-        return;
+    if (response.headers.get('Authorization')) {
+      ret.token = await response.headers.get('Authorization');
+    }
+    if (response.headers.get('Roles')) {
+      ret.currentAuthority = await response.headers.get('Roles');
+    }
+    if (url.includes('/login')) {
+      if (ret.status === 403) {
+        ret.status = 'error';
+      } else {
+        ret.status = 'ok';
       }
-      if (status === 403) {
-        dispatch(routerRedux.push('/exception/403'));
-        return;
-      }
-      if (status <= 504 && status >= 500) {
-        dispatch(routerRedux.push('/exception/500'));
-        return;
-      }
-      if (status >= 404 && status < 422) {
-        dispatch(routerRedux.push('/exception/404'));
-      }
-    });
+    }
+    await console.log('ret', ret);
+
+    return ret;
+  } catch (e) {
+    const { dispatch } = store;
+    const status = e.name;
+    console.log('status', status);
+    if (status === 401) {
+      dispatch({
+        type: 'login/logout',
+      });
+      return;
+    }
+    if (status === 403) {
+      dispatch(routerRedux.push('/exception/403'));
+      return;
+    }
+    if (status <= 504 && status >= 500) {
+      dispatch(routerRedux.push('/exception/500'));
+      return;
+    }
+    if (status >= 404 && status < 422) {
+      dispatch(routerRedux.push('/exception/404'));
+      return;
+    }
+  }
+
+  return;
 }

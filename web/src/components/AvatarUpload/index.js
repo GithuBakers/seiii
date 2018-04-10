@@ -1,6 +1,8 @@
 import { Upload, Icon, message } from 'antd';
 import React from 'react';
 import styles from './index.less';
+import OSS from 'ali-oss';
+import { randomString } from '../../utils/random';
 
 function getBase64(img, callback) {
   const reader = new FileReader();
@@ -8,21 +10,39 @@ function getBase64(img, callback) {
   reader.readAsDataURL(img);
 }
 
-function beforeUpload(file) {
-  const isJPG = file.type === 'image/jpeg';
-  if (!isJPG) {
-    message.error('You can only upload JPG file!');
-  }
-  const isLt2M = file.size / 1024 / 1024 < 2;
-  if (!isLt2M) {
-    message.error('Image must smaller than 2MB!');
-  }
-  return isJPG && isLt2M;
-}
+const client = () => {
+  return new OSS.Wrapper({
+    region: 'oss-cn-shanghai',
+    accessKeyId: 'LTAIg4CGHlXTTAqF',
+    accessKeySecret: 'e1JQWrRzf8iZb88xIJbNpbRzWoW8Ea',
+    bucket: 'makers',
+  });
+};
+
+const uploadPath = (path, file) => {
+  return `${path}/${randomString()}-${file.name.split('.')[0]}-${file.uid}.${
+    file.type.split('/')[1]
+  }`;
+};
+
+const UploadToOss = (self, path, file) => {
+  const url = uploadPath(path, file);
+  return new Promise((resolve, reject) => {
+    client()
+      .multipartUpload(url, file)
+      .then(data => {
+        resolve(data);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+};
 
 export default class AvatarUpload extends React.Component {
   state = {
     loading: false,
+    imageUrl: undefined,
   };
   handleChange = info => {
     if (info.file.status === 'uploading') {
@@ -39,6 +59,27 @@ export default class AvatarUpload extends React.Component {
       );
     }
   };
+  beforeUpload = file => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      this.setState({ loading: true });
+      UploadToOss(this, 'avatar', file).then(data => {
+        this.setState({
+          imageUrl: reader.result,
+          loading: false,
+        });
+        this.props.setAvatar(data.res.requestUrls[0]);
+        // console.log(data);
+      });
+    };
+    return false;
+  };
+
+  // customRequest = async ({ onProgress, onError, onSuccess, data, filename, file, withCredentials, action, headers }) => {
+  //
+  // };
+
   render() {
     const uploadButton = (
       <div>
@@ -53,8 +94,9 @@ export default class AvatarUpload extends React.Component {
         listType="picture-card"
         className={styles['avatar-uploader']}
         showUploadList={false}
+        customRequest={this.customRequest}
         action="//jsonplaceholder.typicode.com/posts/"
-        beforeUpload={beforeUpload}
+        beforeUpload={this.beforeUpload}
         onChange={this.handleChange}
       >
         {image ? <img src={image} style={{ width: '100%' }} alt="" /> : uploadButton}

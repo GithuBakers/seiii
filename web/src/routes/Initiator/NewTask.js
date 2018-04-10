@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
+import OSS from 'ali-oss';
 import {
   Form,
   Input,
@@ -8,12 +9,18 @@ import {
   Button,
   Card,
   InputNumber,
+  message,
   Radio,
   Icon,
   Tooltip,
+  Upload,
+  Progress,
+  Modal,
 } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import styles from './style.less';
+import { randomString } from '../../utils/random';
+import { routerRedux } from 'dva/router';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -21,21 +28,139 @@ const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 
 @connect(({ loading }) => ({
-  submitting: loading.effects['form/submitRegularForm'],
+  submitting: loading.effects['initiatorTask/uploadNewTask'],
 }))
 @Form.create()
 export default class BasicForms extends PureComponent {
+  state = {
+    dataSetList: [],
+    coverList: [],
+    uploadingNum: 0,
+    uploading: false,
+  };
+
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        this.props.dispatch({
-          type: 'form/submitRegularForm',
-          payload: values,
+        console.log(values);
+        if (this.state.coverList.length === 0) {
+          message.error('请上传封面后提交！');
+          return;
+        }
+        if (this.state.dataSetList.length === 0) {
+          message.error('请上传数据集后提交！');
+          return;
+        }
+        if (this.state.uploadingNum > 0) {
+          message.error('请上传完成图片后提交！');
+          return;
+        }
+        Modal.confirm({
+          title: '提交前确认',
+          content: '提交任务后便不可修改，是否继续提交',
+          onOk: async () => {
+            const updateValue = values;
+            const cover = this.state.coverList[0].response;
+            const dataList = this.state.dataSetList.slice(0);
+            console.log('coverList', this.state.coverList);
+            console.log('dataSetList', this.state.dataSetList);
+            updateValue.cover = cover.url;
+            updateValue.data_set = dataList.map(e => ({ id: e.response.url, url: e.response.url }));
+            console.log(updateValue);
+            await this.props.dispatch({
+              type: 'initiatorTask/uploadNewTask',
+              payload: updateValue,
+            });
+
+            message.success('提交成功');
+            await this.props.dispatch(
+              routerRedux.push({
+                pathname: '/initiator/my-task',
+              })
+            );
+          },
+          onCancel() {
+            console.log('Cancel');
+          },
         });
+        // this.props.dispatch({
+        //   type: 'form/submitRegularForm',
+        //   payload: values,
+        // });
       }
     });
   };
+
+  aliCustomRequest = async ({
+    onProgress,
+    onError,
+    onSuccess,
+    data,
+    filename,
+    file,
+    withCredentials,
+    action,
+    headers,
+  }) => {
+    const client = () => {
+      return new OSS.Wrapper({
+        region: 'oss-cn-shanghai',
+        accessKeyId: 'LTAIg4CGHlXTTAqF',
+        accessKeySecret: 'e1JQWrRzf8iZb88xIJbNpbRzWoW8Ea',
+        bucket: 'makers',
+      });
+    };
+    const uploadPath = (path, ossFile) => {
+      return `${path}/${randomString()}-${ossFile.name.split('.')[0]}-${ossFile.uid}.${
+        ossFile.type.split('/')[1]
+      }`;
+    };
+
+    const progress = function(p) {
+      return function(done) {
+        onProgress({ percent: p * 100 });
+        done();
+      };
+    };
+    const uploadToOss = (path, ossFile) => {
+      const url = uploadPath(path, ossFile);
+      return new Promise((resolve, reject) => {
+        client()
+          .multipartUpload(url, ossFile, {
+            progress,
+          })
+          .then(resultData => {
+            resolve(resultData);
+          })
+          .catch(error => {
+            onError(error);
+            reject(error);
+          });
+      });
+    };
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      uploadToOss('data_set', file).then(ossData => {
+        file.requestUrls = ossData.res.requestUrls[0];
+        file.url = file.requestUrls;
+        onSuccess(file);
+      });
+    };
+  };
+
+  handleDataImageListChange = fileList => {
+    this.setState({ dataSetList: fileList });
+    const list = fileList.slice(0);
+    this.setState({ uploadingNum: fileList.filter(item => item.status === 'uploading').length });
+  };
+
+  handleCoverImageListChange = fileList => {
+    fileList = fileList.slice(-1);
+    this.setState({ coverList: fileList });
+  };
+
   render() {
     const { submitting } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
@@ -61,13 +186,13 @@ export default class BasicForms extends PureComponent {
 
     return (
       <PageHeaderLayout
-        title="基础表单"
-        content="表单页用于向用户收集或验证信息，基础表单常见于数据项较少的表单场景。"
+        title="新增一个任务目标"
+        content="希望任务发起者本着认真负责的态度填写与上传要求和数据集。一经上传无法更改"
       >
         <Card bordered={false}>
           <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
-            <FormItem {...formItemLayout} label="标题">
-              {getFieldDecorator('title', {
+            <FormItem {...formItemLayout} label="任务标题">
+              {getFieldDecorator('task_name', {
                 rules: [
                   {
                     required: true,
@@ -76,117 +201,134 @@ export default class BasicForms extends PureComponent {
                 ],
               })(<Input placeholder="给目标起个名字" />)}
             </FormItem>
-            <FormItem {...formItemLayout} label="起止日期">
-              {getFieldDecorator('date', {
+            <FormItem {...formItemLayout} label="任务要求">
+              {getFieldDecorator('requirement', {
                 rules: [
                   {
                     required: true,
-                    message: '请选择起止日期',
-                  },
-                ],
-              })(<RangePicker style={{ width: '100%' }} placeholder={['开始日期', '结束日期']} />)}
-            </FormItem>
-            <FormItem {...formItemLayout} label="目标描述">
-              {getFieldDecorator('goal', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入目标描述',
+                    message: '请输入任务要求',
                   },
                 ],
               })(
                 <TextArea
                   style={{ minHeight: 32 }}
-                  placeholder="请输入你的阶段性工作目标"
+                  placeholder="请输入您的任务描述与要求"
                   rows={4}
                 />
               )}
             </FormItem>
-            <FormItem {...formItemLayout} label="衡量标准">
-              {getFieldDecorator('standard', {
+            <FormItem {...formItemLayout} label="目标标注人数/张">
+              {getFieldDecorator('aim', {
                 rules: [
                   {
                     required: true,
-                    message: '请输入衡量标准',
+                    message: '请输入目标标注人数/张',
                   },
                 ],
-              })(<TextArea style={{ minHeight: 32 }} placeholder="请输入衡量标准" rows={4} />)}
+              })(<Input placeholder="填入你的标注数量期望" />)}
             </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label={
-                <span>
-                  客户
-                  <em className={styles.optional}>
-                    （选填）
-                    <Tooltip title="目标的服务对象">
-                      <Icon type="info-circle-o" style={{ marginRight: 4 }} />
-                    </Tooltip>
-                  </em>
-                </span>
-              }
-            >
-              {getFieldDecorator('client')(
-                <Input placeholder="请描述你服务的客户，内部客户直接 @姓名／工号" />
-              )}
+            <FormItem {...formItemLayout} label="用户标注限制">
+              {getFieldDecorator('limit', {
+                rules: [
+                  {
+                    required: true,
+                    message: '请输入单个用户最多标注的数量',
+                  },
+                ],
+              })(<Input placeholder="填入单个用户最多标注的数量限制" />)}
             </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label={
-                <span>
-                  邀评人<em className={styles.optional}>（选填）</em>
-                </span>
-              }
-            >
-              {getFieldDecorator('invites')(
-                <Input placeholder="请直接 @姓名／工号，最多可邀请 5 人" />
-              )}
+            <FormItem {...formItemLayout} label="奖励值">
+              {getFieldDecorator('reward', {
+                rules: [
+                  {
+                    required: true,
+                    message: '请输入奖励值',
+                  },
+                ],
+              })(<Input placeholder="填入奖励值" />)}
             </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label={
-                <span>
-                  权重<em className={styles.optional}>（选填）</em>
-                </span>
-              }
-            >
-              {getFieldDecorator('weight')(<InputNumber placeholder="请输入" min={0} max={100} />)}
-              <span>%</span>
-            </FormItem>
-            <FormItem {...formItemLayout} label="目标公开" help="客户、邀评人默认被分享">
+            <FormItem {...formItemLayout} label="标注类型" help="每个数据集只有一种标注方式">
               <div>
-                {getFieldDecorator('public', {
-                  initialValue: '1',
+                {getFieldDecorator('type', {
+                  initialValue: 'RECT',
                 })(
                   <Radio.Group>
-                    <Radio value="1">公开</Radio>
-                    <Radio value="2">部分公开</Radio>
-                    <Radio value="3">不公开</Radio>
+                    <Radio value="RECT">框选</Radio>
+                    <Radio value="DESC">描述</Radio>
+                    <Radio value="EDGE">描边</Radio>
                   </Radio.Group>
                 )}
-                <FormItem style={{ marginBottom: 0 }}>
-                  {getFieldDecorator('publicUsers')(
-                    <Select
-                      mode="multiple"
-                      placeholder="公开给"
-                      style={{
-                        margin: '8px 0',
-                        display: getFieldValue('public') === '2' ? 'block' : 'none',
-                      }}
-                    >
-                      <Option value="1">同事甲</Option>
-                      <Option value="2">同事乙</Option>
-                      <Option value="3">同事丙</Option>
-                    </Select>
-                  )}
-                </FormItem>
+              </div>
+            </FormItem>
+            <FormItem {...formItemLayout} label="上传封面">
+              {getFieldDecorator('cover', {
+                // valuePropName: 'fileList',
+                // getValueFromEvent: this.normFile,
+              })(
+                <div>
+                  <Upload
+                    onChange={({ fileList }) => this.handleCoverImageListChange(fileList)}
+                    fileList={this.state.coverList}
+                    listType="picture"
+                    name="logo"
+                    customRequest={this.aliCustomRequest}
+                  >
+                    <Button>
+                      <Icon type="upload" /> Click to upload
+                    </Button>
+                  </Upload>
+                </div>
+              )}
+            </FormItem>
+
+            <FormItem {...formItemLayout} label="上传数据集">
+              <div className="dropbox">
+                {getFieldDecorator('data_set', {
+                  // valuePropName: 'fileList',
+                  // getValueFromEvent: this.aliCustomRequest,
+                })(
+                  <Upload.Dragger
+                    onChange={({ fileList }) => this.handleDataImageListChange(fileList)}
+                    fileList={this.state.dataSetList}
+                    name="files"
+                    customRequest={this.aliCustomRequest}
+                    multiple
+                    listType={null}
+                    showUploadList={false}
+                  >
+                    <p className="ant-upload-drag-icon">
+                      <Icon type="inbox" />
+                    </p>
+                    <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                    <p style={{ marginBottom: '20px' }} className="ant-upload-hint">
+                      Support for a single or bulk upload.
+                    </p>
+                    <Progress
+                      type="circle"
+                      percent={
+                        100 *
+                        (this.state.dataSetList.length - this.state.uploadingNum) /
+                        this.state.dataSetList.length
+                      }
+                      format={() =>
+                        `${this.state.dataSetList.length - this.state.uploadingNum}/${
+                          this.state.dataSetList.length
+                        }`
+                      }
+                    />
+                  </Upload.Dragger>
+                )}
               </div>
             </FormItem>
             <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
-              <Button type="primary" htmlType="submit" loading={submitting}>
+              <Button
+                style={{ width: '100%' }}
+                type="primary"
+                htmlType="submit"
+                loading={submitting}
+              >
                 提交
               </Button>
-              <Button style={{ marginLeft: 8 }}>保存</Button>
             </FormItem>
           </Form>
         </Card>

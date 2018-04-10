@@ -96,7 +96,7 @@ export const getRouterData = app => {
       component: dynamicWrapper(app, ['form'], () => import('../routes/Initiator/Setting')),
     },
     '/initiator/my-task': {
-      component: dynamicWrapper(app, ['form'], () => import('../routes/Initiator/MyTask')),
+      component: dynamicWrapper(app, ['initiatorTask'], () => import('../routes/Initiator/MyTask')),
     },
     '/dashboard/analysis': {
       component: dynamicWrapper(app, ['chart'], () => import('../routes/Dashboard/Analysis')),
