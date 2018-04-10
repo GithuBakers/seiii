@@ -1,7 +1,6 @@
 package cn.edu.nju.tagmakers.countsnju.data.dao;
 
 import cn.edu.nju.tagmakers.countsnju.entity.user.Initiator;
-import cn.edu.nju.tagmakers.countsnju.entity.user.Role;
 import cn.edu.nju.tagmakers.countsnju.filter.InitiatorFilter;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +30,8 @@ public class InitiatorDAO extends DAO<Initiator,InitiatorFilter>{
             InitiatorList = new ArrayList<>(map.values());
             return InitiatorList;
         }
-        return null;
+        throw new UnsupportedOperationException("小温来写代码啦！！！！");
+
     }
 
     /**

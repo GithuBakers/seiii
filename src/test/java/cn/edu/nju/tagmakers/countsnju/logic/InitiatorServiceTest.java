@@ -132,8 +132,8 @@ public class InitiatorServiceTest extends AbstractTestNGSpringContextTests {
         assertNull(temp);
     }
 
-    @Test
     //查找任务列表
+    @Test(dependsOnMethods = "createTaskTest1")
     public void findTaskTest3() {
         TaskFilter filter = new TaskFilter();
         filter.setInitiatorName(testInitiator.getPrimeKey());
