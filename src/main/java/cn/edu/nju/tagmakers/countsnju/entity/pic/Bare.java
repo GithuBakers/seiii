@@ -52,7 +52,7 @@ public class Bare extends Entity<Bare> implements Serializable {
     /**
      * 原图URL
      */
-    @JsonProperty(value = "raw")
+    @JsonProperty(value = "url")
     private String raw;
 
     /**

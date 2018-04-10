@@ -2,6 +2,7 @@ package cn.edu.nju.tagmakers.countsnju.logic.service;
 
 import cn.edu.nju.tagmakers.countsnju.data.controller.TaskController;
 import cn.edu.nju.tagmakers.countsnju.data.controller.WorkerController;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import cn.edu.nju.tagmakers.countsnju.exception.FileIOException;
@@ -37,18 +38,26 @@ public class TaskService {
 
     private WorkerController workerController;
 
+    private BareService bareService;
+
     @Autowired
-    public TaskService(TaskController taskController, WorkerController workerController) {
+    public TaskService(TaskController taskController, WorkerController workerController, BareService bareService) {
         this.taskController = taskController;
         this.workerController = workerController;
+        this.bareService = bareService;
     }
 
     /**
      * 添加一项新任务
+     * <p>
+     * 将数据集的每一项增加至bare
      *
      * @param task 需要添加的任务
      */
     public void addTask(Task task) {
+        for (Bare bare : task.getDataSet()) {
+            bareService.addBare(bare);
+        }
         taskController.add(task);
     }
 
@@ -87,15 +96,15 @@ public class TaskService {
      * <p>
      * 制作结果集
      * <p>
-     * 发放奖励
+     * 发放奖励（60%）
      * <p>
      * 在数据层更新
      *
-     * @param taskName 要结束的任务名
+     * @param taskID 要结束的任务名
      * @return 结束后任务信息
      */
-    public Task finishTask(String taskName) {
-        Task toFinish = findByID(taskName);
+    public Task finishTask(String taskID) {
+        Task toFinish = findByID(taskID);
         //更改状态为已完成
         toFinish.setFinished(true);
         //发放奖励
@@ -115,7 +124,7 @@ public class TaskService {
                 .forEach(entry -> {
                     Worker worker = workerController.findByID(entry.getKey());
                     int oriCredits = worker.getCredit();
-                    oriCredits += entry.getValue() / 10 * task.getReward();
+                    oriCredits += Math.round(entry.getValue() / 10 * task.getReward() * 0.6);
                     worker.setCredit(oriCredits);
                     workerController.update(worker);
                 });

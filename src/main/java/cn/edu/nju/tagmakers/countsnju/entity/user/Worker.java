@@ -45,7 +45,7 @@ public class Worker extends User implements Serializable {
      * 已接受的任务列表
      */
     @JsonIgnore
-    private List<String> taskNames;
+    private List<String> taskIDs;
 
     private Worker(Worker toCopy) {
         //公共字段
@@ -56,8 +56,8 @@ public class Worker extends User implements Serializable {
         this.role = toCopy.getRole();
 
         //工人字段
-        if (toCopy.taskNames != null) {
-            this.taskNames = new LinkedList<>(toCopy.taskNames);
+        if (toCopy.taskIDs != null) {
+            this.taskIDs = new LinkedList<>(toCopy.taskIDs);
         }
         if (toCopy.bareIDs != null) {
             this.bareIDs = new LinkedList<>(toCopy.bareIDs);
@@ -72,12 +72,12 @@ public class Worker extends User implements Serializable {
     @JsonProperty
     private int rank;
 
-    public List<String> getTaskNames() {
-        return Optional.ofNullable(taskNames).orElse(new ArrayList<>());
+    public List<String> getTaskIDs() {
+        return Optional.ofNullable(taskIDs).orElse(new ArrayList<>());
     }
 
-    public void setTaskNames(List<String> taskNames) {
-        this.taskNames = taskNames;
+    public void setTaskIDs(List<String> taskIDs) {
+        this.taskIDs = taskIDs;
     }
 
     public List<String> getBareIDs() {

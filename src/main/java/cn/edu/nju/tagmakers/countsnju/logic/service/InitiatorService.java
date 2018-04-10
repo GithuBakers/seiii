@@ -88,19 +88,19 @@ public class InitiatorService {
     /**
      * 查看自己发起的某一任务的详情
      *
-     * @param taskName      任务名
+     * @param taskID      任务名
      * @param initiatorName 发起者名
      */
-    public Task findTaskByName(String taskName, String initiatorName) {
+    public Task findTaskByName(String taskID, String initiatorName) {
 
-        if (!isOwner(taskName, initiatorName)) {
+        if (!isOwner(taskID, initiatorName)) {
             throw new PermissionDeniedException("这不是你创建的任务！");
         }
-        return taskService.findByID(taskName);
+        return taskService.findByID(taskID);
     }
 
-    private boolean isOwner(String taskName, String initiatorName) {
-        return taskService.findByID(taskName).getInitiatorName().equals(initiatorName);
+    private boolean isOwner(String taskID, String initiatorName) {
+        return taskService.findByID(taskID).getInitiatorName().equals(initiatorName);
     }
 
 }

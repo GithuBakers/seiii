@@ -36,6 +36,7 @@ public class TaskServiceTest extends AbstractTestNGSpringContextTests {
     public void setUp() {
         task1 = new Task();
         task2 = new Task();
+        task1.setTaskID("1");
         task1.setTaskName("TaskService for test");
         task1.setType(MarkType.DESC);
         task1.setAim(100);

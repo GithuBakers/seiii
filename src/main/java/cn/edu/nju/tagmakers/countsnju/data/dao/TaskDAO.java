@@ -1,6 +1,7 @@
 package cn.edu.nju.tagmakers.countsnju.data.dao;
 
 import cn.edu.nju.tagmakers.countsnju.entity.user.Task;
+import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
 import org.springframework.stereotype.Component;
 
@@ -8,6 +9,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * Description:
@@ -39,9 +41,13 @@ public class TaskDAO extends DAO<Task,TaskFilter>{
         List<Task> taskList;
         if(filter == null){
             taskList = new ArrayList<>(map.values());
-            return taskList;
+        } else {
+            taskList = map.values().stream()
+                    .filter(task -> task.getInitiatorName().equals(filter.getInitiatorName()))
+                    .filter(task -> task.getFinished().equals(filter.getFinished()))
+                    .collect(Collectors.toList());
         }
-        return null;
+        return taskList;
     }
 
     /**

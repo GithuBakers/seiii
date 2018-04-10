@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,7 +41,7 @@ public class InitiatorTaskVO {
         for (Integer num : userMarked.values()) {
             curAim += num;
         }
-        completeness = (float) (curAim / task.getAim());
+        completeness = (float) (int) ((double) curAim * 100 / task.getAim());
 
         //是否结束
         isFinished = task.getFinished();
