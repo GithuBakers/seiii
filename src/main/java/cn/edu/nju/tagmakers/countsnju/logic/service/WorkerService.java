@@ -103,7 +103,7 @@ public class WorkerService {
      * 在任务的userMarked中添加此工人
      *
      * @param workerName 参与者名
-     * @param taskID   接受的任务名
+     * @param taskID     接受的任务名
      */
     public boolean receiveTask(String taskID, String workerName) {
         Task toReceive = taskService.findByID(taskID);
@@ -134,7 +134,7 @@ public class WorkerService {
     /**
      * 返回工人需要完成的图片
      *
-     * @param taskID   任务名
+     * @param taskID     任务名
      * @param workerName 工人名
      */
     public List<Bare> getBares(String taskID, String workerName) {
@@ -151,6 +151,8 @@ public class WorkerService {
      * <p>
      * 将任务列表中工人的标注次数加一
      * <p>
+     * 判断是否要增加奖励
+     * <p>
      * 将工人的图片列表中加入此图片
      * <p>
      * 为标记加上工人Name
@@ -158,11 +160,12 @@ public class WorkerService {
      * 将标记加入数据层
      *
      * @param image      图片
-     * @param taskID   任务名
+     * @param taskID     任务名
      * @param workerName 工人名
      */
     public boolean submitTag(Image image, String taskID, String workerName) {
         Task toUpdate = taskService.findByID(taskID);
+        Worker worker = workerController.findByID(workerName);
         //在任务的图片列表中将标注次数加一
         //如果缺失，则这是第一次标注
         toUpdate.getBareMarked().putIfAbsent(image.getBare().getId(), 1);
@@ -175,17 +178,23 @@ public class WorkerService {
 
         //将任务列表中工人的标注次数加一
         //如果缺失，则这是第一个标注
-        toUpdate.getUserMarked().putIfAbsent(workerName, 1);
+        toUpdate.getUserMarked().putIfAbsent(workerName, 0);
         //否则增加1
         int tmp1 = toUpdate.getUserMarked().get(workerName);
+        tmp1++;
         toUpdate.getUserMarked().put(workerName, tmp1);
-
-        taskService.updateTask(toUpdate);
+        //是否要获得40%的奖励
+        if (tmp1 % 10 == 0) {
+            int reward = worker.getCredit();
+            reward += Math.round(toUpdate.getReward() * 0.4);
+            worker.setCredit(reward);
+        }
         //将工人的图片列表中加入此图片
-        Worker worker = workerController.findByID(workerName);
         List<String> bareIDs = worker.getBareIDs();
         bareIDs.add(image.getBare().getId());
         worker.setBareIDs(bareIDs);
+
+        taskService.updateTask(toUpdate);
         workerController.update(worker);
 
         List<Tag> tagList = image.getTags();

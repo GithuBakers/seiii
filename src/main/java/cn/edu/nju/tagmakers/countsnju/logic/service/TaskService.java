@@ -49,7 +49,7 @@ public class TaskService {
 
     /**
      * 添加一项新任务
-     *
+     * <p>
      * 将数据集的每一项增加至bare
      *
      * @param task 需要添加的任务
@@ -96,7 +96,7 @@ public class TaskService {
      * <p>
      * 制作结果集
      * <p>
-     * 发放奖励
+     * 发放奖励（60%）
      * <p>
      * 在数据层更新
      *
@@ -124,7 +124,7 @@ public class TaskService {
                 .forEach(entry -> {
                     Worker worker = workerController.findByID(entry.getKey());
                     int oriCredits = worker.getCredit();
-                    oriCredits += entry.getValue() / 10 * task.getReward();
+                    oriCredits += Math.round(entry.getValue() / 10 * task.getReward() * 0.6);
                     worker.setCredit(oriCredits);
                     workerController.update(worker);
                 });
