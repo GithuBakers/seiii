@@ -32,8 +32,11 @@ public class TaskVOBasicInformation {
     @JsonProperty(value = "type")
     private MarkType type;
 
+    @JsonProperty(value = "task_id")
+    private String taskID;
 
     public TaskVOBasicInformation(Task task) {
+        taskID = task.getTaskID();
         taskName = task.getTaskName();
         cover = task.getCover();
         type = task.getType();

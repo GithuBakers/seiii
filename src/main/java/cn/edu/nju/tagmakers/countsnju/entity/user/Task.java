@@ -39,6 +39,7 @@ public class Task extends Entity<Task> implements Serializable {
     }
 
     public Task(Task toCopy) {
+        this.taskID = toCopy.taskID;
         this.taskName = toCopy.taskName;
         this.initiatorName = toCopy.initiatorName;
         this.cover = toCopy.cover;
@@ -60,6 +61,12 @@ public class Task extends Entity<Task> implements Serializable {
 
     /**
      * 任务的唯一标识
+     */
+    @JsonProperty(value = "task_id")
+    private String taskID;
+
+    /**
+     * 任务的名称
      */
     @JsonProperty(value = "task_name")
     private String taskName;
@@ -242,6 +249,14 @@ public class Task extends Entity<Task> implements Serializable {
         isFinished = finished;
     }
 
+    public String getTaskID() {
+        return taskID;
+    }
+
+    public void setTaskID(String taskID) {
+        this.taskID = taskID;
+    }
+
     /**
      * 获取实体对象的主键
      *
@@ -249,7 +264,7 @@ public class Task extends Entity<Task> implements Serializable {
      */
     @Override
     public String getPrimeKey() {
-        return taskName;
+        return taskID;
     }
 
     /**
