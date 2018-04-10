@@ -2,23 +2,17 @@ package cn.edu.nju.tagmakers.countsnju.logic;
 
 import cn.edu.nju.tagmakers.countsnju.CountsnjuApplication;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
-import cn.edu.nju.tagmakers.countsnju.entity.pic.Image;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
-import cn.edu.nju.tagmakers.countsnju.entity.pic.Tag;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Initiator;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Role;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Task;
-import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
-import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerReceivedTaskDetailVO;
-import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerReceivedTaskVO;
+import cn.edu.nju.tagmakers.countsnju.entity.vo.InitiatorTaskVO;
 import cn.edu.nju.tagmakers.countsnju.exception.NotFoundException;
 import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
 import cn.edu.nju.tagmakers.countsnju.logic.service.TaskService;
 import cn.edu.nju.tagmakers.countsnju.logic.service.InitiatorService;
-import cn.edu.nju.tagmakers.countsnju.logic.service.WorkerService;
 import cn.edu.nju.tagmakers.countsnju.security.SecurityUserController;
-import com.sun.org.apache.xml.internal.security.Init;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
@@ -47,21 +41,19 @@ public class InitiatorServiceTest extends AbstractTestNGSpringContextTests {
 
     private Initiator testInitiator;
     private Task testTask;
-    private Bare bare1;
-    private Bare bare2;
 
     @BeforeSuite
     public void setUp() {
-        Initiator testInitiator = new Initiator();
+        testInitiator = new Initiator();
         testInitiator.setUserID("wym");
         testInitiator.setNickName("小温");
         testInitiator.setPassword("123");
         testInitiator.setAvatar("没有头像");
         testInitiator.setRole(Role.INITIATOR);
 
-        bare1 = new Bare();
+        Bare bare1 = new Bare();
         bare1.setId("图1");
-        bare2 = new Bare();
+        Bare bare2 = new Bare();
         bare2.setId("图2");
         List<Bare> dataSet = new ArrayList<>();
         dataSet.add(bare1);
@@ -107,40 +99,63 @@ public class InitiatorServiceTest extends AbstractTestNGSpringContextTests {
 
     }
 
-    @Test(dependsOnMethods = "createTaskTest1")
+    @Test(dependsOnMethods = "createTaskTest1", expectedExceptions = PermissionDeniedException.class)
+    //重复发起任务
     public void createTaskTest2() {
-
-    }
-
-    @Test(expectedExceptions = NotFoundException.class)
-    //不存在的任务
-    public void receiveTaskTest2() {
-    }
-
-    @Test(expectedExceptions = NotFoundException.class)
-    //不存在的用户接受存在的任务
-    public void receiveTaskTest3() {
-    }
-
-    @Test(dependsOnMethods = "receiveTaskTest1", expectedExceptions = PermissionDeniedException.class)
-    //同一个用户接受重复任务
-    public void receiveTaskTest4() {
+        initiatorService.createTask(testTask);
     }
 
     @Test
     //正常更新用户
-    public void updateWorkerTest1() {
+    public void updateInitiatorTest1() {
         testInitiator.setNickName("巨无霸");
         Initiator temp = initiatorService.findInitiatorByName(testInitiator.getUserID());
         assertEquals(temp.getNickName(), "巨无霸");
     }
 
-    @Test
-    public void getDetailTest() {
+    @Test(dependsOnMethods = "createTaskTest1")
+    //查找任务
+    public void findTaskTest1() {
+        Task temp = initiatorService.findTaskByName(testTask.getPrimeKey(), testInitiator.getPrimeKey());
+        assertEquals(temp.getResult(), testTask.getResult());
     }
 
-    @Test(dependsOnMethods = "receiveTaskTest1")
-    //在发起者发起任务之后查询
-    public void getRiseTaskTest() {
+    @Test
+    //查找不存在的任务
+    public void findTaskTest2() {
+        Task temp = initiatorService.findTaskByName("不存在", testInitiator.getPrimeKey());
+        assertNull(temp);
+    }
+
+    @Test
+    //查找任务列表
+    public void findTaskTest3() {
+        TaskFilter filter = new TaskFilter();
+        filter.setInitiatorName(testInitiator.getPrimeKey());
+        List<InitiatorTaskVO> taskList = initiatorService.findInitiatorTask(filter);
+        boolean flag = taskList.size() > 0;
+        assertTrue(flag);
+    }
+
+    @Test(dependsOnMethods = "createTaskTest1", expectedExceptions = PermissionDeniedException.class)
+    //通过不存在的发起者结束任务
+    public void ownerTest1() {
+        Initiator temp = new Initiator();
+        temp.setUserID("fake owner");
+        temp.setRole(Role.INITIATOR);
+        securityUserController.signUp(temp);
+        initiatorService.finishTask(testTask.getPrimeKey(), temp.getPrimeKey());
+    }
+
+    @Test(dependsOnMethods = "createTaskTest1")
+    //正确的发起者结束任务
+    public void ownerTest2() {
+        initiatorService.finishTask(testTask.getPrimeKey(), testInitiator.getPrimeKey());
+        Task res = initiatorService.findTaskByName(testTask.getPrimeKey(), testInitiator.getPrimeKey());
+        if (res == null) {
+            throw new NotFoundException("在结束任务的测试中没有能找到任务");
+        } else {
+            assertEquals(java.util.Optional.ofNullable(res.getFinished()), true);
+        }
     }
 }

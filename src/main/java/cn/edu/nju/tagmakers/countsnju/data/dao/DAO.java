@@ -3,6 +3,7 @@ package cn.edu.nju.tagmakers.countsnju.data.dao;
 import cn.edu.nju.tagmakers.countsnju.entity.Entity;
 import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
 import cn.edu.nju.tagmakers.countsnju.exception.NotFoundException;
+import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.filter.Filter;
 import util.FileCreator;
 import util.Log;
@@ -42,6 +43,9 @@ public abstract class DAO<T extends Entity, U extends Filter> {
         }
         if (checkStringEqualsNull(obj.getPrimeKey())) {
             throw new InvalidInputException("操作：添加 非法输入：空ID");
+        }
+        if (findByID(obj.getPrimeKey()) != null) {
+            throw new PermissionDeniedException("操作：添加 " + obj.getClass() + "重复");
         }
         T toCopy = (T) obj.copy();
         T ret = (T) obj.copy();
