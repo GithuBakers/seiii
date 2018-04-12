@@ -2,6 +2,7 @@ package cn.edu.nju.tagmakers.countsnju.entity.user;
 
 import cn.edu.nju.tagmakers.countsnju.entity.Entity;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
@@ -23,7 +24,8 @@ public class User extends Entity<User> implements Serializable {
     @JsonProperty(value = "user_name")
     protected String userID;
 
-    @JsonProperty(value = "password")
+    //    @JsonProperty(value = "password")
+    @JsonIgnore
     protected String password;
 
     @JsonProperty(value = "nick_name")

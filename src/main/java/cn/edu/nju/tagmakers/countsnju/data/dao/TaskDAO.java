@@ -38,7 +38,7 @@ public class TaskDAO extends DAO<Task, TaskFilter> {
      */
     @Override
     public List<Task> find(TaskFilter filter) {
-        List<Task> taskList;
+        List<Task> taskList = null;
         if (filter == null) {
             taskList = new ArrayList<>(map.values());
         } else {
@@ -48,8 +48,10 @@ public class TaskDAO extends DAO<Task, TaskFilter> {
             }
             if (filter.getFinished() != null) {
                 taskStream = taskStream.filter(task -> task.getFinished().equals(filter.getFinished()));
+                return taskStream.filter(task -> task.getFinished().equals(filter.getFinished()))
+                        .collect(Collectors.toList());
             }
-            return taskStream.collect(Collectors.toList());
+//            taskList=taskStream.;
         }
         return taskList;
     }

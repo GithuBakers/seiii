@@ -2,6 +2,7 @@ package cn.edu.nju.tagmakers.countsnju.security;
 
 import cn.edu.nju.tagmakers.countsnju.entity.Entity;
 import cn.edu.nju.tagmakers.countsnju.entity.user.RoleAdmin;
+import cn.edu.nju.tagmakers.countsnju.entity.user.RoleInitiator;
 import cn.edu.nju.tagmakers.countsnju.entity.user.RoleWorker;
 import cn.edu.nju.tagmakers.countsnju.entity.user.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -46,7 +47,7 @@ public class SecurityUser extends Entity<SecurityUser> implements UserDetails {
                 authorities.add(new RoleWorker());
                 break;
             case INITIATOR:
-                authorities.add(new RoleWorker());
+                authorities.add(new RoleInitiator());
                 break;
         }
     }
