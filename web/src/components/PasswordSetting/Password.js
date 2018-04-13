@@ -15,8 +15,8 @@ import {
   Progress,
 } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import AvatarUpload from '../../components/AvatarUpload';
-import styles from './style.less';
+import AvatarUpload from '../AvatarUpload/index';
+import styles from '../../routes/Worker/style.less';
 import { routerRedux } from 'dva/router';
 import { randomString } from '../../utils/random';
 

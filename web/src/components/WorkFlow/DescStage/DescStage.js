@@ -1,7 +1,7 @@
 import React from 'react';
 import CloseButton from '../../EditWorkPage/CloseButton';
 import Styles from './styles.css';
-import { Row, Col, AutoComplete } from 'antd';
+import { Row, Col, AutoComplete,notification } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { connect } from 'dva';
 import { Stage, Layer } from 'react-konva';
@@ -52,7 +52,11 @@ class DescStage extends React.Component {
   finishButtonEvent = async () => {
     this.setState({ loading: true });
     await this.uploadMark();
-    this.props.dispatch({ type: 'editWorkModel/setOpenState', payload: { isOpen: false } });
+    await this.props.dispatch({ type: 'editWorkModel/setOpenState', payload: { isOpen: false } });
+    notification['success']({
+      message: '感谢您的付出',
+      description: '您已成功完成了一系列描述任务，并获得了一定的奖励，剩余奖励将在本任务结束后根据您的正确率发放',
+    });
   };
 
   constructor(props) {

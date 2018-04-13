@@ -17,8 +17,10 @@ import {
   Tag,
   Modal,
   message,
+  Dropdown,
 } from 'antd';
-
+import DescriptionList from '../../components/DescriptionList/DescriptionList';
+import Description from '../../components/DescriptionList/Description';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 import styles from './MyTask.less';
@@ -52,6 +54,18 @@ export default class MyTask extends PureComponent {
       type: 'workerTask/fetchAllList',
     });
     await console.log('time');
+  }
+
+  handleMenuClick=async ({key})=>{
+    console.log("key",key);
+    const loading= message.loading("正在为您生成推荐");
+    await this.props.dispatch({
+      type: 'workerTask/fetchRecommendTask',
+      payload:key,
+    });
+    loading();
+    await console.log('time');
+    await this.setState({ modalVisible: true });
   }
 
   render() {
@@ -164,21 +178,52 @@ export default class MyTask extends PureComponent {
     );
 
     const showDetail = async taskId => {
-      //TODO:1
+      // TODO:1
       await this.props.dispatch({
         type: 'workerTask/fetchSelectedTask',
         payload: 1,
       });
       await this.setState({ modalVisible: true });
     };
+    const menu = (
+      <Menu onClick={this.handleMenuClick}>
+        <Menu.Item key="RECT">
+          <a style={{ lineHeight:'60px',textAlign:'center',fontSize:'30px',fontWeight:'bold'}}>RECT</a>
+        </Menu.Item>
+        <Menu.Item key="EDGE">
+          <a style={{ lineHeight:'60px',textAlign:'center',fontSize:'30px',fontWeight:'bold'}}>EDGE</a>
+        </Menu.Item>
+        <Menu.Item key="DESC">
+          <a style={{ lineHeight:'60px',textAlign:'center',fontSize:'30px',fontWeight:'bold'}}>DESC</a>
+        </Menu.Item>
+      </Menu>
+    );
+    const recommendWrapper=(
+      <div style={{width:"100%",marginTop:'-10px'}} >
+        <Dropdown style={{width:"100%"}}  overlay={menu} placement="bottomCenter">
+          <Button icon='like-o' size='large' style={{width:"100%"}} >智能推荐在这里~</Button>
+        </Dropdown>
+      </div>
+    );
 
     return (
       <div>
         <DetailModal  />
         <EditWorkPage background='rgba(0, 0, 0, 0.65)' keywords={selectedTask.keywords} taskName={selectedTask.task_name} type={selectedTask.type} taskId={selectedTask.task_id} />
-        <PageHeaderLayout>
+        <PageHeaderLayout
+          loading={this.props.loading}
+          title='我的任务列表'
+          content="这里有您做过的所有任务，您可以在这里查看工作，开始工作，或是接受一个专为你准备的推荐"
+          extraContent={recommendWrapper}
+        >
           <div className={styles.standardList}>
-            <Card bordered={false}>
+
+
+            <Card
+              style={{ marginTop: 24 }}
+
+              bordered={false}
+            >
               <Row>
                 <Col sm={8} xs={24}>
                   <Info title="未结束任务" value={`${unfinishedNumber}个任务`} bordered />
@@ -193,7 +238,6 @@ export default class MyTask extends PureComponent {
             </Card>
 
             <Card
-              className={styles.listCard}
               bordered={false}
               title="任务列表"
               style={{ marginTop: 24 }}

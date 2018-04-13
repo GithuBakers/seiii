@@ -17,6 +17,7 @@ import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import styles from './style.less';
 import DescriptionList from '../../components/DescriptionList/DescriptionList';
 import Description from '../../components/DescriptionList/Description';
+import { routerRedux } from 'dva/router';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -55,7 +56,13 @@ export default class WorkerProfile extends PureComponent {
       <div>
         <p>"您可以在这里查看自己的个人信息。"</p>
         <div>
-          <Button icon="setting">EDIT</Button>
+          <Button onClick={()=>{
+            this.props.dispatch(
+              routerRedux.push({
+                pathname: '/worker/setting',
+              })
+            );
+          }} icon="setting">EDIT</Button>
         </div>
       </div>
     );

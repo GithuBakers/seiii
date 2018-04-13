@@ -105,11 +105,12 @@ export async function getWorkerReceivedTask(taskId) {
 }
 
 export async function getWorkerRecommendTask(type) {
-  return request(`${version}/worker/task/received_task?type=${type}`);
+  console.log("api type",type);
+  return request(`${version}/worker/recommend_task?type=${type}`);
 }
 
 export async function updatePassword(userName, params) {
-  console.log("updatePassword",params)
+  console.log("updatePassword",params);
   return request(`${version}/user/password/${userName}`, {
     method: 'POST',
     body: params,

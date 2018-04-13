@@ -1,5 +1,5 @@
 import React from 'react'
-import {Row, Col,Input,List} from 'antd';
+import {Row, Col,Input,List,notification } from 'antd';
 import {connect} from "dva";
 import QueueAnim from 'rc-queue-anim';
 import { Layer, Rect, Stage, Group, Transformer} from 'react-konva';
@@ -96,9 +96,11 @@ class RectStage extends React.Component {
   finishButtonEvent = async() => {
     this.setState({loading:true});
     await this.uploadMark();
-    this.props.dispatch({type: 'editWorkModel/setOpenState', payload: {isOpen: false}});
-    // refreshData(this.props.dispatch);
-
+    await this.props.dispatch({type: 'editWorkModel/setOpenState', payload: {isOpen: false}});
+    notification['success']({
+      message: '感谢您的付出',
+      description: '您已成功完成了一系列框选任务，并获得了一定的奖励，剩余奖励将在本任务结束后根据您的正确率发放',
+    });
   };
 
   handleMouseMove = (e) => {

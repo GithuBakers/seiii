@@ -101,7 +101,7 @@ const proxy = {
     res.send(JSON.stringify(mockjs.mock(list).list));
   },
   'GET /api/v2/worker/recommend_task': (req, res) => {
-    const type=res.query.type;
+    const type=req.query.type;
     const value= mockjs.mock({
       task_id: () => mockjs.Random.string(), //达标比例
       task_name: () => mockjs.Random.cname() + 'task',

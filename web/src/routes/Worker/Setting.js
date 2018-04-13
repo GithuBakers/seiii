@@ -12,14 +12,15 @@ import {
   Icon,
   Tooltip,
   Popover,
-  Progress,
+  message,
 } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import AvatarUpload from '../../components/AvatarUpload';
 import styles from './style.less';
 import { routerRedux } from 'dva/router';
 import { randomString } from '../../utils/random';
-import Password from './Password';
+import Password from '../../components/PasswordSetting/Password';
+
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -79,6 +80,7 @@ export default class Setting extends PureComponent {
           type: 'user/updateWorkerProfile',
           payload: result,
         });
+        message.success('设置成功~')
       }
     });
 
@@ -132,8 +134,8 @@ export default class Setting extends PureComponent {
 
     return (
       <PageHeaderLayout
-        title="基础表单"
-        content="表单页用于向用户收集或验证信息，基础表单常见于数据项较少的表单场景。"
+        title="个人信息设置"
+        content="普通设置可以事实更新，次数不限。密码修改需要重新登录"
       >
         <Card
           loading={this.props.loading}

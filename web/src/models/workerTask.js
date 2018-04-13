@@ -1,6 +1,7 @@
 import {
   getWorkerReceivedTaskList,
   getWorkerReceivedTask,
+  getWorkerRecommendTask
 } from '../services/apiList';
 
 export default {
@@ -31,6 +32,11 @@ export default {
     *fetchSelectedTask({ payload }, { call, put }) {
       const taskDetail = yield call(getWorkerReceivedTask, 1);
       // const taskDetail = yield call(getWorkerReceivedTask, payload);
+      yield put({ type: 'setSelectedTaskData', payload: { taskDetail } });
+    },
+
+    *fetchRecommendTask({payload},{call,put}){
+      const taskDetail = yield call(getWorkerRecommendTask, payload);
       yield put({ type: 'setSelectedTaskData', payload: { taskDetail } });
     },
   },
