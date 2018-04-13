@@ -14,7 +14,6 @@ import util.FileCreator;
 import util.OSSWriter;
 
 import java.io.*;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -55,10 +54,17 @@ public class TaskService {
      * @param task 需要添加的任务
      */
     public void addTask(Task task) {
+        if (task == null || task.getDataSet() == null) {
+            throw new InvalidInputException("此任务没有上传数据集");
+        }
+        //设置finished
+        task.setFinished(false);
+        taskController.add(task);
         for (Bare bare : task.getDataSet()) {
             bareService.addBare(bare);
         }
-        taskController.add(task);
+
+
     }
 
 
@@ -140,7 +146,7 @@ public class TaskService {
         if (!task.getFinished()) {
             throw new InvalidInputException("任务尚未结束，请结束任务之后再查看任务结果");
         }
-        String filePath = "task_result_" + task.getTaskName();
+        String filePath = "ret" + File.separator + "task_result_" + task.getTaskName();
         FileCreator.createFile(filePath);
         File file = new File(filePath);
 
@@ -154,7 +160,7 @@ public class TaskService {
             writer.newLine();
             writer.write(new Date(System.currentTimeMillis()).toString());
         } catch (FileNotFoundException e) {
-            throw new FileIOException(Arrays.toString(e.getStackTrace()));
+            throw new FileIOException("创建结果集时发生文件异常");
         } catch (IOException e) {
             throw new FileIOException("File IO ERROR in task Service, when try to generate result set");
         }

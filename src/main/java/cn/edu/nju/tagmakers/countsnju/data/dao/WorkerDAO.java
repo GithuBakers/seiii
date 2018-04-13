@@ -41,7 +41,7 @@ public class WorkerDAO extends DAO<Worker,WorkerFilter>{
             workerList = new ArrayList<>(map.values());
             return workerList;
         }
-        return null;
+        throw new UnsupportedOperationException("小温来写代码啦！！！！");
     }
 
     /**

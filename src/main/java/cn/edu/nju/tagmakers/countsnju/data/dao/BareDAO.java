@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Description:
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 @Component
 public class BareDAO extends DAO<Bare, BareFilter> {
 
-    public BareDAO(){
+    public BareDAO() {
         map = new ConcurrentHashMap<>();
         filePath = "data" + File.separator + "Bare.txt";
         read();
@@ -45,11 +46,12 @@ public class BareDAO extends DAO<Bare, BareFilter> {
             bareList = new ArrayList<>(map.values());
             return bareList;
         }
-        bareList = map.values().stream()
-                .filter(bare -> bare.getState() == filter.getBareState())
-                .filter(bare -> bare.getMarkType() == filter.getMarkType())
-                .collect(Collectors.toList());
-        return bareList;
+        Stream<Bare> bareStream = map.values().stream();
+        bareStream = bareStream.filter(bare -> bare.getState() == filter.getBareState());
+        if (filter.getMarkType() != MarkType.DEFAULT) {
+            bareStream = bareStream.filter(bare -> bare.getMarkType() == filter.getMarkType());
+        }
+        return bareStream.collect(Collectors.toList());
     }
 
     /**

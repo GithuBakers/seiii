@@ -53,7 +53,7 @@ public class WorkerReceivedTaskVO {
             isFinished = true;
         } else {
             String userID = worker.getUserID();
-            if (userMarked.get(userID) == task.getLimit()) {
+            if (userMarked.get(userID) != null && userMarked.get(userID) == task.getLimit()) {
                 isFinished = true;
             }
         }

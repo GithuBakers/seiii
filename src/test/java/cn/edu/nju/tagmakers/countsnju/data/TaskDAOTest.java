@@ -14,6 +14,8 @@ import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
+import java.util.Random;
+
 import static org.testng.AssertJUnit.assertEquals;
 
 /**
@@ -31,11 +33,15 @@ public class TaskDAOTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
     private TaskDAO dao;
+    private String randomizedID;
 
     @BeforeSuite
     public void setUp() {
         task1 = new Task();
         task2 = new Task();
+        randomizedID = "" + new Random(System.currentTimeMillis()).nextInt();
+        task1.setTaskID(randomizedID);
+        task2.setTaskID(randomizedID + "123");
         task1.setTaskName("Task for test");
         task1.setType(MarkType.DESC);
         task1.setAim(100);
@@ -109,7 +115,7 @@ public class TaskDAOTest extends AbstractTestNGSpringContextTests {
     //更新原本不存在的对象
     public void updateTest3() {
         Task temp = new Task();
-        temp.setTaskName("不存在的对象");
+        temp.setTaskID("我也是一个面包机！！");
         dao.update(temp);
     }
 

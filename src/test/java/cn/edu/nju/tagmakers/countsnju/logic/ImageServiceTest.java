@@ -47,6 +47,7 @@ public class ImageServiceTest extends AbstractTestNGSpringContextTests {
     public void addImageTest1() {
         Image image1 = new Image();
         Bare bare1 = new Bare();
+        bare1.setId("xxxxxxz");
         ArrayList tagList = new ArrayList();
         Tag tag1 = new Tag();
         tagList.add(tag1);
@@ -62,6 +63,22 @@ public class ImageServiceTest extends AbstractTestNGSpringContextTests {
     //空id
     public void addImageTest2() {
         service.addImage(null);
+    }
+
+    //空id
+    @Test(expectedExceptions = InvalidInputException.class)
+    public void addImageTest3() {
+        Image image1 = new Image();
+        Bare bare1 = new Bare();
+        ArrayList tagList = new ArrayList();
+        Tag tag1 = new Tag();
+        tagList.add(tag1);
+        image1.setBare(bare1);
+        image1.setType(MarkType.DESC);
+        image1.setTags(tagList);
+        image1.setBare(bare1);
+        bareService.addBare(bare1);
+        service.addImage(image1);
     }
 
     @Test(dependsOnMethods = "addImageTest1")
