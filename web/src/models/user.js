@@ -1,6 +1,8 @@
 import { query as queryUsers, queryCurrent } from '../services/user';
 import { getAuthority, getUserName } from '../utils/authority';
-import { getInitiatorProfile, getWorkerProfile } from '../services/apiList';
+import { getInitiatorProfile, getWorkerProfile, setWorkerProfile, setInitiatorProfile,updatePassword } from '../services/apiList';
+import { notification  } from 'antd';
+import { routerRedux } from 'dva/router';
 
 export default {
   namespace: 'user',
@@ -36,6 +38,49 @@ export default {
         type: 'saveCurrentUser',
         payload: response,
       });
+    },
+
+    * updateWorkerProfile({ payload }, { call, put, select }) {
+      const currentUser = yield select(state => state.user.currentUser);
+      const userName = currentUser.user_name;
+      const result = yield call(setWorkerProfile, userName, payload);
+      if (result) {
+        yield put({
+          type: 'saveCurrentUser',
+          payload: {
+            ...currentUser,
+            ...payload,
+          },
+        });
+      }
+    },
+    * updateInitiatorProfile({ payload }, { call,put, select }) {
+      const currentUser = yield select(state => state.user.currentUser);
+      const userName = currentUser.user_name;
+      const result = yield call(setInitiatorProfile, userName, payload);
+      if (result) {
+        yield put({
+          type: 'saveCurrentUser',
+          payload: {
+            ...currentUser,
+            ...payload,
+          },
+        });
+      }
+    },
+
+    * updatePassword({payload},{call,select,put}){
+      const currentUser = yield select(state => state.user.currentUser);
+      const userName = currentUser.user_name;
+      const result = yield call(updatePassword, userName, payload);
+      if(result){
+        yield notification['success']({
+          message: '密码修改成功',
+          description: '为了保障您的账户安全，需要您重新登陆',
+        });
+        yield put(routerRedux.push('/user/login'));
+      }
+
     },
   },
 

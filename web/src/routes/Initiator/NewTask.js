@@ -63,11 +63,10 @@ export default class BasicForms extends PureComponent {
             const updateValue = values;
             const cover = this.state.coverList[0].response;
             const dataList = this.state.dataSetList.slice(0);
-            console.log('coverList', this.state.coverList);
-            console.log('dataSetList', this.state.dataSetList);
             updateValue.cover = cover.url;
             updateValue.data_set = dataList.map(e => ({ id: e.response.url, url: e.response.url }));
-            console.log(updateValue);
+            console.log("updateValue",updateValue);
+            updateValue.task_id=randomString();
             await this.props.dispatch({
               type: 'initiatorTask/uploadNewTask',
               payload: updateValue,
@@ -238,14 +237,23 @@ export default class BasicForms extends PureComponent {
               })(<Input placeholder="填入单个用户最多标注的数量限制" />)}
             </FormItem>
             <FormItem {...formItemLayout} label="奖励值">
-              {getFieldDecorator('reward', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入奖励值',
-                  },
-                ],
-              })(<Input placeholder="填入奖励值" />)}
+            {getFieldDecorator('reward', {
+              rules: [
+                {
+                  required: true,
+                  message: '请输入奖励值',
+                },
+              ],
+            })(<Input placeholder="填写关键词" />)}
+          </FormItem>
+            <FormItem {...formItemLayout} label="关键词" help="请使用回车或逗号分词">
+              {getFieldDecorator('keywords')(<Select
+                mode="tags"
+                placeholder="请输入您期望的用户关键词"
+                notFoundContent="无已经输入的关键词"
+                style={{ width: '100%' }}
+                tokenSeparators={[',']}
+              />)}
             </FormItem>
             <FormItem {...formItemLayout} label="标注类型" help="每个数据集只有一种标注方式">
               <div>

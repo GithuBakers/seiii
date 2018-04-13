@@ -1,0 +1,20 @@
+.Modal {
+  position: absolute;
+  top:0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: transparent;
+  /*overflow: hidden;*/
+  z-index: 200;
+}
+
+.Overlay{
+  position: fixed;
+  top:0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: transparent;
+  z-index: 200;
+}

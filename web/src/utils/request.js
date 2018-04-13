@@ -76,7 +76,7 @@ export default async function request(url, options) {
     const data = await response.json();
     console.log('data', data);
 
-    if (Array.isArray(data)) {
+    if (typeof data !== "object") {
       return data;
     }
 

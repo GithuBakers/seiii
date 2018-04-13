@@ -95,7 +95,7 @@ export default class MyTask extends PureComponent {
     const ListContent = ({ data: { completeness, finished } }) => (
       <div>
         <Progress
-          percent={completeness * 100}
+          percent={completeness}
           status={finished ? undefined : 'active'}
           strokeWidth={6}
           style={{ width: 180 }}
@@ -113,13 +113,13 @@ export default class MyTask extends PureComponent {
     );
 
 
-    const deleteTask = async taskName => {
+    const deleteTask = async taskId => {
       // await this.props.dispatch({
       //   type: 'initiatorTask/deleteTask',
       //   payload: taskName,
       // });
       const hide = await message.loading('正在结束任务', 0);
-      await finishInitiatorTask(taskName);
+      await finishInitiatorTask(taskId);
       await hide();
       await this.setState({ modalVisible: false });
       await this.props.dispatch({
@@ -148,7 +148,7 @@ export default class MyTask extends PureComponent {
               title="达标比例"
               value={
                 <Progress
-                  percent={selectedTask.completeness * 100}
+                  percent={selectedTask.completeness}
                   status={selectedTask.finished ? undefined : 'active'}
                   strokeWidth={6}
                   style={{ width: 180 }}
@@ -177,7 +177,7 @@ export default class MyTask extends PureComponent {
               {}
             ) : (
               <Popconfirm
-                onConfirm={() => deleteTask(selectedTask.task_name)}
+                onConfirm={() => deleteTask(selectedTask.task_id)}
                 title="结束的任务可以在已结束界面再次查阅，但众包工人将不会提供新的数据，是否继续？"
                 okText="Yes"
                 cancelText="No"
@@ -192,7 +192,8 @@ export default class MyTask extends PureComponent {
       </Modal>
     );
 
-    const showDetail = async taskName => {
+    const showDetail = async taskId => {
+      //TODO:1
       await this.props.dispatch({
         type: 'initiatorTask/fetchSelectedTask',
         payload: 1,
@@ -222,7 +223,7 @@ export default class MyTask extends PureComponent {
             <Card
               className={styles.listCard}
               bordered={false}
-              title="标准列表"
+              title="任务列表"
               style={{ marginTop: 24 }}
               bodyStyle={{ padding: '0 32px 40px 32px' }}
               extra={extraContent}
@@ -247,7 +248,7 @@ export default class MyTask extends PureComponent {
                   <List.Item
                     className={styles.list}
                     style={{ cursor: 'pointer' }}
-                    onClick={() => showDetail(item.task_name)}
+                    onClick={() => showDetail(item.task_id)}
                   >
                     <List.Item.Meta
                       avatar={<Avatar src={item.cover} shape="square" size="large" />}

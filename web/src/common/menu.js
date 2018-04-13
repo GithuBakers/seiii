@@ -164,32 +164,7 @@ const menuData = [
       },
     ],
   },
-  {
-    name: '异常页',
-    icon: 'warning',
-    authority: 'ADMIN',
-    path: 'exception',
-    children: [
-      {
-        name: '403',
-        path: '403',
-      },
-      {
-        name: '404',
-        path: '404',
-      },
-      {
-        name: '500',
-        path: '500',
-      },
-      {
-        name: '触发异常',
-        path: 'trigger',
-        hideInMenu: true,
-      },
-    ],
-  },
-  {
+ {
     name: '账户',
     icon: 'user',
     path: 'user',

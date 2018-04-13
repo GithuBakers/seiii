@@ -1,0 +1,17 @@
+.button{
+  position:absolute;
+  z-index: 100;
+  right: 0;
+  top: 0;
+  padding: 20px 40px;
+  background-color: #111926;
+  color: #dfe7f2;
+  transition:all 0.5s;
+  font-size: 40px;
+  cursor:pointer;
+}
+
+.button:hover{
+  background-color: #dfe7f2;
+  color: black;
+}
