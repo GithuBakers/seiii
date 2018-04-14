@@ -76,4 +76,8 @@ public class TaskController implements DataController<Task, TaskFilter> {
     public Task findByID(String id) {
         return taskDAO.findByID(id);
     }
+
+    public int count() {
+        return taskDAO.count();
+    }
 }

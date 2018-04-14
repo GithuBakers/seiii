@@ -77,4 +77,8 @@ public class InitiatorController implements DataController<Initiator, InitiatorF
     public Initiator findByID(String id) {
         return initiatorDAO.findByID(id);
     }
+
+    public int count() {
+        return initiatorDAO.count();
+    }
 }

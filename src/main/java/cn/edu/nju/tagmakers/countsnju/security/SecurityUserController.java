@@ -7,6 +7,7 @@ import cn.edu.nju.tagmakers.countsnju.entity.user.Initiator;
 import cn.edu.nju.tagmakers.countsnju.entity.user.User;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.PasswordVO;
+import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -59,6 +60,8 @@ public class SecurityUserController implements UserDetailsService {
             case WORKER:
                 workerDAO.add(new Worker(user));
                 break;
+            case ADMIN:
+                throw new InvalidInputException("不可以注册管理员");
         }
 
         return true;

@@ -17,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Description:
  * DAO的抽象基类
+ *
  * @author wym
  * Created on 04/06/2018
  * Update:重构
@@ -25,10 +26,22 @@ import java.util.concurrent.ConcurrentHashMap;
  * Update:深拷贝
  * @author wym
  * Last modified on 04/06/2018
+ * <p>
+ * Update:
+ * 增加了count方法
+ * @author wym
+ * Created on 04/15/2018
  */
 public abstract class DAO<T extends Entity, U extends Filter> {
-    ConcurrentHashMap<String,T> map;
+    ConcurrentHashMap<String, T> map;
     String filePath;
+
+    /**
+     * 数一下目前存储的所有对象
+     */
+    public synchronized int count() {
+        return map.size();
+    }
 
     /**
      * 增加一个新的对象
@@ -36,7 +49,7 @@ public abstract class DAO<T extends Entity, U extends Filter> {
      * @param obj 新增的
      * @return 新增的对象
      */
-    public synchronized T add(T obj){
+    public synchronized T add(T obj) {
         //检查输入
         if (checkObjEqualsNull(obj)) {
             throw new InvalidInputException("操作：添加 非法输入：空对象");
@@ -60,7 +73,7 @@ public abstract class DAO<T extends Entity, U extends Filter> {
      * @param id 对象ID
      * @return 是否删除成功
      */
-    public synchronized boolean delete(String id){
+    public synchronized boolean delete(String id) {
         //输入检测
         if (checkStringEqualsNull(id)) {
             throw new InvalidInputException("操作：删除 非法输入：空ID");
@@ -116,7 +129,7 @@ public abstract class DAO<T extends Entity, U extends Filter> {
      * @param id 对象ID
      * @return 查找结果（如果不存在，返回null）
      */
-    public T findByID(String id){
+    public T findByID(String id) {
         //传入空ID的时候返回一个null，不抛出异常
         if (checkStringEqualsNull(id)) {
             return null;
@@ -132,13 +145,13 @@ public abstract class DAO<T extends Entity, U extends Filter> {
      * @param ori map中原来储存的对象
      * @param cur 更新的对象
      */
-    protected abstract void setChanges(T ori,T cur);
+    protected abstract void setChanges(T ori, T cur);
 
     /**********************************
 
      检查输入
 
-    **********************************/
+     **********************************/
 
     private boolean checkStringEqualsNull(String str) {
         return str == null;
@@ -156,7 +169,7 @@ public abstract class DAO<T extends Entity, U extends Filter> {
 
      读写对象
 
-    **********************************/
+     **********************************/
 
     private void writeObject(ConcurrentHashMap<String, T> objMap, String path) {
         FileCreator.createFile(path);
