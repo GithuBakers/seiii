@@ -2,8 +2,8 @@ package cn.edu.nju.tagmakers.countsnju.logic.service;
 
 import cn.edu.nju.tagmakers.countsnju.data.controller.TaskController;
 import cn.edu.nju.tagmakers.countsnju.data.controller.WorkerController;
+import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
-import cn.edu.nju.tagmakers.countsnju.entity.user.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import cn.edu.nju.tagmakers.countsnju.exception.FileIOException;
 import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;

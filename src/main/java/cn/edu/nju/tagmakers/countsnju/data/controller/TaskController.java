@@ -1,7 +1,7 @@
 package cn.edu.nju.tagmakers.countsnju.data.controller;
 
 import cn.edu.nju.tagmakers.countsnju.data.dao.TaskDAO;
-import cn.edu.nju.tagmakers.countsnju.entity.user.Task;
+import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

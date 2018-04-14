@@ -1,11 +1,11 @@
 package cn.edu.nju.tagmakers.countsnju.logic;
 
 import cn.edu.nju.tagmakers.countsnju.CountsnjuApplication;
+import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Initiator;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Role;
-import cn.edu.nju.tagmakers.countsnju.entity.user.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.InitiatorTaskVO;
 import cn.edu.nju.tagmakers.countsnju.exception.NotFoundException;
 import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;

@@ -1,6 +1,6 @@
 package cn.edu.nju.tagmakers.countsnju.data.dao;
 
-import cn.edu.nju.tagmakers.countsnju.entity.user.Task;
+import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +21,11 @@ import java.util.stream.Stream;
  * Update: 修改枚举类的判断
  * @author wym
  * Last modified on 04/08/2018
+ * <p>
+ * Update:
+ * 增加了keywords关键字
+ * @author xxz
+ * Created on 04/14/2018
  */
 @Component
 public class TaskDAO extends DAO<Task, TaskFilter> {
@@ -75,5 +80,6 @@ public class TaskDAO extends DAO<Task, TaskFilter> {
         if (cur.getFinished()) ori.setFinished(true);
         if (cur.getUserMarked().size() > 0) ori.setUserMarked(new ConcurrentHashMap<>(cur.getUserMarked()));
         if (cur.getBareMarked().size() > 0) ori.setBareMarked(new ConcurrentHashMap<>(cur.getBareMarked()));
+        if (cur.getKeywords().size() > 0) ori.setKeywords(new ArrayList<>(cur.getKeywords()));
     }
 }

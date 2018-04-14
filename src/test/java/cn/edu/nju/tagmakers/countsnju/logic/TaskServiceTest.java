@@ -1,8 +1,8 @@
 package cn.edu.nju.tagmakers.countsnju.logic;
 
 import cn.edu.nju.tagmakers.countsnju.CountsnjuApplication;
+import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
-import cn.edu.nju.tagmakers.countsnju.entity.user.Task;
 import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
 import cn.edu.nju.tagmakers.countsnju.exception.NotFoundException;
 import cn.edu.nju.tagmakers.countsnju.logic.service.TaskService;

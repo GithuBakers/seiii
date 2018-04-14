@@ -1,10 +1,10 @@
 package cn.edu.nju.tagmakers.countsnju.logic.service;
 
 import cn.edu.nju.tagmakers.countsnju.data.controller.WorkerController;
+import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Image;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Tag;
-import cn.edu.nju.tagmakers.countsnju.entity.user.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerReceivedTaskDetailVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerReceivedTaskVO;
