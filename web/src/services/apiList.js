@@ -85,15 +85,15 @@ export async function getWorkerTaskImgs(taskName) {
 }
 
 export async function contributeWorkerTask(taskName, imgId, params) {
-  //TODO:1
-  return request(`${version}/worker/task/received_task/1/1`, {
-    method: 'POST',
-    body: params,
-  });
-  // return request(`${version}/worker/task/received_task/${taskName}/${imgId}`, {
+  //TODO:1  will return
+  // return request(`${version}/worker/task/received_task/1/1`, {
   //   method: 'POST',
   //   body: params,
   // });
+  return request(`${version}/worker/task/received_task/${taskName}/${imgId}`, {
+    method: 'POST',
+    body: params,
+  });
 }
 
 export async function getWorkerReceivedTaskList() {
@@ -105,9 +105,13 @@ export async function getWorkerReceivedTask(taskId) {
 }
 
 export async function getWorkerRecommendTask(type) {
-  console.log("api type",type);
   return request(`${version}/worker/recommend_task?type=${type}`);
 }
+
+export async function getSystemInformation() {
+  return request(`${version}/admin/sys_info`);
+}
+
 
 export async function updatePassword(userName, params) {
   console.log("updatePassword",params);

@@ -17,19 +17,8 @@ class EditWorkPage extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps){
-    // const model=nextProps.editWorkModel;
-    // if(nextProps)
-  }
-
-  componentDidMount(){
-    // this.props.dispatch({
-    //   type:'editWorkModel/'
-    // })
-  }
 
   render() {
-    // TODO:防御式编程
     const model=this.props.editWorkModel;
     let isShow=model.finishFetch;
     console.log(model.image);

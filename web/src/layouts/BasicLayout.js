@@ -151,14 +151,24 @@ class BasicLayout extends React.PureComponent {
     });
   };
   handleMenuClick = ({ key }) => {
-    if (key === 'triggerError') {
-      this.props.dispatch(routerRedux.push('/exception/trigger'));
-      return;
-    }
+    const authority=this.props.currentAuthority.toLowerCase();
+    // if (key === 'triggerError') {
+    //   this.props.dispatch(routerRedux.push('/exception/trigger'));
+    //   return;
+    // }
+    console.log("currentAuthority",authority);
     if (key === 'logout') {
       this.props.dispatch({
         type: 'login/logout',
       });
+    }
+
+    if(key==='setting'){
+      this.props.dispatch(routerRedux.push(`/${authority}/setting`));
+    }
+
+    if(key==='profile'){
+      this.props.dispatch(routerRedux.push(`/${authority}/${authority}-profile`));
     }
   };
   handleNoticeVisibleChange = visible => {
@@ -171,6 +181,7 @@ class BasicLayout extends React.PureComponent {
   render() {
     const {
       currentUser,
+      currentAuthority,
       collapsed,
       fetchingNotices,
       notices,
@@ -198,6 +209,7 @@ class BasicLayout extends React.PureComponent {
             <GlobalHeader
               logo={logo}
               currentUser={currentUser}
+              currentAuthority={currentAuthority}
               fetchingNotices={fetchingNotices}
               notices={notices}
               collapsed={collapsed}
@@ -272,6 +284,7 @@ class BasicLayout extends React.PureComponent {
 
 export default connect(({ user, global, loading }) => ({
   currentUser: user.currentUser || {},
+  currentAuthority:user.currentAuthority,
   collapsed: global.collapsed,
   fetchingNotices: loading.effects['global/fetchNotices'],
   notices: global.notices,

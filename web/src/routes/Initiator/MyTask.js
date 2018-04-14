@@ -193,10 +193,14 @@ export default class MyTask extends PureComponent {
     );
 
     const showDetail = async taskId => {
-      //TODO:1
-      await this.props.dispatch({
+      //TODO:1  will return
+      // await this.props.dispatch({
+      //   type: 'initiatorTask/fetchSelectedTask',
+      //   payload: 1,
+      // });
+      atch({
         type: 'initiatorTask/fetchSelectedTask',
-        payload: 1,
+        payload: taskId,
       });
       await this.setState({ modalVisible: true });
     };

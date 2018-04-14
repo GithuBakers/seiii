@@ -10,6 +10,7 @@ export default {
   state: {
     list: [],
     currentUser: {},
+    currentAuthority:'',
   },
 
   effects: {
@@ -22,6 +23,10 @@ export default {
     },
     *fetchCurrent(_, { call, put }) {
       const authority = yield getAuthority();
+      yield put({
+        type: 'saveCurrentAuthority',
+        payload: authority,
+      });
       const userName = yield getUserName();
       yield console.log('userName', userName);
       yield console.log('authority', authority);
@@ -30,8 +35,8 @@ export default {
         response = yield call(getWorkerProfile, userName);
       } else if (authority.includes('INITIATOR')) {
         response = yield call(getInitiatorProfile, userName);
-      } else {
-        response = yield call(queryCurrent);
+      }else {
+        response.user_name='ADMIN';
       }
       yield console.log('user', response);
       yield put({
@@ -95,6 +100,12 @@ export default {
       return {
         ...state,
         currentUser: action.payload,
+      };
+    },
+    saveCurrentAuthority(state, action) {
+      return {
+        ...state,
+        currentAuthority: action.payload,
       };
     },
     changeNotifyCount(state, action) {

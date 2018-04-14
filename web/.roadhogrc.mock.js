@@ -183,6 +183,14 @@ const proxy = {
     completeness: () => mockjs.Random.integer(0, 100), //达标比例
     result: () => mockjs.mock('@url'), //结果所在地
   }),
+  'GET /api/v2/admin/sys_info': mockjs.mock({
+    "initiator_number|1-100":1,
+    "worker_number|1-100":1,
+    "total_user_number|200-300":1,
+    "unfinished_number|2000-3000":1,
+    "finished_number|2000-3000":1,
+    "total_task_number|4000-6000":1
+  }),
   'GET /api/currentUser': {
     $desc: '获取当前用户接口',
     $params: {

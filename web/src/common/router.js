@@ -72,6 +72,9 @@ export const getRouterData = app => {
     '/': {
       component: dynamicWrapper(app, ['user', 'login'], () => import('../layouts/BasicLayout')),
     },
+    '/admin/sys_info':{
+      component: dynamicWrapper(app, ['system'], () => import('../routes/Admin/SystemInfo')),
+    },
     '/worker/my-task': {
       component: dynamicWrapper(app, ['editWorkModel', 'workerTask'], () => import('../routes/Worker/MyTask')),
     },

@@ -24,6 +24,12 @@ const menuData = [
   },
   {
     name: '任务市场',
+    icon: 'eye-o',
+    authority: 'ADMIN',
+    path: 'admin/sys_info',
+  },
+  {
+    name: '任务市场',
     icon: 'appstore-o',
     authority: 'WORKER',
     path: 'worker/task-list',

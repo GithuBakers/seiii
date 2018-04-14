@@ -35,9 +35,9 @@ export default {
     * fetchImageDetail({payload}, {call, put}) {
       yield console.log("start fetch");
       yield put({type: 'setOpenState', payload: {isOpen: true}});
-      // const results = yield call(getWorkerTaskImgs,payload);
-      //TODO:1
-      const results = yield call(getWorkerTaskImgs,1);
+      const results = yield call(getWorkerTaskImgs,payload);
+      //TODO:1  will return
+      // const results = yield call(getWorkerTaskImgs,1);
       yield console.log(results);
       yield put({type: `setImage`, payload: {image: results}});
       yield put({type: `setFinishFetch`, payload: {finishFetch: true}});
