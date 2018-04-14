@@ -12,9 +12,7 @@ const { UserName, Password, Submit } = Login;
   submitting: loading.effects['login/login'],
 }))
 export default class LoginPage extends Component {
-  state = {
-    autoLogin: true,
-  };
+
 
   handleSubmit = (err, values) => {
     if (!err) {
@@ -25,12 +23,6 @@ export default class LoginPage extends Component {
         },
       });
     }
-  };
-
-  changeAutoLogin = e => {
-    this.setState({
-      autoLogin: e.target.checked,
-    });
   };
 
   renderMessage = content => {
@@ -48,13 +40,9 @@ export default class LoginPage extends Component {
               this.renderMessage('账户或密码错误（admin/888888）')}
             <UserName name="user_name" placeholder="admin/initiator/worker" />
             <Password name="password" placeholder="888888/1/1" />
+            <Submit style={{marginTop:'0'}} loading={submitting}>登录</Submit>
           </div>
-          <div>
-            <Checkbox checked={this.state.autoLogin} onChange={this.changeAutoLogin}>
-              自动登录
-            </Checkbox>
-          </div>
-          <Submit loading={submitting}>登录</Submit>
+
           <div className={styles.other}>
             <Link className={styles.register} to="/user/register">
               注册账户

@@ -27,12 +27,9 @@ export default class BasicForms extends PureComponent {
 
   handleSubmit = async taskId => {
     const hide = await message.loading('正在添加任务', 0);
-    // await this.props.dispatch({
-    //   type: 'taskMarket/receiveTask',
-    // });
-    // await receiveWorkerTask(taskId);
-    //TODO:1
-    await receiveWorkerTask(1);
+    await receiveWorkerTask(taskId);
+    //TODO:1  will return
+    // await receiveWorkerTask(1);
     hide();
     await this.setState({modalVisible:false});
     await this.props.dispatch({

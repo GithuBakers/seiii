@@ -18,15 +18,16 @@ export default {
       });
     },
     * fetchSelectedTask({payload}, {call, put}) {
-      // const taskDetail = yield call(getWorkerTaskDetail, payload);
-      //TODO: 1
-      const taskDetail = yield call(getWorkerTaskDetail, 1);
+      const taskDetail = yield call(getWorkerTaskDetail, payload);
+      //TODO: 1  will return
+      // const taskDetail = yield call(getWorkerTaskDetail, 1);
 
       yield put({type: 'setSelectedTaskData', payload: {taskDetail}});
     },
     * receiveTask({payload},{call}){
-      //TODO:1
-      yield call(receiveWorkerTask, 1);
+      //TODO:1  will return
+      yield call(receiveWorkerTask, payload);
+      // yield call(receiveWorkerTask, 1);
     },
 
 

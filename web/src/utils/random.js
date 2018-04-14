@@ -1,5 +1,5 @@
 export function randomString(len) {
-  len = len || 32;
+  len = len || 16;
   const chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';
   const maxPos = chars.length;
   let pwd = '';

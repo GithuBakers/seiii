@@ -53,7 +53,7 @@ public class SecurityUserDAO extends DAO<SecurityUser,SecurityUserFilter>{
         SecurityUser oriSecurityUser = findByID(userID);
         String actualOriPassword = oriSecurityUser.getPassword();
         //验证输入的原有密码是否正确
-        if(!actualOriPassword.equals(oriPassword)){
+        if (!actualOriPassword.equals("{noop}" + oriPassword)) {
             throw new PermissionDeniedException("密码和原有的密码不符，请重新输入");
         }
 

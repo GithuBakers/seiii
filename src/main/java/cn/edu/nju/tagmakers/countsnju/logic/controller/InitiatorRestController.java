@@ -3,6 +3,7 @@ package cn.edu.nju.tagmakers.countsnju.logic.controller;
 import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Initiator;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.InitiatorTaskVO;
+import cn.edu.nju.tagmakers.countsnju.entity.vo.TaskVOBasicInformation;
 import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
 import cn.edu.nju.tagmakers.countsnju.logic.service.InitiatorService;
@@ -97,12 +98,12 @@ public class InitiatorRestController {
     }
 
     /**
-     * @param taskID 结束某一任务
+     * @param task 结束某一任务
      */
     @RequestMapping(value = "/task/finished_task", method = RequestMethod.POST)
-    public Task finishTask(@RequestBody String taskID) {
+    public Task finishTask(@RequestBody Task task) {
         String initiatorName = SecurityUtility.getUserName(SecurityContextHolder.getContext());
-        return initiatorService.finishTask(taskID, initiatorName);
+        return initiatorService.finishTask(task.getTaskID(), initiatorName);
     }
 
 

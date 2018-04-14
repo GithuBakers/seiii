@@ -18,7 +18,7 @@ const proxy = {
   'GET /api/v2/worker/information/worker': mockjs.mock({
     user_name: 'worker',
     role: 'WORKER',
-    avatar: () => mockjs.Random.image('200x100', '#FF6600', 'W'),
+    avatar: () => mockjs.Random.image('100x100', '#FF6600', 'W'),
     nick_name: () => mockjs.Random.cname(),
     'credit|1-100': 1,
     'rank|1-10000': 1,
@@ -32,14 +32,18 @@ const proxy = {
   'POST /api/v2/initiator/information/initiator': true,
   'POST /api/v2/worker/information/worker': true,
   'POST /api/v2/initiator/task/running_task': true,
+  'POST /api/v2/user/password/worker': true,
+  'POST /api/v2/user/password/initiator': true,
+
   'GET /api/v2/initiator/task': (req, res) => {
     let list = {
       'list|5-7': [
         {
+          task_id: () => mockjs.Random.string(), //达标比例
           task_name: () => mockjs.Random.cname(),
           cover: () => mockjs.Random.image('600x300', 'TASK'),
           type: () => typeList[mockjs.Random.integer(0, 2)],
-          completeness: () => mockjs.Random.integer(0, 100) / 100, //达标比例
+          completeness: () => mockjs.Random.integer(0, 100), //达标比例
           finished: true, //状态
         },
       ],
@@ -67,9 +71,10 @@ const proxy = {
     'reward|200-300': 1,
     requirement: () => mockjs.Random.sentence(), //任务要求
     'total_reward|2000-30000': 1,
-    completeness: () => mockjs.Random.float(0, 1), //达标比例
+    completeness: () => mockjs.Random.integer(0, 100), //达标比例
     result: () => mockjs.mock('@url'), //结果所在地
     finished: false, //状态
+    "keywords|5-10":[ ()=>mockjs.Random.name()]
   }),
   'GET /api/v2/worker/task/1': mockjs.mock({
     task_id: () => mockjs.Random.string(), //达标比例
@@ -79,6 +84,7 @@ const proxy = {
     'limit|100-500': 1,
     'reward|200-300': 1,
     requirement: () => mockjs.Random.sentence(), //任务要求
+    "keywords|5-10":[ ()=>mockjs.Random.name()]
   }),
   'GET /api/v2/worker/task_list': (req, res) => {
     let list = {
@@ -94,8 +100,77 @@ const proxy = {
     };
     res.send(JSON.stringify(mockjs.mock(list).list));
   },
-  'POST /api/v2/worker/task/received_task/1': true,
+  'GET /api/v2/worker/recommend_task': (req, res) => {
+    const type=req.query.type;
+    const value= mockjs.mock({
+      task_id: () => mockjs.Random.string(), //达标比例
+      task_name: () => mockjs.Random.cname() + 'task',
+      cover: () => mockjs.Random.image('600x300', '#894FC4', '#FFF', 'TASK1'),
+      type: () => type,
+      'limit|100-500': 1,
+      'reward|200-300': 1,
+      requirement: () => mockjs.Random.sentence(), //任务要求
+      "actual_number|3-5":1,
+      "total_reward|50-100":1,
+      "keywords|5-10":[ ()=>mockjs.Random.name()]
+    });
+    res.send(JSON.stringify(value));
+  },
+  'GET /api/v2/worker/task/received_task/1':  mockjs.mock({
+    task_id: () => mockjs.Random.string(), //达标比例
+    task_name: () => mockjs.Random.cname() + 'task',
+    cover: () => mockjs.Random.image('600x300', '#894FC4', '#FFF', 'TASK1'),
+    type: () => "EDGE",
+    'limit|100-500': 1,
+    'reward|200-300': 1,
+    requirement: () => mockjs.Random.sentence(), //任务要求
+    "actual_number|3-5":1,
+    "total_reward|50-100":1,
+    "keywords|5-10":[ ()=>mockjs.Random.name()]
+  }),
+  'GET /api/v2/worker/task/received_task/img/1' :(req, res) => {
+    let list = {
+      'list|5-7': [
+        {
+          id:()=>mockjs.Random.string,
+          raw: () => mockjs.Random.image(),
+          name: () => mockjs.Random.string(),
+        },
+      ],
+    };
+    res.send(JSON.stringify(mockjs.mock(list).list));
+  },
+  'POST /api/v2/worker/task/received_task/1/1':true,
+  'GET /api/v2/worker/task/received_task': (req, res) => {
+    let list = {
+      'list|15-17': [
+        {
+          task_name: () => mockjs.Random.cname(),
+          cover: () => mockjs.Random.image('600x300', '#894FC4', '#FFF', 'LIST'),
+          type: () => typeList[mockjs.Random.integer(0, 2)],
+          task_id: () => mockjs.Random.string(), //达标比例
+          'actual_number|20-30':1,
+          'total_reward|1000-2000':1,
+          'finished|1':true
+        },
+      ],
+    };
+    res.send(JSON.stringify(mockjs.mock(list).list));
+  },
+
+  'POST /api/v2/worker/task/received_task/1':  mockjs.mock({
+    task_id: () => mockjs.Random.string(), //达标比例
+    task_name: () => mockjs.Random.cname() + 'task',
+    cover: () => mockjs.Random.image('600x300', '#894FC4', '#FFF', 'TASK1'),
+    type: () => "EDGE",
+    'limit|100-500': 1,
+    'reward|200-300': 1,
+    requirement: () => mockjs.Random.sentence(), //任务要求
+    'total_reward|2000-30000': 1,
+    'actual_number|20-30':1,
+  }),
   'POST /api/v2/initiator/task/finished_task': mockjs.mock({
+    task_id: () => mockjs.Random.string(), //达标比例
     task_name: () => mockjs.Random.cname() + 'task',
     initiator_name: () => mockjs.Random.cname(),
     cover: () => mockjs.Random.image('600x300', '#894FC4', '#FFF', 'TASK1'),
@@ -105,8 +180,16 @@ const proxy = {
     'reward|200-300': 1,
     requirement: () => mockjs.Random.sentence(), //任务要求
     'total_reward|2000-30000': 1,
-    completeness: () => mockjs.Random.float(0, 1), //达标比例
+    completeness: () => mockjs.Random.integer(0, 100), //达标比例
     result: () => mockjs.mock('@url'), //结果所在地
+  }),
+  'GET /api/v2/admin/sys_info': mockjs.mock({
+    "initiator_number|1-100":1,
+    "worker_number|1-100":1,
+    "total_user_number|200-300":1,
+    "unfinished_number|2000-3000":1,
+    "finished_number|2000-3000":1,
+    "total_task_number|4000-6000":1
   }),
   'GET /api/currentUser': {
     $desc: '获取当前用户接口',

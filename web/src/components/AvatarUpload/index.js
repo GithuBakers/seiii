@@ -87,7 +87,10 @@ export default class AvatarUpload extends React.Component {
         <div className="ant-upload-text">Avatar</div>
       </div>
     );
-    const image = this.state.imageUrl;
+    let image = this.state.imageUrl;
+    if(!image){
+      image=this.props.defaultUrl;
+    };
     return (
       <Upload
         name="avatar"
@@ -99,7 +102,7 @@ export default class AvatarUpload extends React.Component {
         beforeUpload={this.beforeUpload}
         onChange={this.handleChange}
       >
-        {image ? <img src={image} style={{ width: '100%' }} alt="" /> : uploadButton}
+        {image&&!this.state.loading ? <img src={image} style={{ width: '100%' }} alt="" /> : uploadButton}
       </Upload>
     );
   }

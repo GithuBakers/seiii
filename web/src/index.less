@@ -28,7 +28,20 @@ body {
   .ant-spin-container {
     overflow: visible !important;
   }
-
-
+  .desc-input {
+    width: 100%;
+    .ant-select-selection {
+      background: transparent;
+      .ant-select-selection__rendered {
+        .ant-input {
+          border: 0;
+        }
+        .ant-input:hover, :active, :focus {
+          box-shadow: none;
+        }
+      }
+    }
+  }
 }
+
 

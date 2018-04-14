@@ -22,7 +22,7 @@ export default {
       if (response.status === 'ok') {
         reloadAuthorized();
         yield setUserName(payload.user_name);
-        yield put(routerRedux.push('/'));
+        yield put(routerRedux.push('/dashboard/analysis'));
       }
     },
     *logout(_, { put, select }) {

@@ -1,0 +1,45 @@
+.tags-section{
+  background-color: rgb(248, 251, 255);
+  height: 100vh;
+  color: black;
+}
+
+.tags-section h1{
+  font-size: 3em;
+  padding: 3vh;
+  text-align: center;
+  margin: 0;
+  height: 10vh;
+}
+
+
+.tags-section .desc-input{
+  border:none;
+  background-color: transparent;
+}
+
+.desc-input:focus{
+  box-shadow: none;
+}
+
+.list{
+  padding: 40px;
+  height: 80vh;
+  max-height: 80vh;
+}
+
+
+
+.next-button{
+  height: 10vh;
+  font-size: 3em;
+  text-align: center;
+  line-height: 10vh;
+  cursor: pointer;
+  transition: all 0.6s;
+  font-weight: bold;
+}
+.next-button:hover{
+  background-color: #111926;
+  color: white;
+}

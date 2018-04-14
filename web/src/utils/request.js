@@ -2,6 +2,8 @@ import fetch from 'dva/fetch';
 import { notification } from 'antd';
 import { routerRedux } from 'dva/router';
 import store from '../index';
+import {getToken} from './authority'
+
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -66,6 +68,11 @@ export default async function request(url, options) {
     }
   }
 
+  newOptions.headers={
+    Authorization:getToken(),
+    ...newOptions.headers,
+  };
+
   const response = await fetch(url, newOptions);
   try {
     await checkStatus(response);
@@ -76,7 +83,7 @@ export default async function request(url, options) {
     const data = await response.json();
     console.log('data', data);
 
-    if (Array.isArray(data)) {
+    if (typeof data !== "object"||Array.isArray(data)) {
       return data;
     }
 

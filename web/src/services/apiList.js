@@ -18,7 +18,6 @@ export async function register(params) {
 
 // INITIATOR
 export async function getInitiatorProfile(userName) {
-  console.log('init profile', userName);
   return request(`${version}/initiator/information/${userName}`);
 }
 
@@ -41,15 +40,15 @@ export async function getInitiatorTask(finished) {
   return request(`${version}/initiator/task?finished=${finished}`);
 }
 
-export async function getInitiatorTaskDetail(taskName) {
-  return request(`${version}/initiator/task/${taskName}`);
+export async function getInitiatorTaskDetail(taskId) {
+  return request(`${version}/initiator/task/${taskId}`);
 }
 
-export async function finishInitiatorTask(taskName) {
+export async function finishInitiatorTask(taskId) {
   return request(`${version}/initiator/task/finished_task`, {
     method: 'POST',
     body: {
-      task_name: taskName,
+      task_name: taskId,
     },
   });
 }
@@ -60,6 +59,7 @@ export async function getWorkerProfile(userName) {
 }
 
 export async function setWorkerProfile(userName, params) {
+  console.log("setProfile",params);
   return request(`${version}/worker/information/${userName}`, {
     method: 'POST',
     body: params,
@@ -85,6 +85,11 @@ export async function getWorkerTaskImgs(taskName) {
 }
 
 export async function contributeWorkerTask(taskName, imgId, params) {
+  //TODO:1  will return
+  // return request(`${version}/worker/task/received_task/1/1`, {
+  //   method: 'POST',
+  //   body: params,
+  // });
   return request(`${version}/worker/task/received_task/${taskName}/${imgId}`, {
     method: 'POST',
     body: params,
@@ -95,6 +100,23 @@ export async function getWorkerReceivedTaskList() {
   return request(`${version}/worker/task/received_task`);
 }
 
-export async function getWorkerReceivedTask(taskName) {
-  return request(`${version}/worker/task/received_task/${taskName}`);
+export async function getWorkerReceivedTask(taskId) {
+  return request(`${version}/worker/task/received_task/${taskId}`);
+}
+
+export async function getWorkerRecommendTask(type) {
+  return request(`${version}/worker/recommend_task?type=${type}`);
+}
+
+export async function getSystemInformation() {
+  return request(`${version}/admin/sys_info`);
+}
+
+
+export async function updatePassword(userName, params) {
+  console.log("updatePassword",params);
+  return request(`${version}/user/password/${userName}`, {
+    method: 'POST',
+    body: params,
+  });
 }

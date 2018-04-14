@@ -57,10 +57,14 @@ public class TaskService {
         if (task == null || task.getDataSet() == null) {
             throw new InvalidInputException("此任务没有上传数据集");
         }
+        //设置finished
+        task.setFinished(false);
+        taskController.add(task);
         for (Bare bare : task.getDataSet()) {
             bareService.addBare(bare);
         }
-        taskController.add(task);
+
+
     }
 
 

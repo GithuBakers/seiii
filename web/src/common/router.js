@@ -72,11 +72,14 @@ export const getRouterData = app => {
     '/': {
       component: dynamicWrapper(app, ['user', 'login'], () => import('../layouts/BasicLayout')),
     },
+    '/admin/sys_info':{
+      component: dynamicWrapper(app, ['system'], () => import('../routes/Admin/SystemInfo')),
+    },
     '/worker/my-task': {
-      component: dynamicWrapper(app, ['form'], () => import('../routes/Worker/MyTask')),
+      component: dynamicWrapper(app, ['editWorkModel', 'workerTask'], () => import('../routes/Worker/MyTask')),
     },
     '/worker/setting': {
-      component: dynamicWrapper(app, ['form'], () => import('../routes/Worker/Setting')),
+      component: dynamicWrapper(app, ['user'], () => import('../routes/Worker/Setting')),
     },
     '/worker/task-list': {
       component: dynamicWrapper(app, ['taskMarket'], () => import('../routes/Worker/TaskList')),
@@ -93,7 +96,7 @@ export const getRouterData = app => {
       component: dynamicWrapper(app, ['form'], () => import('../routes/Initiator/NewTask')),
     },
     '/initiator/setting': {
-      component: dynamicWrapper(app, ['form'], () => import('../routes/Initiator/Setting')),
+      component: dynamicWrapper(app, ['user'], () => import('../routes/Initiator/Setting')),
     },
     '/initiator/my-task': {
       component: dynamicWrapper(app, ['initiatorTask'], () => import('../routes/Initiator/MyTask')),
@@ -186,7 +189,7 @@ export const getRouterData = app => {
       component: dynamicWrapper(app, [], () => import('../layouts/UserLayout')),
     },
     '/user/login': {
-      component: dynamicWrapper(app, ['login'], () => import('../routes/User/Login')),
+      component: dynamicWrapper(app, ['login','user'], () => import('../routes/User/Login')),
     },
     '/user/register': {
       component: dynamicWrapper(app, ['register'], () => import('../routes/User/Register')),
