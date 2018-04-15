@@ -1,11 +1,18 @@
 package cn.edu.nju.tagmakers.countsnju.filter;
 
+import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
+
 /**
  * Description:
  * 众包任务的筛选器
  *
  * @author xxz
  * Created on 04/06/2018
+ *
+ * Update:
+ * 增加"任务种类"字段
+ * @author xxz
+ * Created on 04/15/2018
  */
 public class TaskFilter implements Filter {
 
@@ -14,6 +21,8 @@ public class TaskFilter implements Filter {
 
     //创建人
     private String initiatorName;
+
+    private MarkType markType;
 
 
     public Boolean getFinished() {
@@ -30,5 +39,13 @@ public class TaskFilter implements Filter {
 
     public void setInitiatorName(String initiatorName) {
         this.initiatorName = initiatorName;
+    }
+
+    public MarkType getMarkType() {
+        return markType;
+    }
+
+    public void setMarkType(MarkType markType) {
+        this.markType = markType;
     }
 }

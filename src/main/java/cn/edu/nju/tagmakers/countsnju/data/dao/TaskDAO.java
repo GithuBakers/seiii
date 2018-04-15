@@ -26,6 +26,11 @@ import java.util.stream.Stream;
  * 增加了keywords关键字
  * @author xxz
  * Created on 04/14/2018
+ *
+ * Update:
+ * 增加了filter中的"类型"关键字
+ * @author xxz
+ * Created on 04/15/2018
  */
 @Component
 public class TaskDAO extends DAO<Task, TaskFilter> {
@@ -50,6 +55,9 @@ public class TaskDAO extends DAO<Task, TaskFilter> {
             Stream<Task> taskStream = map.values().stream();
             if (filter.getInitiatorName() != null) {
                 taskStream = taskStream.filter(task -> task.getInitiatorName().equals(filter.getInitiatorName()));
+            }
+            if (filter.getMarkType() != null) {
+                taskStream = taskStream.filter(task -> task.getType() == filter.getMarkType());
             }
             if (filter.getFinished() != null) {
                 taskStream = taskStream.filter(task -> task.getFinished().equals(filter.getFinished()));

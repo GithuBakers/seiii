@@ -4,6 +4,7 @@ import cn.edu.nju.tagmakers.countsnju.data.controller.WorkerController;
 import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Image;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Tag;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerReceivedTaskDetailVO;
@@ -241,6 +242,26 @@ public class WorkerService {
             throw new PermissionDeniedException("这不是你的任务！");
         }
         return new WorkerReceivedTaskDetailVO(task, worker);
+    }
+
+    /**
+     * 获取推荐的任务
+     * 确保是工人可以接受的任务
+     *
+     * @param type       种类
+     * @param workerName 工人名
+     */
+    public WorkerTaskDetailVO getRecommendTask(MarkType type, String workerName) {
+        TaskFilter filter = new TaskFilter();
+        filter.setMarkType(type);
+        filter.setFinished(false);
+        List<Task> taskList = taskService.findTask(filter);
+        for (Task task : taskList) {
+            if (!task.getUserMarked().keySet().contains(workerName)) {
+                return new WorkerTaskDetailVO(task);
+            }
+        }
+        throw new NotFoundException("暂时没有推荐给你的任务喔");
     }
 
     /**
