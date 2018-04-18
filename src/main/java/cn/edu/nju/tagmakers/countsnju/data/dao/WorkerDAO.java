@@ -2,6 +2,7 @@ package cn.edu.nju.tagmakers.countsnju.data.dao;
 
 import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import cn.edu.nju.tagmakers.countsnju.filter.WorkerFilter;
+import com.sun.corba.se.spi.orbutil.threadpool.Work;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -51,7 +52,7 @@ public class WorkerDAO extends DAO<Worker,WorkerFilter>{
      * @param cur 更新的对象
      */
     @Override
-    protected void setChanges(Worker ori, Worker cur) {
+    protected Worker setChanges(Worker ori, Worker cur) {
         if(cur.getAvatar() != null)ori.setAvatar(cur.getAvatar());
         if(cur.getNickName() != null)ori.setNickName(cur.getNickName());
         if(cur.getPassword() != null)ori.setPassword(cur.getPassword());
@@ -61,5 +62,6 @@ public class WorkerDAO extends DAO<Worker,WorkerFilter>{
         if (cur.getTaskIDs().size() > 0) ori.setTaskIDs(new ArrayList<>(cur.getTaskIDs()));
         if(cur.getCredit() > 0)ori.setCredit(cur.getCredit());
         if(cur.getRank() > 0)ori.setRank(cur.getRank());
+        return ori;
     }
 }

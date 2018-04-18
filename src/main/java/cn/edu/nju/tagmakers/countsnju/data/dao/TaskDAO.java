@@ -76,7 +76,7 @@ public class TaskDAO extends DAO<Task, TaskFilter> {
      * @param cur 更新的对象
      */
     @Override
-    protected void setChanges(Task ori, Task cur) {
+    protected Task setChanges(Task ori, Task cur) {
         if (cur.getTaskName() != null) ori.setTaskName(cur.getTaskName());
         if (cur.getInitiatorName() != null) ori.setInitiatorName(cur.getInitiatorName());
         if (cur.getCover() != null) ori.setCover(cur.getCover());
@@ -90,6 +90,6 @@ public class TaskDAO extends DAO<Task, TaskFilter> {
         if (cur.getFinished()) ori.setFinished(true);
         if (cur.getUserMarked().size() > 0) ori.setUserMarked(new ConcurrentHashMap<>(cur.getUserMarked()));
         if (cur.getBareMarked().size() > 0) ori.setBareMarked(new ConcurrentHashMap<>(cur.getBareMarked()));
-        if (cur.getKeywords().size() > 0) ori.setKeywords(new ArrayList<>(cur.getKeywords()));
+        return ori;
     }
 }

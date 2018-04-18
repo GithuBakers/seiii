@@ -17,7 +17,6 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Description:
  * DAO的抽象基类
- *
  * @author wym
  * Created on 04/06/2018
  * Update:重构
@@ -108,7 +107,7 @@ public abstract class DAO<T extends Entity, U extends Filter> {
 
         //实现
         T toCopy = (T) map.get(obj.getPrimeKey()).copy();
-        setChanges(toCopy, obj);
+        toCopy = setChanges(toCopy, obj);
         map.put(toCopy.getPrimeKey(), toCopy);
         writeObject(map, filePath);
         T ret = (T) map.get(obj.getPrimeKey()).copy();
@@ -145,7 +144,7 @@ public abstract class DAO<T extends Entity, U extends Filter> {
      * @param ori map中原来储存的对象
      * @param cur 更新的对象
      */
-    protected abstract void setChanges(T ori, T cur);
+    protected abstract T setChanges(T ori, T cur);
 
     /**********************************
 

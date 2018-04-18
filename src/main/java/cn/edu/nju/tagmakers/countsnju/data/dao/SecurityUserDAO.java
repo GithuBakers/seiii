@@ -44,9 +44,10 @@ public class SecurityUserDAO extends DAO<SecurityUser,SecurityUserFilter>{
      * @param cur 更新的对象
      */
     @Override
-    protected void setChanges(SecurityUser ori, SecurityUser cur) {
+    protected SecurityUser setChanges(SecurityUser ori, SecurityUser cur) {
         //仅仅负责更新密码的操作,默认这里的都是合法的密码
         ori = new SecurityUser(cur);
+        return ori;
     }
 
     public boolean updatePassword(String userID,String oriPassword,String newPassword){
