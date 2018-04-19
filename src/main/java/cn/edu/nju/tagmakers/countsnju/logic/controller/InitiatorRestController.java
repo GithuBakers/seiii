@@ -95,7 +95,7 @@ public class InitiatorRestController {
      * @param taskID 任务名
      */
     @RequestMapping(value = "/task/{task_id}", method = RequestMethod.GET)
-    public Task getTaskByName(@PathVariable(value = "task_id") String taskID) {
+    public InitiatorTaskVO getTaskByName(@PathVariable(value = "task_id") String taskID) {
         String initiatorName = SecurityUtility.getUserName(SecurityContextHolder.getContext());
         return initiatorService.findTaskByName(taskID, initiatorName);
     }

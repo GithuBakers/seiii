@@ -92,12 +92,12 @@ public class InitiatorService {
      * @param taskID        任务名
      * @param initiatorName 发起者名
      */
-    public Task findTaskByName(String taskID, String initiatorName) {
+    public InitiatorTaskVO findTaskByName(String taskID, String initiatorName) {
 
         if (!isOwner(taskID, initiatorName)) {
             throw new PermissionDeniedException("这不是你创建的任务！");
         }
-        return taskService.findByID(taskID);
+        return new InitiatorTaskVO(taskService.findByID(taskID));
     }
 
     private boolean isOwner(String taskID, String initiatorName) {
