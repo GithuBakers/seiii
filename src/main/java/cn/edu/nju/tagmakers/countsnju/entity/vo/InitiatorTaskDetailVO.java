@@ -1,9 +1,12 @@
 package cn.edu.nju.tagmakers.countsnju.entity.vo;
 
+import cn.edu.nju.tagmakers.countsnju.entity.Criterion;
 import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+
+import java.util.List;
 
 /**
  * Description:
@@ -20,6 +23,8 @@ public class InitiatorTaskDetailVO {
     @JsonProperty("total_reward")
     private int totalReward;
 
+    @JsonUnwrapped
+    private List<Criterion> dependencies;
 
     public InitiatorTaskDetailVO(Task task) {
         this.task = task;
@@ -29,5 +34,6 @@ public class InitiatorTaskDetailVO {
                         .reduce((integer, integer2) -> integer + integer2)
                         .orElse(0)
                 * task.getReward());
+        this.dependencies = task.getDependencies();
     }
 }
