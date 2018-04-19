@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
  * Created on 04/19/2018
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public class InitiatorTaskDetail {
+public class InitiatorTaskDetailVO {
     @JsonUnwrapped
     private Task task;
 
@@ -21,7 +21,7 @@ public class InitiatorTaskDetail {
     private int totalReward;
 
 
-    public InitiatorTaskDetail(Task task) {
+    public InitiatorTaskDetailVO(Task task) {
         this.task = task;
         totalReward = (int) (0.4 *
                 task.getBareMarked()
