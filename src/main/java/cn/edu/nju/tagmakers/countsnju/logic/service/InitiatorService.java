@@ -3,6 +3,7 @@ package cn.edu.nju.tagmakers.countsnju.logic.service;
 import cn.edu.nju.tagmakers.countsnju.data.controller.InitiatorController;
 import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Initiator;
+import cn.edu.nju.tagmakers.countsnju.entity.vo.InitiatorTaskDetailVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.InitiatorTaskVO;
 import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
@@ -92,12 +93,12 @@ public class InitiatorService {
      * @param taskID        任务名
      * @param initiatorName 发起者名
      */
-    public InitiatorTaskVO findTaskByName(String taskID, String initiatorName) {
+    public InitiatorTaskDetailVO findTaskByName(String taskID, String initiatorName) {
 
         if (!isOwner(taskID, initiatorName)) {
             throw new PermissionDeniedException("这不是你创建的任务！");
         }
-        return new InitiatorTaskVO(taskService.findByID(taskID));
+        return new InitiatorTaskDetailVO(taskService.findByID(taskID));
     }
 
     private boolean isOwner(String taskID, String initiatorName) {

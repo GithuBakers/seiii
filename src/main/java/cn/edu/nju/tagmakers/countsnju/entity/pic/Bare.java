@@ -27,6 +27,7 @@ import java.io.Serializable;
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class Bare extends Entity<Bare> implements Serializable {
+    @JsonIgnore
     private static final long serialVersionUID = 1L;
 
     /**
@@ -42,17 +43,17 @@ public class Bare extends Entity<Bare> implements Serializable {
     /**
      * 缩略图URL
      */
-    @JsonProperty(value = "url_small")
+    @JsonIgnore
     private String thumbnail;
     /**
      * 小缩略图URL
      */
-    @JsonProperty(value = "url_ex_small")
+    @JsonIgnore
     private String exThumbnail;
     /**
      * 原图URL
      */
-    @JsonProperty(value = "url")
+    @JsonProperty(value = "raw")
     private String raw;
 
     /**
@@ -149,6 +150,7 @@ public class Bare extends Entity<Bare> implements Serializable {
      * @return id
      */
     @Override
+    @JsonIgnore
     public String getPrimeKey() {
         return id;
     }

@@ -30,10 +30,17 @@ public class WorkerReceivedTaskDetailVO {
     @JsonProperty(value = "reward")
     private int reward;
 
+    /**
+     * 任务要求
+     */
+    @JsonProperty("requirement")
+    private String requirement;
+
     public WorkerReceivedTaskDetailVO(Task task, Worker worker) {
         taskVO = new WorkerReceivedTaskVO(task, worker);
         limit = task.getLimit();
         reward = task.getReward();
+        requirement = task.getRequirement();
     }
 
     public WorkerReceivedTaskVO getTaskVO() {

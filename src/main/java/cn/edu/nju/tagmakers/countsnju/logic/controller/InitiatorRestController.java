@@ -2,6 +2,7 @@ package cn.edu.nju.tagmakers.countsnju.logic.controller;
 
 import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Initiator;
+import cn.edu.nju.tagmakers.countsnju.entity.vo.InitiatorTaskDetailVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.InitiatorTaskVO;
 import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
@@ -80,12 +81,12 @@ public class InitiatorRestController {
     /**
      * 获取自己新建的任务列表
      *
-     * @param isFinished 是否完成（筛选条件）
+     * @param finished 是否完成（筛选条件）
      */
     @RequestMapping(value = "/task", method = RequestMethod.GET)
-    public List<InitiatorTaskVO> getTasks(@PathParam(value = "finished") boolean isFinished) {
+    public List<InitiatorTaskVO> getTasks(@PathParam(value = "finished") boolean finished) {
         TaskFilter filter = new TaskFilter();
-        filter.setFinished(isFinished);
+        filter.setFinished(finished);
         return initiatorService.findInitiatorTask(filter);
     }
 
@@ -95,7 +96,7 @@ public class InitiatorRestController {
      * @param taskID 任务名
      */
     @RequestMapping(value = "/task/{task_id}", method = RequestMethod.GET)
-    public InitiatorTaskVO getTaskByName(@PathVariable(value = "task_id") String taskID) {
+    public InitiatorTaskDetailVO getTaskByName(@PathVariable(value = "task_id") String taskID) {
         String initiatorName = SecurityUtility.getUserName(SecurityContextHolder.getContext());
         return initiatorService.findTaskByName(taskID, initiatorName);
     }
