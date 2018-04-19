@@ -2,7 +2,6 @@ package cn.edu.nju.tagmakers.countsnju.entity.user;
 
 import cn.edu.nju.tagmakers.countsnju.entity.Entity;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
@@ -16,6 +15,11 @@ import java.io.Serializable;
  * Update:增加获取主键方法
  * @author wym
  * Last modified on 04/06/2018
+ *
+ * Update:
+ * ym!!!你为什么把password注释掉！！！！！
+ * @author xxz
+ * Created on 04/17/2018
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class User extends Entity<User> implements Serializable {
@@ -24,8 +28,8 @@ public class User extends Entity<User> implements Serializable {
     @JsonProperty(value = "user_name")
     protected String userID;
 
-    //    @JsonProperty(value = "password")
-    @JsonIgnore
+    //    @JsonIgnore
+    @JsonProperty(value = "password")
     protected String password;
 
     @JsonProperty(value = "nick_name")

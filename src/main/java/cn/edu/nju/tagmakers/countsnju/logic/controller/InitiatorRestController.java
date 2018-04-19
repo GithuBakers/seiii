@@ -3,7 +3,6 @@ package cn.edu.nju.tagmakers.countsnju.logic.controller;
 import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Initiator;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.InitiatorTaskVO;
-import cn.edu.nju.tagmakers.countsnju.entity.vo.TaskVOBasicInformation;
 import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
 import cn.edu.nju.tagmakers.countsnju.logic.service.InitiatorService;
@@ -71,6 +70,10 @@ public class InitiatorRestController {
      */
     @RequestMapping(value = "/task/running_task", method = RequestMethod.POST)
     public boolean addTask(@RequestBody Task task) {
+        //后来甩锅给前端啦
+//        task.setCover(URLUtil.processURL(task.getCover()));
+        String initiatorName = SecurityUtility.getUserName(SecurityContextHolder.getContext());
+        task.setInitiatorName(initiatorName);
         return initiatorService.createTask(task);
     }
 

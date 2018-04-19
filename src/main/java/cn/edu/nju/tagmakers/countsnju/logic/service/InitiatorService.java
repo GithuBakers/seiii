@@ -61,7 +61,8 @@ public class InitiatorService {
 
     /**
      * 结束一项任务
-     * @param taskName 任务名
+     *
+     * @param taskName      任务名
      * @param initiatorName 企图结束任务的用户名
      */
     public Task finishTask(String taskName, String initiatorName) {
@@ -88,7 +89,7 @@ public class InitiatorService {
     /**
      * 查看自己发起的某一任务的详情
      *
-     * @param taskID      任务名
+     * @param taskID        任务名
      * @param initiatorName 发起者名
      */
     public Task findTaskByName(String taskID, String initiatorName) {
@@ -104,7 +105,11 @@ public class InitiatorService {
         if (toLookUp == null) {
             throw new PermissionDeniedException("没有此任务！");
         }
-        return toLookUp.getInitiatorName().equals(initiatorName);
+        String taskInitiatorName = toLookUp.getInitiatorName();
+        if (taskInitiatorName == null || initiatorName == null) {
+            throw new PermissionDeniedException("没有此任务！");
+        }
+        return taskInitiatorName.equals(initiatorName);
     }
 
 }

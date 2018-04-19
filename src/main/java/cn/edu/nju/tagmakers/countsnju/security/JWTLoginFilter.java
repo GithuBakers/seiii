@@ -8,7 +8,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -17,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.stream.Collectors;
 
 /**
  * Update:
@@ -39,7 +37,7 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
         try {
             SecurityUser securityUser = new ObjectMapper()
                     .readValue(req.getInputStream(), SecurityUser.class);
-
+//            securityUser.setSecurityPassword("{noop}"+securityUser.getPassword());
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             securityUser.getUsername(),
@@ -63,9 +61,8 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
                 .signWith(SignatureAlgorithm.HS512, "ymymym")
                 .compact();
         res.addHeader("Authorization", "Bearer " + token);
-        res.addHeader("Roles", auth.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList()).toString()
-        );
+        res.addHeader("Roles", new ArrayList<>(auth.getAuthorities()).get(0).getAuthority()
+                .replaceAll("ROLE_", ""));
+
     }
 }

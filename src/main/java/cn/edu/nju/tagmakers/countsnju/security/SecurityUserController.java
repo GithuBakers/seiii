@@ -7,6 +7,7 @@ import cn.edu.nju.tagmakers.countsnju.entity.user.Initiator;
 import cn.edu.nju.tagmakers.countsnju.entity.user.User;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.PasswordVO;
+import cn.edu.nju.tagmakers.countsnju.entity.vo.RegisterResponse;
 import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
+import util.URLUtil;
 
 /**
  * Description:
@@ -42,15 +44,19 @@ public class SecurityUserController implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         SecurityUser securityUser = securityUserDAO.findByID(username);
+
         if (securityUser == null) {
             throw new UsernameNotFoundException(username);
         }
+//        String password=securityUser.getPassword().replaceAll("\\{noop}","");
+//        securityUser.setSecurityPassword(password);
         return securityUser;
     }
 
     @RequestMapping(value = "/user/new_user", method = RequestMethod.POST)
-    public boolean signUp(@RequestBody User user) {
+    public RegisterResponse signUp(@RequestBody User user) {
         user.setPassword("{noop}" + user.getPassword());
+        user.setAvatar(URLUtil.processURL(user.getAvatar()));
         SecurityUser securityUser = new SecurityUser(user);
         securityUserDAO.add(securityUser);
         switch (user.getRole()) {
@@ -64,7 +70,7 @@ public class SecurityUserController implements UserDetailsService {
                 throw new InvalidInputException("不可以注册管理员");
         }
 
-        return true;
+        return new RegisterResponse("ok");
 
     }
 
