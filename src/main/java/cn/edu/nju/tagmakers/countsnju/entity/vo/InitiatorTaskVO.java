@@ -39,7 +39,9 @@ public class InitiatorTaskVO {
         //累加所有的标注量之后进行换算
         int curAim = 0;
         for (Integer num : userMarked.values()) {
-            curAim += num;
+            if (num > task.getAim()) {
+                curAim++;
+            }
         }
         completeness = (float) (int) ((double) curAim * 100 / task.getAim());
 

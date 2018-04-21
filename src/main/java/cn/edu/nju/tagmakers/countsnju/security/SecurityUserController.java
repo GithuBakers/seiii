@@ -28,6 +28,8 @@ import util.URLUtil;
 @RestController
 public class SecurityUserController implements UserDetailsService {
 
+    private final String NOOP = "{noop}";
+
     private final SecurityUserDAO securityUserDAO;
 
     private final InitiatorDAO initiatorDAO;
@@ -53,9 +55,12 @@ public class SecurityUserController implements UserDetailsService {
         return securityUser;
     }
 
+    /**
+     * 注册的时候会在密码前加noop
+     */
     @RequestMapping(value = "/user/new_user", method = RequestMethod.POST)
     public RegisterResponse signUp(@RequestBody User user) {
-        user.setPassword("{noop}" + user.getPassword());
+        user.setPassword(NOOP + user.getPassword());
         user.setAvatar(URLUtil.processURL(user.getAvatar()));
         SecurityUser securityUser = new SecurityUser(user);
         securityUserDAO.add(securityUser);
@@ -74,9 +79,13 @@ public class SecurityUserController implements UserDetailsService {
 
     }
 
+    /**
+     * 修改密码要在密码前加{noop}
+     */
     @RequestMapping("/user/password/{user_name}")
     public boolean changePassword(@PathVariable(value = "user_name") String username, @RequestBody PasswordVO passwordVO) {
-        return securityUserDAO.updatePassword(username, passwordVO.getOriPassword(), passwordVO.getNewPassword());
+        return securityUserDAO.updatePassword(username, NOOP + passwordVO.getOriPassword(),
+                NOOP + passwordVO.getNewPassword());
     }
 
 

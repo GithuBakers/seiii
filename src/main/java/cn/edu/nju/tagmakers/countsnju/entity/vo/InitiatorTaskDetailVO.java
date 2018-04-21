@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
+import java.util.Map;
+
 /**
  * Description:
  * 发起者查看任务详情
@@ -20,6 +22,11 @@ public class InitiatorTaskDetailVO {
     @JsonProperty("total_reward")
     private int totalReward;
 
+    /**
+     * 任务当前已达标图片的比例
+     */
+    @JsonProperty(value = "completeness")
+    private Float completeness;
 
     public InitiatorTaskDetailVO(Task task) {
         this.task = task;
@@ -29,5 +36,16 @@ public class InitiatorTaskDetailVO {
                         .reduce((integer, integer2) -> integer + integer2)
                         .orElse(0)
                 * task.getReward());
+
+        Map<String, Integer> userMarked = task.getUserMarked();
+
+        //累加所有的标注量之后进行换算
+        int curAim = 0;
+        for (Integer num : userMarked.values()) {
+            if (num > task.getAim()) {
+                curAim++;
+            }
+        }
+        completeness = (float) (int) ((double) curAim * 100 / task.getAim());
     }
 }

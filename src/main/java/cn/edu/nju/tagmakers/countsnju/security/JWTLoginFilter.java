@@ -25,6 +25,7 @@ import java.util.Date;
  * Created on 04/07/2018
  */
 public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
+    private final String NOOP = "{noop}";
     private AuthenticationManager authenticationManager;
 
     public JWTLoginFilter(AuthenticationManager authenticationManager) {
@@ -37,7 +38,9 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
         try {
             SecurityUser securityUser = new ObjectMapper()
                     .readValue(req.getInputStream(), SecurityUser.class);
-//            securityUser.setSecurityPassword("{noop}"+securityUser.getPassword());
+            //这里的security user是从前端的包生成的，所以密码里不含noop，因此要在这里手动加上
+            //不！！！Spring security在解析密码的时候会自动去掉noop，所以登录不用加noop
+            securityUser.setSecurityPassword(securityUser.getPassword());
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             securityUser.getUsername(),

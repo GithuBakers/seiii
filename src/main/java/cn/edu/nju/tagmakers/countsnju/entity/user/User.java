@@ -28,6 +28,9 @@ public class User extends Entity<User> implements Serializable {
     @JsonProperty(value = "user_name")
     protected String userID;
 
+    /**
+     * 这里如果ignore的话无法解析前端发来的数据
+     */
     //    @JsonIgnore
     @JsonProperty(value = "password")
     protected String password;

@@ -276,7 +276,9 @@ public class WorkerService {
         List<Bare> ret = new LinkedList<>();
         //"随机算法"
         for (int i = 0; i < number; i++) {
-            int random = Math.abs(new Random(System.currentTimeMillis()).nextInt()) % task.getDataSet().size();
+            int random = Math.abs(new Random(System.currentTimeMillis()).nextInt());
+            random += i;
+            random = random % task.getDataSet().size();
             Bare bare = task.getDataSet().get(random);
             if (!ret.contains(bare) && !worker.getBareIDs().contains(bare.getId())) {
                 ret.add(bare);

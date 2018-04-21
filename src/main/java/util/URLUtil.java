@@ -10,6 +10,9 @@ package util;
 public class URLUtil {
 
     public static String processURL(String url) {
+        if (url == null) {
+            return null;
+        }
         return url.replaceAll("\\?upload.*", "");
     }
 }

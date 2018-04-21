@@ -19,6 +19,11 @@ import java.util.List;
  *
  * @author WYM
  * Created on 04/07/2018
+ *
+ * Update:
+ * 去掉登录时加上的{noop}
+ * @author xxz
+ * Created on 04/17/2018
  */
 
 public class SecurityUser extends Entity<SecurityUser> implements UserDetails {
