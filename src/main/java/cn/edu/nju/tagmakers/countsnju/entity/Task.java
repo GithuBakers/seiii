@@ -102,6 +102,13 @@ public class Task extends Entity<Task> implements Serializable {
      */
     @JsonProperty("keywords")
     private List<String> keywords;
+
+    /**
+     * 依赖的标准集对象
+     */
+    @JsonProperty(value = "dependencies")
+    private List<Criterion> dependencies;
+
     /**
      * user和已经标注的数量
      */
@@ -138,6 +145,9 @@ public class Task extends Entity<Task> implements Serializable {
         }
         if (toCopy.bareMarked != null) {
             this.bareMarked = new HashMap<>(toCopy.bareMarked);
+        }
+        if (toCopy.getDependencies() != null) {
+            this.dependencies = new ArrayList<>(toCopy.dependencies);
         }
     }
 
@@ -260,6 +270,18 @@ public class Task extends Entity<Task> implements Serializable {
 
     public void setKeywords(List<String> keywords) {
         this.keywords = keywords;
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public List<Criterion> getDependencies() {
+        return dependencies;
+    }
+
+    public void setDependencies(List<Criterion> dependencies) {
+        this.dependencies = dependencies;
     }
 
     /**
