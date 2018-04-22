@@ -7,7 +7,7 @@ import java.util.Calendar;
 public class Result {
     Bare bare;
     Calendar submitTime;
-    boolean passed;
+    boolean correct;
     boolean hasTested;
 
     Result(Bare bare) {
@@ -30,12 +30,12 @@ public class Result {
         this.submitTime = submitTime;
     }
 
-    public boolean isPassed() {
-        return passed;
+    public boolean isCorrect() {
+        return correct;
     }
 
-    public void setPassed(boolean passed) {
-        this.passed = passed;
+    public void setCorrect(boolean correct) {
+        this.correct = correct;
     }
 
     public boolean isHasTested() {

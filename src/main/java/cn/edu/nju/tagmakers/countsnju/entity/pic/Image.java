@@ -1,5 +1,6 @@
 package cn.edu.nju.tagmakers.countsnju.entity.pic;
 
+import cn.edu.nju.tagmakers.countsnju.entity.Entity;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
@@ -23,7 +24,7 @@ import java.util.List;
  * modified on 03/22/2018
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public class Image implements Serializable {
+public class Image extends Entity<Image> implements Serializable {
     private static final long serialVersionUID = 5L;
     @JsonUnwrapped
     private Bare bare;
@@ -57,4 +58,23 @@ public class Image implements Serializable {
     }
 
 
+    /**
+     * 获取实体对象的主键
+     *
+     * @return id
+     */
+    @Override
+    public String getPrimeKey() {
+        return null;
+    }
+
+    /**
+     * 为了不与clone冲突产生这个方法，调用构造器实现
+     *
+     * @return 新的对象
+     */
+    @Override
+    public Image copy() {
+        return null;
+    }
 }

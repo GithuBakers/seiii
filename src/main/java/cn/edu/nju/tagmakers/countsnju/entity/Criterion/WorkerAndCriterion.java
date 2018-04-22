@@ -22,7 +22,7 @@ public class WorkerAndCriterion {
     private String criterionID;
     private boolean passed;
     private List<Result> results;
-    private List<String> lastestTenResults;
+    private List<Bare> latestBares;
     /**
      * 每提交10张的正确率
      */
@@ -36,7 +36,7 @@ public class WorkerAndCriterion {
             results.add(new Result(temp));
         }
         accuracy = new ArrayList<>();
-        lastestTenResults = new ArrayList<>();
+        latestBares = new ArrayList<>();
     }
 
     public boolean isPassed() {
@@ -77,5 +77,13 @@ public class WorkerAndCriterion {
 
     public void setAccuracy(List<Double> accuracy) {
         this.accuracy = accuracy;
+    }
+
+    public List<Bare> getLatestBares() {
+        return latestBares;
+    }
+
+    public void setLatestBares(List<Bare> latestBares) {
+        this.latestBares = latestBares;
     }
 }
