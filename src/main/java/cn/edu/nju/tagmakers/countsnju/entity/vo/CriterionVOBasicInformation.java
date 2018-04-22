@@ -3,6 +3,7 @@ package cn.edu.nju.tagmakers.countsnju.entity.vo;
 import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Criterion;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.List;
  * @author wym
  * Last modified on
  */
-
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class CriterionVOBasicInformation {
     @JsonProperty(value = "criterion_id")
     private String criterionID;

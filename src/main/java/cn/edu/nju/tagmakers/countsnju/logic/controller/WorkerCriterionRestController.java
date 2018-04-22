@@ -1,14 +1,19 @@
 package cn.edu.nju.tagmakers.countsnju.logic.controller;
 
+import cn.edu.nju.tagmakers.countsnju.algorithm.ResultJudger;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Image;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.CriterionImageAnswerVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerCriterionVO;
+import cn.edu.nju.tagmakers.countsnju.logic.service.CriterionService;
 import cn.edu.nju.tagmakers.countsnju.logic.service.WorkerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType.DESC;
 
 /**
  * Description:
@@ -42,7 +47,7 @@ public class WorkerCriterionRestController {
      */
     @RequestMapping(value = "/img", method = RequestMethod.GET)
     public List<Bare> getBares(@RequestParam("criterion_id") String criterion_id) {
-        throw new UnsupportedOperationException();
+        return workerService.getCriterionBares(criterion_id);
     }
 
     /**
@@ -51,8 +56,9 @@ public class WorkerCriterionRestController {
      * 始终返回正确答案，并且在答案中指明对错
      */
     @RequestMapping(value = "/img", method = RequestMethod.POST)
-    public CriterionImageAnswerVO submitImage(@RequestParam("criterion_id") String criterion_id, @RequestBody Image image) {
-        throw new UnsupportedOperationException();
+    public CriterionImageAnswerVO submitImage(@RequestParam("criterion_id") String criterionID, @RequestBody Image image) {
+
+        return workerService.submitCriterionResult(criterionID, image);
     }
 
 }

@@ -1,15 +1,13 @@
 package cn.edu.nju.tagmakers.countsnju.logic.service;
 
+import cn.edu.nju.tagmakers.countsnju.algorithm.ResultJudger;
 import cn.edu.nju.tagmakers.countsnju.data.controller.WorkerAndCriterionController;
 import cn.edu.nju.tagmakers.countsnju.data.controller.WorkerController;
 import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Criterion;
 import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Result;
 import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.Criterion.WorkerAndCriterion;
-import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
-import cn.edu.nju.tagmakers.countsnju.entity.pic.Image;
-import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
-import cn.edu.nju.tagmakers.countsnju.entity.pic.Tag;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.*;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.*;
 import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
@@ -21,7 +19,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import util.SecurityUtility;
 
-import java.awt.font.NumericShaper;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -310,7 +307,29 @@ public class WorkerService {
             workerAndCriterionController.add(workerID, criterion);
         }
         WorkerAndCriterion workerAndCriterion = workerAndCriterionController.findByID(workerID, criterionID);
-        return selectBares(workerAndCriterion, numOfPerGet);
+        //上次如果有没做完的就继续做，否则返回新的并触发影响
+        List<Bare> BaresRemain = countRemain(workerAndCriterion);
+        if (BaresRemain.size() == 0) {
+            return selectBares(workerAndCriterion, numOfPerGet);
+        } else {
+            return BaresRemain;
+        }
+    }
+
+    /**
+     * 计算上次是否完成全部
+     */
+    private List<Bare> countRemain(WorkerAndCriterion workerAndCriterion) {
+        List<Result> resultList = workerAndCriterion.getResults();
+        List<Bare> latestBares = workerAndCriterion.getLatestBares();
+        for (Bare bare : latestBares) {
+            for (Result result : resultList) {
+                if (result.getBare().equals(bare)) {
+                    if (result.isHasTested()) latestBares.remove(bare);
+                }
+            }
+        }
+        return latestBares;
     }
 
     /**
@@ -342,7 +361,7 @@ public class WorkerService {
             if (wrong >= numOfPerGet) {
                 List<Result> wrongList = resultList.stream()
                         .filter(Result::isHasTested)
-                        .filter(result -> !result.isPassed())
+                        .filter(result -> !result.isCorrect())
                         .collect(Collectors.toList());
                 for (int i = 0; i < numOfPerGet; i++) {
                     ret.add(wrongList.get(i).getBare());
@@ -350,20 +369,20 @@ public class WorkerService {
             } else {
                 ret.addAll(resultList.stream()
                         .filter(Result::isHasTested)
-                        .filter(result -> !result.isPassed())
+                        .filter(result -> !result.isCorrect())
                         .map(Result::getBare)
                         .collect(Collectors.toList()));
                 //把需要的图片减掉错误图片数
                 numOfPerGet -= wrong;
                 List<Result> passedList = resultList.stream()
-                        .filter(Result::isPassed)
+                        .filter(Result::isCorrect)
                         .collect(Collectors.toList());
                 for (int i = 0; i < numOfPerGet; i++) {
                     ret.add(passedList.get(i).getBare());
                 }
             }
         }
-        trig();
+        trig(workerAndCriterion, ret);
         return ret;
     }
 
@@ -372,8 +391,28 @@ public class WorkerService {
      * 更新用户的最新做的固定张数图片
      * 更新用户的上一次的正确率
      */
-    private void trig() {
-
+    private void trig(WorkerAndCriterion workerAndCriterion, List<Bare> bareList) {
+        List<Result> resultList = workerAndCriterion.getResults();
+        List<Bare> latestBares = workerAndCriterion.getLatestBares();
+        List<Double> accuracy = workerAndCriterion.getAccuracy();
+        //更新正确率
+        if (latestBares.size() > 0) {
+            int totalPassed = 0;
+            for (Bare bare : latestBares) {
+                for (Result result : resultList) {
+                    if (result.getBare().equals(bare)) {
+                        totalPassed += result.isCorrect() ? 1 : 0;
+                    }
+                    break;
+                }
+            }
+            accuracy.add((double) totalPassed / latestBares.size());
+        }
+        //更新最后在做的固定张数的图片
+        latestBares.addAll(bareList);
+        //设置回去
+        workerAndCriterion.setLatestBares(latestBares);
+        workerAndCriterion.setAccuracy(accuracy);
     }
 
     /**
@@ -390,7 +429,7 @@ public class WorkerService {
             if (!temp.isHasTested()) {
                 notTested++;
             } else {
-                if (!temp.isPassed()) wrong++;
+                if (!temp.isCorrect()) wrong++;
                 else passed++;
             }
         }
@@ -398,6 +437,71 @@ public class WorkerService {
         nums[1] = wrong;
         nums[2] = passed;
         return nums;
+    }
+
+    /**
+     * 修改对应图片的correct和hasTested，设置提交时间
+     */
+    public CriterionImageAnswerVO submitCriterionResult(String criterionID, Image image) {
+        boolean isCorrect = judgeCorrect(criterionID, image);
+        String bareID = image.getBare().getId();
+        String workerID = SecurityUtility.getUserName(SecurityContextHolder.getContext());
+        WorkerAndCriterion workerAndCriterion = workerAndCriterionController.findByID(workerID, criterionID);
+        List<Result> resultList = workerAndCriterion.getResults();
+        for (Result result : resultList) {
+            if (result.getBare().getId().equals(bareID)) {
+                result.setHasTested(true);
+                result.setCorrect(isCorrect);
+                result.setSubmitTime(Calendar.getInstance());
+            }
+        }
+        Image answer = getAnswer(criterionID, image);
+        return new CriterionImageAnswerVO(answer, isCorrect);
+    }
+
+    /**
+     * 调用算法判断计算提交结果是否正确
+     */
+    private boolean judgeCorrect(String criterionID, Image image) {
+        Criterion criterion = criterionService.findByID(criterionID);
+        String bareID = image.getBare().getId();
+        MarkType type = image.getType();
+        List<Tag> resultOfWorker = image.getTags();
+        List<Tag> answers = criterion.getResult().get(bareID);
+        switch (type) {
+            case DESC:
+                Description descFromWorker = (Description) resultOfWorker.get(0).getMark();
+                Description descFromAnswer = (Description) answers.get(0).getMark();
+                return ResultJudger.judgeDesc(descFromAnswer, descFromWorker);
+            case EDGE:
+                List<Edge> edgeFromWorker = resultOfWorker.stream()
+                        .map(tag -> (Edge) tag.getMark())
+                        .collect(Collectors.toList());
+                List<Edge> edgeFromAnswer = answers.stream()
+                        .map(tag -> (Edge) tag.getMark())
+                        .collect(Collectors.toList());
+                return ResultJudger.judgeEdge(edgeFromAnswer, edgeFromWorker);
+            case RECT:
+                List<Rect> rectFromWorker = resultOfWorker.stream()
+                        .map(tag -> (Rect) tag.getMark())
+                        .collect(Collectors.toList());
+                List<Rect> rectFromAnswer = answers.stream()
+                        .map(tag -> (Rect) tag.getMark())
+                        .collect(Collectors.toList());
+                return ResultJudger.judgeRect(rectFromAnswer, rectFromWorker);
+            case DEFAULT:
+                return false;
+        }
+        return false;
+    }
+
+    private Image getAnswer(String criterionID, Image image) {
+        String bareID = image.getBare().getId();
+        Criterion criterion = criterionService.findByID(criterionID);
+        Image ret = image.copy();
+        List<Tag> answer = criterion.getResult().get(bareID);
+        ret.setTags(answer);
+        return ret;
     }
 
     /**

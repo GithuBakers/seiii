@@ -21,7 +21,7 @@ const havePermission = () => {
 ReactDOM.render(
   <Authorized authority={havePermission} noMatch={noMatch}>
     <Alert
-      message="Use Function as a parameter passed!"
+      message="Use Function as a parameter correct!"
       type="success"
       showIcon
     />
