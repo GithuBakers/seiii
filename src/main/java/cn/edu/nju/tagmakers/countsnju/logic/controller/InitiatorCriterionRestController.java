@@ -3,7 +3,12 @@ package cn.edu.nju.tagmakers.countsnju.logic.controller;
 import cn.edu.nju.tagmakers.countsnju.entity.Criterion;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Image;
+import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
+import cn.edu.nju.tagmakers.countsnju.logic.service.InitiatorCriterionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import util.SecurityUtility;
 
 import java.util.List;
 
@@ -17,13 +22,20 @@ import java.util.List;
 @RestController
 @RequestMapping("initiator/criterion")
 public class InitiatorCriterionRestController {
+    private InitiatorCriterionService criterionService;
+
+    @Autowired
+    public InitiatorCriterionRestController(InitiatorCriterionService criterionService) {
+        this.criterionService = criterionService;
+    }
 
     /**
      * 发起者创建标准集，记得要在里面加上发起者id
      */
     @RequestMapping(value = "/new_criterion", method = RequestMethod.POST)
     public boolean addCriterion(@RequestBody Criterion criterion) {
-        throw new UnsupportedOperationException();
+        criterion.setInitiatorID(SecurityUtility.getUserName(SecurityContextHolder.getContext()));
+        return criterionService.addCriterion(criterion);
     }
 
     /**
@@ -31,8 +43,12 @@ public class InitiatorCriterionRestController {
      */
     @RequestMapping(value = "/myself", method = RequestMethod.GET)
     public List<Criterion> getCriterion(@RequestParam("initiator") String initiator) {
-        throw new UnsupportedOperationException();
-
+        //以后定接口就不要这种指代自己的ID了吧
+        if (!SecurityUtility.getUserName(SecurityContextHolder.getContext()).equals(initiator)) {
+            throw new PermissionDeniedException("身份与你的登录身份不符");
+        } else {
+            return criterionService.getMyCriterion(initiator);
+        }
     }
 
     /**
@@ -40,8 +56,7 @@ public class InitiatorCriterionRestController {
      */
     @RequestMapping(method = RequestMethod.GET)
     public List<Criterion> getAllCriterion() {
-        throw new UnsupportedOperationException();
-
+        return criterionService.getAllCriterion();
     }
 
     /**
@@ -51,7 +66,8 @@ public class InitiatorCriterionRestController {
      */
     @RequestMapping(value = "/img", method = RequestMethod.GET)
     public List<Bare> getCriterionBare(@RequestParam("criterion_id") String criterion_id) {
-        throw new UnsupportedOperationException();
+        return criterionService.getCriterionBare(criterion_id,
+                SecurityUtility.getUserName(SecurityContextHolder.getContext()));
     }
 
     /**
@@ -62,7 +78,9 @@ public class InitiatorCriterionRestController {
      */
     @RequestMapping(value = "img", method = RequestMethod.POST)
     public boolean submitImage(@RequestParam String criterion_id, @RequestBody Image image) {
-        throw new UnsupportedOperationException();
+        return criterionService.submitImage(criterion_id,
+                SecurityUtility.getUserName(SecurityContextHolder.getContext()),
+                image);
     }
 
 

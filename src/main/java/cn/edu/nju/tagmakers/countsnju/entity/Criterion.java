@@ -2,32 +2,35 @@ package cn.edu.nju.tagmakers.countsnju.entity;
 
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.Tag;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Update:
+ * 增加 发起者ID 字段
+ * 增加 答案 字段
+ *
+ * @author xxz
+ * Created on 04/22/2018
+ */
 public class Criterion extends Entity<Criterion> implements Serializable {
     public Criterion() {
     }
 
-    public Criterion(Criterion toCopy) {
-        this.criterionID = toCopy.criterionID;
-        this.criterionName = toCopy.criterionName;
-        this.cover = toCopy.cover;
-        this.type = toCopy.type;
-        this.dataSet = toCopy.dataSet;
-        this.aim = toCopy.aim;
-        this.requirement = toCopy.requirement;
-        if (toCopy.dataSet != null) {
-            this.dataSet = new ArrayList<>(toCopy.dataSet);
-        }
-        if (toCopy.keywords != null) {
-            this.keywords = new ArrayList<>(toCopy.keywords);
-        }
-
-    }
+    /**
+     * 由发起者提供的答案
+     * Map[BareID, Tags]
+     */
+    @JsonIgnore
+    private Map<String, List<Tag>> result;
 
     private static final long serialVersionUID = 86L;
     @JsonProperty(value = "criterion_id")
@@ -53,6 +56,29 @@ public class Criterion extends Entity<Criterion> implements Serializable {
 
     @JsonProperty(value = "keywords")
     private List<String> keywords;
+    private String initiatorID;
+
+    public Criterion(Criterion toCopy) {
+        this.criterionID = toCopy.criterionID;
+        this.criterionName = toCopy.criterionName;
+        this.cover = toCopy.cover;
+        this.type = toCopy.type;
+        this.dataSet = toCopy.dataSet;
+        this.aim = toCopy.aim;
+        this.requirement = toCopy.requirement;
+        this.initiatorID = toCopy.initiatorID;
+        if (toCopy.dataSet != null) {
+            this.dataSet = new ArrayList<>(toCopy.dataSet);
+        }
+        if (toCopy.keywords != null) {
+            this.keywords = new ArrayList<>(toCopy.keywords);
+        }
+
+        if (toCopy.result != null) {
+            this.result = new ConcurrentHashMap<>(toCopy.result);
+        }
+
+    }
 
     public String getCriterionID() {
         return criterionID;
@@ -116,6 +142,24 @@ public class Criterion extends Entity<Criterion> implements Serializable {
 
     public void setKeywords(List<String> keywords) {
         this.keywords = keywords;
+    }
+
+    public String getInitiatorID() {
+        return initiatorID;
+    }
+
+    public void setInitiatorID(String initiatorID) {
+        this.initiatorID = initiatorID;
+    }
+
+    public Map<String, List<Tag>> getResult() {
+        return Optional.ofNullable(result)
+                .map(ConcurrentHashMap::new)
+                .orElse(new ConcurrentHashMap<>());
+    }
+
+    public void setResult(Map<String, List<Tag>> result) {
+        this.result = result;
     }
 
     /**
