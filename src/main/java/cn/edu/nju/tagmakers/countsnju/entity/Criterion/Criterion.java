@@ -36,22 +36,23 @@ import java.util.*;
  * Last modified on 4/22
  */
 public class Criterion extends Entity<Criterion> implements Serializable {
-    public Criterion() {
-    }
-
     /**
      * 由发起者提供的答案
      * Map[BareID, Tags]
      */
     @JsonIgnore
     private Map<String, List<Tag>> result;
+
     private static final long serialVersionUID = 86L;
+
+    @JsonIgnore
+    private final int numOfPerGet = 10;
 
     @JsonProperty(value = "criterion_id")
     private String criterionID;
+
     @JsonProperty(value = "criterion_name")
     private String criterionName;
-
     @JsonProperty(value = "cover")
     private String cover;
 
@@ -76,6 +77,7 @@ public class Criterion extends Entity<Criterion> implements Serializable {
     @JsonIgnore
     private String initiatorID;
 
+
     public Criterion(Criterion toCopy) {
         this.criterionID = toCopy.criterionID;
         this.criterionName = toCopy.criterionName;
@@ -97,6 +99,13 @@ public class Criterion extends Entity<Criterion> implements Serializable {
         if (toCopy.result != null) {
             this.result = new ConcurrentHashMap<>(toCopy.result);
         }
+    }
+
+    public Criterion() {
+    }
+
+    public int getNumOfPerGet() {
+        return numOfPerGet;
     }
 
     public String getCriterionID() {
