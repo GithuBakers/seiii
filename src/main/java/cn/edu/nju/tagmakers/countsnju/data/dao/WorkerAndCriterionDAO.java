@@ -1,7 +1,7 @@
 package cn.edu.nju.tagmakers.countsnju.data.dao;
 
-import cn.edu.nju.tagmakers.countsnju.entity.Criterion;
-import cn.edu.nju.tagmakers.countsnju.entity.WorkerAndCriterion;
+import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Criterion;
+import cn.edu.nju.tagmakers.countsnju.entity.Criterion.WorkerAndCriterion;
 import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
 import org.springframework.stereotype.Component;
 

@@ -2,9 +2,9 @@ package cn.edu.nju.tagmakers.countsnju.logic.service;
 
 import cn.edu.nju.tagmakers.countsnju.data.controller.WorkerAndCriterionController;
 import cn.edu.nju.tagmakers.countsnju.data.controller.WorkerController;
-import cn.edu.nju.tagmakers.countsnju.entity.Criterion;
+import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Criterion;
 import cn.edu.nju.tagmakers.countsnju.entity.Task;
-import cn.edu.nju.tagmakers.countsnju.entity.WorkerAndCriterion;
+import cn.edu.nju.tagmakers.countsnju.entity.Criterion.WorkerAndCriterion;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Image;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
@@ -13,10 +13,8 @@ import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.*;
 import cn.edu.nju.tagmakers.countsnju.exception.NotFoundException;
 import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
-import cn.edu.nju.tagmakers.countsnju.filter.CriterionFilter;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import util.SecurityUtility;
@@ -308,6 +306,14 @@ public class WorkerService {
         }
         WorkerAndCriterion workerAndCriterion = workerAndCriterionController.findByID(workerID, criterionID);
 
+
+        return null;
+    }
+
+    /**
+     * 优先选择没有做过的图片，然后是做错了的图片，最后是正确的图片
+     */
+    private List<Bare> selectBares(WorkerAndCriterion workerAndCriterion) {
 
         return null;
     }

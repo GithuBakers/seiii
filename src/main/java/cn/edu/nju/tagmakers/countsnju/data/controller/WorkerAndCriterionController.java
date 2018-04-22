@@ -1,8 +1,8 @@
 package cn.edu.nju.tagmakers.countsnju.data.controller;
 
 import cn.edu.nju.tagmakers.countsnju.data.dao.WorkerAndCriterionDAO;
-import cn.edu.nju.tagmakers.countsnju.entity.Criterion;
-import cn.edu.nju.tagmakers.countsnju.entity.WorkerAndCriterion;
+import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Criterion;
+import cn.edu.nju.tagmakers.countsnju.entity.Criterion.WorkerAndCriterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

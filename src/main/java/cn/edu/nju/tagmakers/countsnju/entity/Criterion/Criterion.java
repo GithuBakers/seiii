@@ -1,10 +1,8 @@
-package cn.edu.nju.tagmakers.countsnju.entity;
+package cn.edu.nju.tagmakers.countsnju.entity.Criterion;
 
+import cn.edu.nju.tagmakers.countsnju.entity.Entity;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
-import cn.edu.nju.tagmakers.countsnju.entity.pic.Tag;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Tag;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
