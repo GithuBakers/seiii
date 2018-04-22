@@ -5,21 +5,21 @@ import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import java.util.Calendar;
 
 public class Result {
-    String bareID;
+    Bare bare;
     Calendar submitTime;
     boolean passed;
     boolean hasTested;
 
     Result(Bare bare) {
-        bareID = bare.getId();
+        this.bare = bare;
     }
 
-    public String getBareID() {
-        return bareID;
+    public Bare getBare() {
+        return bare;
     }
 
-    public void setBareID(String bareID) {
-        this.bareID = bareID;
+    public void setBare(Bare bare) {
+        this.bare = bare;
     }
 
     public Calendar getSubmitTime() {

@@ -3,6 +3,7 @@ package cn.edu.nju.tagmakers.countsnju.logic.service;
 import cn.edu.nju.tagmakers.countsnju.data.controller.WorkerAndCriterionController;
 import cn.edu.nju.tagmakers.countsnju.data.controller.WorkerController;
 import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Criterion;
+import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Result;
 import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.Criterion.WorkerAndCriterion;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
@@ -11,6 +12,7 @@ import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Tag;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.*;
+import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
 import cn.edu.nju.tagmakers.countsnju.exception.NotFoundException;
 import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
@@ -19,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import util.SecurityUtility;
 
+import java.awt.font.NumericShaper;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -299,23 +302,102 @@ public class WorkerService {
      */
     public List<Bare> getCriterionBares(String criterionID) {
         String workerID = SecurityUtility.getUserName(SecurityContextHolder.getContext());
+        //用户一次获得的图片张数,这里是防止硬编码的问题
+        Criterion criterion = criterionService.findByID(criterionID);
+        int numOfPerGet = criterion.getNumOfPerGet();
         if (!workerAndCriterionController.existed(workerID, criterionID)) {
             //这个工人没有做过这个标准集,先添加，再查上来
-            Criterion criterion = criterionService.findByID(criterionID);
             workerAndCriterionController.add(workerID, criterion);
         }
         WorkerAndCriterion workerAndCriterion = workerAndCriterionController.findByID(workerID, criterionID);
-
-
-        return null;
+        return selectBares(workerAndCriterion, numOfPerGet);
     }
 
     /**
+     * 在进入这个方法之前应该要先判断用户上次的十张图片有没有做完
      * 优先选择没有做过的图片，然后是做错了的图片，最后是正确的图片
      */
-    private List<Bare> selectBares(WorkerAndCriterion workerAndCriterion) {
+    private List<Bare> selectBares(WorkerAndCriterion workerAndCriterion, int numOfPerGet) {
+        List<Result> resultList = workerAndCriterion.getResults();
+        List<Bare> ret = new ArrayList<>();
+        int[] nums = countNums(resultList);
+        int notTested = nums[0];
+        int wrong = nums[1];
+        int passed = nums[2];
+        if (notTested + wrong + passed < numOfPerGet) throw new InvalidInputException("获取标准集图片的时候数量不够");
+        if (notTested >= numOfPerGet) {
+            List<Result> notTestList = resultList.stream()
+                    .filter(result -> !result.isHasTested())
+                    .collect(Collectors.toList());
+            for (int i = 0; i < numOfPerGet; i++) {
+                ret.add(notTestList.get(i).getBare());
+            }
+        } else {
+            ret.addAll(resultList.stream()
+                    .filter(result -> !result.isHasTested())
+                    .map(Result::getBare)
+                    .collect(Collectors.toList()));
+            //把需要的图片减掉未测试图片数
+            numOfPerGet -= notTested;
+            if (wrong >= numOfPerGet) {
+                List<Result> wrongList = resultList.stream()
+                        .filter(Result::isHasTested)
+                        .filter(result -> !result.isPassed())
+                        .collect(Collectors.toList());
+                for (int i = 0; i < numOfPerGet; i++) {
+                    ret.add(wrongList.get(i).getBare());
+                }
+            } else {
+                ret.addAll(resultList.stream()
+                        .filter(Result::isHasTested)
+                        .filter(result -> !result.isPassed())
+                        .map(Result::getBare)
+                        .collect(Collectors.toList()));
+                //把需要的图片减掉错误图片数
+                numOfPerGet -= wrong;
+                List<Result> passedList = resultList.stream()
+                        .filter(Result::isPassed)
+                        .collect(Collectors.toList());
+                for (int i = 0; i < numOfPerGet; i++) {
+                    ret.add(passedList.get(i).getBare());
+                }
+            }
+        }
+        trig();
+        return ret;
+    }
 
-        return null;
+    /**
+     * 由于返回了固定数量的要标注的图片
+     * 更新用户的最新做的固定张数图片
+     * 更新用户的上一次的正确率
+     */
+    private void trig() {
+
+    }
+
+    /**
+     * 依次储存没有做过的图片数，做错了的图片数，正确的图片数
+     *
+     * @return
+     */
+    private int[] countNums(List<Result> resultList) {
+        int[] nums = new int[3];
+        int notTested = 0;
+        int wrong = 0;
+        int passed = 0;
+        for (Result temp : resultList) {
+            if (!temp.isHasTested()) {
+                notTested++;
+            } else {
+                if (!temp.isPassed()) wrong++;
+                else passed++;
+            }
+        }
+        nums[0] = notTested;
+        nums[1] = wrong;
+        nums[2] = passed;
+        return nums;
     }
 
     /**
