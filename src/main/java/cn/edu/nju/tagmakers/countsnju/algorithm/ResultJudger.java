@@ -4,6 +4,8 @@ import cn.edu.nju.tagmakers.countsnju.entity.pic.Description;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Edge;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Rect;
 
+import java.util.List;
+
 /**
  * Description:
  * 用于判断标注结果正误
@@ -17,11 +19,12 @@ public class ResultJudger {
         throw new UnsupportedOperationException();
     }
 
-    public static boolean judgeRect(Rect a, Rect b) {
+
+    public static boolean judgeRect(List<Rect> a, List<Rect> b) {
         throw new UnsupportedOperationException();
     }
 
-    public static boolean judgeEdge(Edge a, Edge b) {
+    public static boolean judgeEdge(List<Edge> a, List<Edge> b) {
         throw new UnsupportedOperationException();
     }
 }
