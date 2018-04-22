@@ -1,6 +1,5 @@
 package cn.edu.nju.tagmakers.countsnju.logic.controller;
 
-import cn.edu.nju.tagmakers.countsnju.entity.Criterion;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Image;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.CriterionImageAnswerVO;
