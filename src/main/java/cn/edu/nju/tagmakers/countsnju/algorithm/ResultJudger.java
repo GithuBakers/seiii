@@ -1,4 +1,4 @@
-package util;
+package cn.edu.nju.tagmakers.countsnju.algorithm;
 
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Description;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Edge;
