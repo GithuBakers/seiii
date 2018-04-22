@@ -2,7 +2,6 @@ package cn.edu.nju.tagmakers.countsnju.data.dao;
 
 import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import cn.edu.nju.tagmakers.countsnju.filter.WorkerFilter;
-import com.sun.corba.se.spi.orbutil.threadpool.Work;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
