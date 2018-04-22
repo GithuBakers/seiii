@@ -4,6 +4,9 @@ import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Tag;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.Tag;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
@@ -12,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
 
 /**
  * Update:
@@ -20,6 +24,18 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author xxz
  * Created on 04/22/2018
+ */
+
+/**
+ * Description:
+ * 标准集的实体对象
+ *
+ * @author wym
+ * Created on
+ * <p>
+ * Update:增加workerPassed
+ * @author wym
+ * Last modified on 4/22
  */
 public class Criterion extends Entity<Criterion> implements Serializable {
     public Criterion() {
@@ -31,11 +47,10 @@ public class Criterion extends Entity<Criterion> implements Serializable {
      */
     @JsonIgnore
     private Map<String, List<Tag>> result;
-
     private static final long serialVersionUID = 86L;
+
     @JsonProperty(value = "criterion_id")
     private String criterionID;
-
     @JsonProperty(value = "criterion_name")
     private String criterionName;
 
@@ -56,6 +71,11 @@ public class Criterion extends Entity<Criterion> implements Serializable {
 
     @JsonProperty(value = "keywords")
     private List<String> keywords;
+
+    @JsonIgnore
+    private Set<String> workerPassed;
+
+    @JsonIgnore
     private String initiatorID;
 
     public Criterion(Criterion toCopy) {
@@ -73,11 +93,12 @@ public class Criterion extends Entity<Criterion> implements Serializable {
         if (toCopy.keywords != null) {
             this.keywords = new ArrayList<>(toCopy.keywords);
         }
-
+        if (toCopy.getWorkerPassed() != null) {
+            this.workerPassed = new HashSet<>(toCopy.getWorkerPassed());
+        }
         if (toCopy.result != null) {
             this.result = new ConcurrentHashMap<>(toCopy.result);
         }
-
     }
 
     public String getCriterionID() {
@@ -142,6 +163,14 @@ public class Criterion extends Entity<Criterion> implements Serializable {
 
     public void setKeywords(List<String> keywords) {
         this.keywords = keywords;
+    }
+
+    public Set<String> getWorkerPassed() {
+        return Optional.ofNullable(workerPassed).orElse(new HashSet<>());
+    }
+
+    public void setWorkerPassed(Set<String> workerPassed) {
+        this.workerPassed = workerPassed;
     }
 
     public String getInitiatorID() {

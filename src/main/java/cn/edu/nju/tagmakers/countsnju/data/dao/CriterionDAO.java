@@ -6,7 +6,20 @@ import cn.edu.nju.tagmakers.countsnju.filter.CriterionFilter;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+
+/**
+ * Description:
+ * 标准集的DAO
+ *
+ * @author wym
+ * Created on
+ * <p>
+ * Update:增加workerPassed字段
+ * @author wym
+ * Last modified on 4/22
+ */
 
 @Component
 public class CriterionDAO extends DAO<Criterion, CriterionFilter> {
@@ -37,6 +50,7 @@ public class CriterionDAO extends DAO<Criterion, CriterionFilter> {
         if (cur.getAim() != 0) ori.setAim(cur.getAim());
         if (cur.getDataSet().size() > 0) ori.setDataSet(new ArrayList<>(cur.getDataSet()));
         if (cur.getKeywords().size() > 0) ori.setKeywords(new ArrayList<>(cur.getKeywords()));
+        if (cur.getWorkerPassed().size() > 0) ori.setWorkerPassed(new HashSet<>(cur.getWorkerPassed()));
         return ori;
     }
 }

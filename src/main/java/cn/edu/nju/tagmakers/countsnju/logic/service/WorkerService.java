@@ -1,26 +1,27 @@
 package cn.edu.nju.tagmakers.countsnju.logic.service;
 
+import cn.edu.nju.tagmakers.countsnju.data.controller.WorkerAndCriterionController;
 import cn.edu.nju.tagmakers.countsnju.data.controller.WorkerController;
+import cn.edu.nju.tagmakers.countsnju.entity.Criterion;
 import cn.edu.nju.tagmakers.countsnju.entity.Task;
+import cn.edu.nju.tagmakers.countsnju.entity.WorkerAndCriterion;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Image;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Tag;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
-import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerReceivedTaskDetailVO;
-import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerReceivedTaskVO;
-import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerTaskDetailVO;
-import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerTaskVO;
+import cn.edu.nju.tagmakers.countsnju.entity.vo.*;
 import cn.edu.nju.tagmakers.countsnju.exception.NotFoundException;
 import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
+import cn.edu.nju.tagmakers.countsnju.filter.CriterionFilter;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import util.SecurityUtility;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -29,6 +30,10 @@ import java.util.stream.Collectors;
  *
  * @author xxz
  * Created on 04/06/2018
+ *
+ * @update wym
+ * 增加WorkerAndCriterionController和标准集的相关方法
+ * Updated on 4/22
  */
 @Component
 public class WorkerService {
@@ -37,14 +42,20 @@ public class WorkerService {
 
     private WorkerController workerController;
 
+    private WorkerAndCriterionController workerAndCriterionController;
+
     private TagService tagService;
 
+    private CriterionService criterionService;
 
     @Autowired
-    public WorkerService(TaskService taskService, WorkerController workerController, TagService tagService) {
+    public WorkerService(TaskService taskService, WorkerController workerController,
+                         TagService tagService, CriterionService criterionService, WorkerAndCriterionController workerAndCriterionController) {
         this.taskService = taskService;
         this.workerController = workerController;
         this.tagService = tagService;
+        this.criterionService = criterionService;
+        this.workerAndCriterionController = workerAndCriterionController;
     }
 
 
@@ -262,6 +273,43 @@ public class WorkerService {
             }
         }
         throw new NotFoundException("暂时没有推荐给你的任务喔");
+    }
+
+    /**
+     * 工人查看所有的标准集
+     *
+     * @return 所有的标准集
+     */
+    public List<WorkerCriterionVO> getAllCriterion() {
+        List<Criterion> criterionList = criterionService.find(null);
+        List<WorkerCriterionVO> ret = new ArrayList<>();
+        for (Criterion temp : criterionList) {
+            String criterionID = temp.getCriterionID();
+            String workerID = SecurityUtility.getUserName(SecurityContextHolder.getContext());
+            Boolean passed = criterionService.isPassed(criterionID, workerID);
+            WorkerCriterionVO vo = new WorkerCriterionVO(temp, passed);
+            ret.add(vo);
+        }
+        return ret;
+    }
+
+    /**
+     * 工人一次性获取十张标准集图片
+     *
+     * @param criterionID 标准集ID
+     * @return 标准集图片
+     */
+    public List<Bare> getCriterionBares(String criterionID) {
+        String workerID = SecurityUtility.getUserName(SecurityContextHolder.getContext());
+        if (!workerAndCriterionController.existed(workerID, criterionID)) {
+            //这个工人没有做过这个标准集,先添加，再查上来
+            Criterion criterion = criterionService.findByID(criterionID);
+            workerAndCriterionController.add(workerID, criterion);
+        }
+        WorkerAndCriterion workerAndCriterion = workerAndCriterionController.findByID(workerID, criterionID);
+
+
+        return null;
     }
 
     /**

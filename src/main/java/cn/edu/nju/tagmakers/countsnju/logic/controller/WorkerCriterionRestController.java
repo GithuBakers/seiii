@@ -4,6 +4,9 @@ import cn.edu.nju.tagmakers.countsnju.entity.Criterion;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Image;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.CriterionImageAnswerVO;
+import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerCriterionVO;
+import cn.edu.nju.tagmakers.countsnju.logic.service.WorkerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,12 +23,19 @@ import java.util.List;
 @RestController
 @RequestMapping("/worker/criterion")
 public class WorkerCriterionRestController {
+    private final WorkerService workerService;
+
+    @Autowired
+    public WorkerCriterionRestController(WorkerService workerService) {
+        this.workerService = workerService;
+    }
+
     /**
      * 工人查看所有的标准集
      */
     @RequestMapping(method = RequestMethod.GET)
-    public List<Criterion> getAllCriterion() {
-        throw new UnsupportedOperationException();
+    public List<WorkerCriterionVO> getAllCriterion() {
+        return workerService.getAllCriterion();
     }
 
     /**
