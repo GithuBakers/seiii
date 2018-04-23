@@ -28,7 +28,11 @@ class WorkFlow extends React.Component {
     const {isLabeled,imageList, taskName, keywords,taskId }= this.props;
     const type = this.props.type;
     console.log("type",type);
-    switch (type) {
+
+    // 修改这里改变测试类型
+    // switch (type) {
+
+    switch ("DESC") {
       case MarkType.DESC:
         return <DescStage isLabeled={isLabeled} imageList={imageList} taskName={taskName} taskId={taskId} keywords={keywords} />;
       case MarkType.EDGE:

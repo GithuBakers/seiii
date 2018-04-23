@@ -3,8 +3,6 @@ import CloseButton from '../../EditWorkPage/CloseButton';
 import Styles from './styles.css';
 import { Row, Col, AutoComplete,notification,Input } from 'antd';
 import QueueAnim from 'rc-queue-anim';
-import PerfectScrollbar from 'react-perfect-scrollbar';
-import 'react-perfect-scrollbar/dist/css/styles.css';
 import { connect } from 'dva';
 import { Stage, Layer } from 'react-konva';
 import Image from '../components/Image';

@@ -5,15 +5,38 @@ import { getFakeChartData } from './mock/chart';
 import { getProfileBasicData } from './mock/profile';
 import { getProfileAdvancedData } from './mock/profile';
 import { getNotices } from './mock/notices';
+import { FakeDescTags,FakeEdgeTags,FakeRectTags } from './mock/fakeTags'
 import { format, delay } from 'roadhog-api-doc';
 
 // 是否禁用代理
 const noProxy = process.env.NO_PROXY === 'true';
 // const noProxy =true;
+// 代码中会兼容本地 service mock 以及部署站点的静态数据
 
 const typeList = ['RECT', 'DESC', 'EDGE'];
+const rawCriterionList=mockjs.mock({
+  'list|5-7': [
+    {
+      "criterion_id":()=>mockjs.Random.string(),
+      "criterion_name":()=>mockjs.Random.cname(),
+      "cover": () => mockjs.Random.image('600x300', '#c4ab3f', '#FFF', 'criterion'),
+      "type": () => typeList[mockjs.Random.integer(0, 2)],
+      "data_set|":[
+        {
+          "id":()=>mockjs.Random.string(),
+          "url":() => mockjs.Random.image('600x300', '#c4ab3f', '#FFF', 'criterion'),
+        },
+      ],
+      "aim|50-100":1,//张数必须小于等于上传图片总张数
+      "requirement":() => mockjs.Random.sentence(), //任务要求（用户该做什么）
+      "keywords|5-10":[  //标注的关键词
+        ()=>mockjs.Random.name()
+      ]
+    },
+  ],
+}).list;
 
-// 代码中会兼容本地 service mock 以及部署站点的静态数据
+
 const proxy = {
   // 支持值为 Object 和 Array
   'GET /api/v2/worker/information/worker': mockjs.mock({
@@ -23,6 +46,7 @@ const proxy = {
     nick_name: () => mockjs.Random.cname(),
     'credit|1-100': 1,
     'rank|1-10000': 1,
+    dependencies:rawCriterionList
   }),
   'GET /api/v2/initiator/information/initiator': mockjs.mock({
     user_name: 'initiator',
@@ -75,7 +99,8 @@ const proxy = {
     completeness: () => mockjs.Random.integer(0, 100), //达标比例
     result: () => mockjs.mock('@url'), //结果所在地
     finished: false, //状态
-    "keywords|5-10":[ ()=>mockjs.Random.name()]
+    "keywords|5-10":[ ()=>mockjs.Random.name()],
+    "dependencies": rawCriterionList
   }),
   'GET /api/v2/worker/task/1': mockjs.mock({
     task_id: () => mockjs.Random.string(), //达标比例
@@ -85,7 +110,8 @@ const proxy = {
     'limit|100-500': 1,
     'reward|200-300': 1,
     requirement: () => mockjs.Random.sentence(), //任务要求
-    "keywords|5-10":[ ()=>mockjs.Random.name()]
+    "keywords|5-10":[ ()=>mockjs.Random.name()],
+    dependencies:rawCriterionList
   }),
   'GET /api/v2/worker/task_list': (req, res) => {
     let list = {
@@ -183,6 +209,7 @@ const proxy = {
     'total_reward|2000-30000': 1,
     completeness: () => mockjs.Random.integer(0, 100), //达标比例
     result: () => mockjs.mock('@url'), //结果所在地
+    "dependencies":rawCriterionList
   }),
   'GET /api/v2/admin/sys_info': mockjs.mock({
     "initiator_number|1-100":1,
@@ -192,6 +219,43 @@ const proxy = {
     "finished_number|2000-3000":1,
     "total_task_number|4000-6000":1
   }),
+
+
+
+  'POST /api/v2/initiator/criterion/new_criterion':true,
+  'GET /api/v2/initiator/criterion/img' :(req, res) => {
+    let list = {
+      'list|5-7': [
+        {
+          id:()=>mockjs.Random.string,
+          raw: () => mockjs.Random.image(),
+          name: () => mockjs.Random.string(),
+        },
+      ],
+    };
+    res.send(JSON.stringify(mockjs.mock(list).list));
+  },
+  'POST /api/v2/initiator/criterion/img': true,
+  'GET /api/v2/initiator/criterion/myself':rawCriterionList,
+  'GET /api/v2/initiator/criterion':rawCriterionList,
+
+
+
+  'GET /api/v2/worker/criterion':rawCriterionList,
+  'GET /api/v2/worker/criterion/img':(req, res) => {
+    let list = {
+      'list|3-4': [
+        {
+          id:()=>mockjs.Random.string,
+          raw: () => mockjs.Random.image(),
+          name: () => mockjs.Random.string(),
+        },
+      ],
+    };
+    res.send(JSON.stringify(mockjs.mock(list).list));
+  },
+  'POST /api/v2/worker/criterion/img':{...FakeRectTags(),correct:false},
+
   'GET /api/currentUser': {
     $desc: '获取当前用户接口',
     $params: {

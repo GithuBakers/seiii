@@ -16,7 +16,7 @@ export async function register(params) {
   });
 }
 
-// INITIATOR
+// ======================== INITIATOR =========================
 export async function getInitiatorProfile(userName) {
   return request(`${version}/initiator/information/${userName}`);
 }
@@ -55,7 +55,30 @@ export async function finishInitiatorTask(taskId) {
   });
 }
 
-// WORKER
+export async function createCriterion() {
+  return request(`${version}/initiator/criterion/new_criterion`);
+}
+
+export async function getMyCriterion(initiatorId) {
+  return request(`${version}/initiator/criterion/myself?initiator=${initiatorId}`);
+}
+
+export async function getAllCriterionForInitiator() {
+  return request(`${version}/initiator/criterion`);
+}
+
+export async function getInitiatorCriterionImgs(criterionId) {
+  return request(`${version}/initiator/criterion/img?criterion_id=${criterionId}`);
+}
+
+export async function contributeInitiatorCriterion(criterionId, params) {
+  return request(`${version}/initiator/criterion/img?criterion_id=${criterionId}`, {
+    method: 'POST',
+    body: params,
+  });
+}
+
+// ========================== WORKER ==========================
 export async function getWorkerProfile(userName) {
   return request(`${version}/worker/information/${userName}`);
 }
@@ -97,6 +120,7 @@ export async function getWorkerTaskImgs(taskId) {
 }
 
 export async function contributeWorkerTask(taskId, imgId, params) {
+  console.log('contributeWorkerTask',params);
   //TODO: 1 FOR MOCK
   return request(`${version}/worker/task/received_task/1/1`, {
     method: 'POST',
@@ -122,10 +146,25 @@ export async function getWorkerRecommendTask(type) {
   return request(`${version}/worker/recommend_task?type=${type}`);
 }
 
+export async function getAllCriterionForWorker() {
+  return request(`${version}/worker/criterion`);
+}
+
+export async function getWorkerCriterionImgs(criterionId) {
+  return request(`${version}/worker/criterion/img?criterion_id=${criterionId}`);
+}
+
+export async function contributeWorkerCriterion(criterionId, params) {
+  return request(`${version}/worker/criterion/img?criterion_id=${criterionId}`, {
+    method: 'POST',
+    body: params,
+  });
+}
+
+
 export async function getSystemInformation() {
   return request(`${version}/admin/sys_info`);
 }
-
 
 export async function updatePassword(userName, params) {
   console.log("updatePassword",params);
@@ -134,3 +173,7 @@ export async function updatePassword(userName, params) {
     body: params,
   });
 }
+
+
+
+
