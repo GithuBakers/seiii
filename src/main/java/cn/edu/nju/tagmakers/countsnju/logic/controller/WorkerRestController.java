@@ -2,6 +2,7 @@ package cn.edu.nju.tagmakers.countsnju.logic.controller;
 
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Image;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerReceivedTaskDetailVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerReceivedTaskVO;
@@ -15,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import util.SecurityUtility;
 
+import javax.websocket.server.PathParam;
 import java.util.List;
 
 /**
@@ -150,5 +152,26 @@ public class WorkerRestController {
         return workerService.getReceivedTaskDetails(taskName, workerName);
     }
 
+    @RequestMapping(value = "/recommend_task", method = RequestMethod.GET)
+    public WorkerTaskDetailVO getRecommendTask(@PathParam("type") String type) {
+        String workerName = SecurityUtility.getUserName(SecurityContextHolder.getContext());
+        MarkType markType;
+        switch (type) {
+            case "RECT":
+                markType = MarkType.RECT;
+                break;
+            case "DESC":
+                markType = MarkType.DESC;
+                break;
+            case "EDGE":
+                markType = MarkType.EDGE;
+                break;
+            default:
+                markType = MarkType.RECT;
+                break;
+        }
+        return workerService.getRecommendTask(markType, workerName);
+
+    }
 
 }

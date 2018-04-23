@@ -56,12 +56,13 @@ public class TagDAO extends DAO<Tag, TagFilter> {
      * @param cur 要更新的对象
      */
     @Override
-    protected void setChanges(Tag ori, Tag cur) {
+    protected Tag setChanges(Tag ori, Tag cur) {
         //暂时定为所有的String Mark默认值为null，更新的非默认值为更改值，不存在增量修改
         if (cur.getComment() != null) ori.setComment(cur.getComment());
         if (cur.getTagID() != null) ori.setTagID(cur.getTagID());
         if (cur.getMark() != null) ori.setMark(cur.getMark());
         if (cur.getBareID() != null) ori.setBareID(cur.getBareID());
+        return ori;
     }
 
 }

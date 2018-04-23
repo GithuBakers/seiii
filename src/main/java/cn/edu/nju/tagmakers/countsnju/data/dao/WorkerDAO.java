@@ -51,7 +51,7 @@ public class WorkerDAO extends DAO<Worker,WorkerFilter>{
      * @param cur 更新的对象
      */
     @Override
-    protected void setChanges(Worker ori, Worker cur) {
+    protected Worker setChanges(Worker ori, Worker cur) {
         if(cur.getAvatar() != null)ori.setAvatar(cur.getAvatar());
         if(cur.getNickName() != null)ori.setNickName(cur.getNickName());
         if(cur.getPassword() != null)ori.setPassword(cur.getPassword());
@@ -61,5 +61,6 @@ public class WorkerDAO extends DAO<Worker,WorkerFilter>{
         if (cur.getTaskIDs().size() > 0) ori.setTaskIDs(new ArrayList<>(cur.getTaskIDs()));
         if(cur.getCredit() > 0)ori.setCredit(cur.getCredit());
         if(cur.getRank() > 0)ori.setRank(cur.getRank());
+        return ori;
     }
 }

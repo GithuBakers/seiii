@@ -1,8 +1,9 @@
 package cn.edu.nju.tagmakers.countsnju.logic.service;
 
 import cn.edu.nju.tagmakers.countsnju.data.controller.InitiatorController;
+import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Initiator;
-import cn.edu.nju.tagmakers.countsnju.entity.user.Task;
+import cn.edu.nju.tagmakers.countsnju.entity.vo.InitiatorTaskDetailVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.InitiatorTaskVO;
 import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
@@ -61,7 +62,8 @@ public class InitiatorService {
 
     /**
      * 结束一项任务
-     * @param taskName 任务名
+     *
+     * @param taskName      任务名
      * @param initiatorName 企图结束任务的用户名
      */
     public Task finishTask(String taskName, String initiatorName) {
@@ -88,15 +90,15 @@ public class InitiatorService {
     /**
      * 查看自己发起的某一任务的详情
      *
-     * @param taskID      任务名
+     * @param taskID        任务名
      * @param initiatorName 发起者名
      */
-    public Task findTaskByName(String taskID, String initiatorName) {
+    public InitiatorTaskDetailVO findTaskByName(String taskID, String initiatorName) {
 
         if (!isOwner(taskID, initiatorName)) {
             throw new PermissionDeniedException("这不是你创建的任务！");
         }
-        return taskService.findByID(taskID);
+        return new InitiatorTaskDetailVO(taskService.findByID(taskID));
     }
 
     private boolean isOwner(String taskID, String initiatorName) {
@@ -104,7 +106,11 @@ public class InitiatorService {
         if (toLookUp == null) {
             throw new PermissionDeniedException("没有此任务！");
         }
-        return toLookUp.getInitiatorName().equals(initiatorName);
+        String taskInitiatorName = toLookUp.getInitiatorName();
+        if (taskInitiatorName == null || initiatorName == null) {
+            throw new PermissionDeniedException("没有此任务！");
+        }
+        return taskInitiatorName.equals(initiatorName);
     }
 
 }

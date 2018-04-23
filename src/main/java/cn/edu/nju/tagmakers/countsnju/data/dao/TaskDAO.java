@@ -1,6 +1,6 @@
 package cn.edu.nju.tagmakers.countsnju.data.dao;
 
-import cn.edu.nju.tagmakers.countsnju.entity.user.Task;
+import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +21,16 @@ import java.util.stream.Stream;
  * Update: 修改枚举类的判断
  * @author wym
  * Last modified on 04/08/2018
+ * <p>
+ * Update:
+ * 增加了keywords关键字
+ * @author xxz
+ * Created on 04/14/2018
+ *
+ * Update:
+ * 增加了filter中的"类型"关键字
+ * @author xxz
+ * Created on 04/15/2018
  */
 @Component
 public class TaskDAO extends DAO<Task, TaskFilter> {
@@ -46,8 +56,11 @@ public class TaskDAO extends DAO<Task, TaskFilter> {
             if (filter.getInitiatorName() != null) {
                 taskStream = taskStream.filter(task -> task.getInitiatorName().equals(filter.getInitiatorName()));
             }
+            if (filter.getMarkType() != null) {
+                taskStream = taskStream.filter(task -> task.getType() == filter.getMarkType());
+            }
             if (filter.getFinished() != null) {
-                taskStream = taskStream.filter(task -> task.getFinished().equals(filter.getFinished()));
+//                taskStream = taskStream.filter(task -> task.getFinished().equals(filter.getFinished()));
                 return taskStream.filter(task -> task.getFinished().equals(filter.getFinished()))
                         .collect(Collectors.toList());
             }
@@ -63,7 +76,7 @@ public class TaskDAO extends DAO<Task, TaskFilter> {
      * @param cur 更新的对象
      */
     @Override
-    protected void setChanges(Task ori, Task cur) {
+    protected Task setChanges(Task ori, Task cur) {
         if (cur.getTaskName() != null) ori.setTaskName(cur.getTaskName());
         if (cur.getInitiatorName() != null) ori.setInitiatorName(cur.getInitiatorName());
         if (cur.getCover() != null) ori.setCover(cur.getCover());
@@ -77,5 +90,8 @@ public class TaskDAO extends DAO<Task, TaskFilter> {
         if (cur.getFinished()) ori.setFinished(true);
         if (cur.getUserMarked().size() > 0) ori.setUserMarked(new ConcurrentHashMap<>(cur.getUserMarked()));
         if (cur.getBareMarked().size() > 0) ori.setBareMarked(new ConcurrentHashMap<>(cur.getBareMarked()));
+        if (cur.getDependencies().size() > 0) ori.setDependencies(new ArrayList<>(cur.getDependencies()));
+        if (cur.getKeywords().size() > 0) ori.setKeywords(new ArrayList<>(cur.getKeywords()));
+        return ori;
     }
 }

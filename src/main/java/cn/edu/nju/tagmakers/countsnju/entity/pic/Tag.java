@@ -39,14 +39,15 @@ import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 public class Tag extends Entity<Tag> implements Serializable {
     private static final long serialVersionUID = 7L;
     /**
-     * 全部tag的唯一性标识，tagID=bareID_id
+     * 全部tag的唯一性标识
+     *
      */
-    @JsonIgnore
+    @JsonProperty("id")
     private String tagID;
     /**
      * 编号（比如某一张图的第几个标签)
      */
-    @JsonProperty(value = "id")
+    @JsonIgnore
     private String numberID;
     /**
      * 原图id

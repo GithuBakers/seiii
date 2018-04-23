@@ -7,12 +7,15 @@ import cn.edu.nju.tagmakers.countsnju.entity.user.Initiator;
 import cn.edu.nju.tagmakers.countsnju.entity.user.User;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.PasswordVO;
+import cn.edu.nju.tagmakers.countsnju.entity.vo.RegisterResponse;
+import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
+import util.URLUtil;
 
 /**
  * Description:
@@ -24,6 +27,8 @@ import org.springframework.web.bind.annotation.*;
 @Component
 @RestController
 public class SecurityUserController implements UserDetailsService {
+
+    private final String NOOP = "{noop}";
 
     private final SecurityUserDAO securityUserDAO;
 
@@ -41,15 +46,22 @@ public class SecurityUserController implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         SecurityUser securityUser = securityUserDAO.findByID(username);
+
         if (securityUser == null) {
             throw new UsernameNotFoundException(username);
         }
+//        String password=securityUser.getPassword().replaceAll("\\{noop}","");
+//        securityUser.setSecurityPassword(password);
         return securityUser;
     }
 
+    /**
+     * 注册的时候会在密码前加noop
+     */
     @RequestMapping(value = "/user/new_user", method = RequestMethod.POST)
-    public boolean signUp(@RequestBody User user) {
-        user.setPassword("{noop}" + user.getPassword());
+    public RegisterResponse signUp(@RequestBody User user) {
+        user.setPassword(NOOP + user.getPassword());
+        user.setAvatar(URLUtil.processURL(user.getAvatar()));
         SecurityUser securityUser = new SecurityUser(user);
         securityUserDAO.add(securityUser);
         switch (user.getRole()) {
@@ -59,15 +71,21 @@ public class SecurityUserController implements UserDetailsService {
             case WORKER:
                 workerDAO.add(new Worker(user));
                 break;
+            case ADMIN:
+                throw new InvalidInputException("不可以注册管理员");
         }
 
-        return true;
+        return new RegisterResponse("ok");
 
     }
 
+    /**
+     * 修改密码要在密码前加{noop}
+     */
     @RequestMapping("/user/password/{user_name}")
     public boolean changePassword(@PathVariable(value = "user_name") String username, @RequestBody PasswordVO passwordVO) {
-        return securityUserDAO.updatePassword(username, passwordVO.getOriPassword(), passwordVO.getNewPassword());
+        return securityUserDAO.updatePassword(username, NOOP + passwordVO.getOriPassword(),
+                NOOP + passwordVO.getNewPassword());
     }
 
 

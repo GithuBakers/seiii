@@ -1,6 +1,6 @@
 package cn.edu.nju.tagmakers.countsnju.entity.vo;
 
-import cn.edu.nju.tagmakers.countsnju.entity.user.Task;
+import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
@@ -39,7 +39,9 @@ public class InitiatorTaskVO {
         //累加所有的标注量之后进行换算
         int curAim = 0;
         for (Integer num : userMarked.values()) {
-            curAim += num;
+            if (num > task.getAim()) {
+                curAim++;
+            }
         }
         completeness = (float) (int) ((double) curAim * 100 / task.getAim());
 

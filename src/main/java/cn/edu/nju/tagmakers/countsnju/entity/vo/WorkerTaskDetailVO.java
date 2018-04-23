@@ -1,10 +1,12 @@
 package cn.edu.nju.tagmakers.countsnju.entity.vo;
 
-import cn.edu.nju.tagmakers.countsnju.entity.user.Task;
-import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
+import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Criterion;
+import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+
+import java.util.List;
 
 /**
  * Description:
@@ -35,12 +37,15 @@ public class WorkerTaskDetailVO {
     @JsonProperty(value = "requirement")
     private String requirement;
 
+    @JsonUnwrapped
+    private List<Criterion> dependencies;
 
     public WorkerTaskDetailVO(Task task) {
         taskVOBasicInformation = new TaskVOBasicInformation(task);
         limit = task.getLimit();
         reward = task.getReward();
         requirement = task.getRequirement();
+        dependencies = task.getDependencies();
     }
 
     public TaskVOBasicInformation getTaskVOBasicInformation() {
@@ -58,4 +63,6 @@ public class WorkerTaskDetailVO {
     public String getRequirement() {
         return requirement;
     }
+
+
 }

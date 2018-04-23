@@ -1,6 +1,6 @@
-package cn.edu.nju.tagmakers.countsnju.entity.user;
+package cn.edu.nju.tagmakers.countsnju.entity;
 
-import cn.edu.nju.tagmakers.countsnju.entity.Entity;
+import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Criterion;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -23,16 +23,103 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created on 04/07/2018
  * <p>
  * Update:增加了拷贝和构造
- * @author xxz
+ * @author wym
  * Modified on 04/07/2018
  * <p>
  * Update:数据结构nullptr异常
- * @author xxz
+ * @author wym
  * Modified on 04/07/2018
+ * <p>
+ * Update:
+ * 增加keywords关键字
+ * @author xxz
+ * Created on 04/14/2018
  */
 
 public class Task extends Entity<Task> implements Serializable {
     private static final long serialVersionUID = 80L;
+    /**
+     * 任务的唯一标识
+     */
+    @JsonProperty(value = "task_id")
+    private String taskID;
+    /**
+     * 任务的名称
+     */
+    @JsonProperty(value = "task_name")
+    private String taskName;
+    /**
+     * 发起者名字
+     */
+    @JsonProperty(value = "initiator_name")
+    private String initiatorName;
+    /**
+     * 任务封面图
+     */
+    @JsonProperty(value = "cover")
+    private String cover;
+    /**
+     * 任务类型
+     */
+    @JsonProperty(value = "type")
+    private MarkType type;
+    /**
+     * 数据集
+     */
+    @JsonProperty(value = "data_set")
+    private List<Bare> dataSet;
+    /**
+     * 目标标注人数
+     */
+    @JsonProperty(value = "aim")
+    private int aim;
+    /**
+     * 每个用户最多标注的图片数量
+     */
+    @JsonProperty(value = "limit")
+    private int limit;
+    /**
+     * 奖励规则
+     */
+    @JsonProperty(value = "reward")
+    private int reward;
+    /**
+     * 任务的统计结果所在地
+     */
+    @JsonProperty(value = "result")
+    private String result;
+    /**
+     * 任务要求
+     */
+    @JsonProperty(value = "requirement")
+    private String requirement;
+    /**
+     * 是否已完成
+     */
+    @JsonProperty(value = "finished")
+    private Boolean isFinished;
+    /**
+     * 任务中可用的关键字
+     */
+    @JsonProperty("keywords")
+    private List<String> keywords;
+
+    /**
+     * 依赖的标准集对象
+     */
+    @JsonProperty(value = "dependencies")
+    private List<Criterion> dependencies;
+
+    /**
+     * user和已经标注的数量
+     */
+    @JsonIgnore
+    private Map<String, Integer> userMarked; //<USER_ID, MARKED_NUMBER>
+    /**
+     * bare和已经标注的数量
+     */
+    @JsonIgnore
+    private Map<String, Integer> bareMarked; //<BARE_ID, MARKED_NUMBER>
 
     public Task() {
 
@@ -51,98 +138,19 @@ public class Task extends Entity<Task> implements Serializable {
         this.result = toCopy.result;
         this.requirement = toCopy.requirement;
         this.isFinished = toCopy.isFinished;
+        if (toCopy.keywords != null) {
+            this.keywords = new ArrayList<>(toCopy.keywords);
+        }
         if (toCopy.userMarked != null) {
             this.userMarked = new HashMap<>(toCopy.userMarked);
         }
         if (toCopy.bareMarked != null) {
             this.bareMarked = new HashMap<>(toCopy.bareMarked);
         }
+        if (toCopy.getDependencies() != null) {
+            this.dependencies = new ArrayList<>(toCopy.dependencies);
+        }
     }
-
-    /**
-     * 任务的唯一标识
-     */
-    @JsonProperty(value = "task_id")
-    private String taskID;
-
-    /**
-     * 任务的名称
-     */
-    @JsonProperty(value = "task_name")
-    private String taskName;
-
-    /**
-     * 发起者名字
-     */
-    @JsonProperty(value = "initiator_name")
-    private String initiatorName;
-
-    /**
-     * 任务封面图
-     */
-    @JsonProperty(value = "cover")
-    private String cover;
-
-    /**
-     * 任务类型
-     */
-    @JsonProperty(value = "type")
-    private MarkType type;
-
-    /**
-     * 数据集
-     */
-    @JsonProperty(value = "data_set")
-    private List<Bare> dataSet;
-
-    /**
-     * 目标标注人数
-     */
-    @JsonProperty(value = "aim")
-    private int aim;
-
-    /**
-     * 每个用户最多标注的图片数量
-     */
-    @JsonProperty(value = "limit")
-    private int limit;
-
-    /**
-     * 奖励规则
-     */
-    @JsonProperty(value = "reward")
-    private int reward;
-
-    /**
-     * 任务的统计结果所在地
-     */
-    @JsonProperty(value = "result")
-    private String result;
-
-    /**
-     * 任务要求
-     */
-    @JsonProperty(value = "requirement")
-    private String requirement;
-
-    /**
-     * 是否已完成
-     */
-    @JsonProperty(value = "finished")
-    private Boolean isFinished;
-
-    /**
-     * user和已经标注的数量
-     */
-    @JsonIgnore
-    private Map<String, Integer> userMarked; //<USER_ID, MARKED_NUMBER>
-
-    /**
-     * bare和已经标注的数量
-     */
-    @JsonIgnore
-    private Map<String, Integer> bareMarked; //<BARE_ID, MARKED_NUMBER>
-
 
     public String getTaskName() {
         return taskName;
@@ -255,6 +263,26 @@ public class Task extends Entity<Task> implements Serializable {
 
     public void setTaskID(String taskID) {
         this.taskID = taskID;
+    }
+
+    public List<String> getKeywords() {
+        return Optional.ofNullable(keywords).orElse(new ArrayList<>());
+    }
+
+    public void setKeywords(List<String> keywords) {
+        this.keywords = keywords;
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public List<Criterion> getDependencies() {
+        return dependencies;
+    }
+
+    public void setDependencies(List<Criterion> dependencies) {
+        this.dependencies = dependencies;
     }
 
     /**

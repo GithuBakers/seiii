@@ -61,7 +61,7 @@ public class BareDAO extends DAO<Bare, BareFilter> {
      * @param cur 更新的对象
      */
     @Override
-    protected void setChanges(Bare ori, Bare cur) {
+    protected Bare setChanges(Bare ori, Bare cur) {
         //暂时定为所有的String默认值为null，更新的非默认值为更改值，不存在增量修改
         if (cur.getExThumbnail() != null) ori.setExThumbnail(cur.getExThumbnail());
         if (cur.getThumbnail() != null) ori.setThumbnail(cur.getThumbnail());
@@ -70,6 +70,7 @@ public class BareDAO extends DAO<Bare, BareFilter> {
         if (cur.getMarkType() != MarkType.DEFAULT) ori.setMarkType(cur.getMarkType());
         if (cur.getName() != null) ori.setName(cur.getName());
         if (cur.getRaw() != null) ori.setRaw(cur.getRaw());
+        return ori;
     }
 
 

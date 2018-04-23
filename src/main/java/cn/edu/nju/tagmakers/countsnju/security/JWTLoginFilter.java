@@ -8,7 +8,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -17,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.stream.Collectors;
 
 /**
  * Update:
@@ -27,6 +25,7 @@ import java.util.stream.Collectors;
  * Created on 04/07/2018
  */
 public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
+    private final String NOOP = "{noop}";
     private AuthenticationManager authenticationManager;
 
     public JWTLoginFilter(AuthenticationManager authenticationManager) {
@@ -39,7 +38,9 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
         try {
             SecurityUser securityUser = new ObjectMapper()
                     .readValue(req.getInputStream(), SecurityUser.class);
-
+            //这里的security user是从前端的包生成的，所以密码里不含noop，因此要在这里手动加上
+            //不！！！Spring security在解析密码的时候会自动去掉noop，所以登录不用加noop
+            securityUser.setSecurityPassword(securityUser.getPassword());
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             securityUser.getUsername(),
@@ -63,9 +64,8 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
                 .signWith(SignatureAlgorithm.HS512, "ymymym")
                 .compact();
         res.addHeader("Authorization", "Bearer " + token);
-        res.addHeader("Roles", auth.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList()).toString()
-        );
+        res.addHeader("Roles", new ArrayList<>(auth.getAuthorities()).get(0).getAuthority()
+                .replaceAll("ROLE_", ""));
+
     }
 }

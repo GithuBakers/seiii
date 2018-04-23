@@ -1,6 +1,6 @@
 package cn.edu.nju.tagmakers.countsnju.entity.vo;
 
-import cn.edu.nju.tagmakers.countsnju.entity.user.Task;
+import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -30,10 +30,17 @@ public class WorkerReceivedTaskDetailVO {
     @JsonProperty(value = "reward")
     private int reward;
 
+    /**
+     * 任务要求
+     */
+    @JsonProperty("requirement")
+    private String requirement;
+
     public WorkerReceivedTaskDetailVO(Task task, Worker worker) {
         taskVO = new WorkerReceivedTaskVO(task, worker);
         limit = task.getLimit();
         reward = task.getReward();
+        requirement = task.getRequirement();
     }
 
     public WorkerReceivedTaskVO getTaskVO() {

@@ -19,6 +19,11 @@ import java.util.List;
  *
  * @author WYM
  * Created on 04/07/2018
+ *
+ * Update:
+ * 去掉登录时加上的{noop}
+ * @author xxz
+ * Created on 04/17/2018
  */
 
 public class SecurityUser extends Entity<SecurityUser> implements UserDetails {
@@ -62,6 +67,7 @@ public class SecurityUser extends Entity<SecurityUser> implements UserDetails {
      *********************************/
 
 
+
     //下面两个用于更新秘密吗的方法
     public SecurityUser(String securityUserName, String securityPassword, Collection<? extends GrantedAuthority> authorities) {
         this.securityUserName = securityUserName;
@@ -69,6 +75,15 @@ public class SecurityUser extends Entity<SecurityUser> implements UserDetails {
         this.authorities = new ArrayList<>(authorities);
     }
     private List<GrantedAuthority> authorities;
+
+    /**
+     * 后端鉴权时用
+     *
+     * @param securityPassword
+     */
+    public void setSecurityPassword(String securityPassword) {
+        this.securityPassword = securityPassword;
+    }
 
     /**
      * 获取实体对象的主键

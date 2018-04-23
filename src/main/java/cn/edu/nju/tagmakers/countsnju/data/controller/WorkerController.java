@@ -77,4 +77,8 @@ public class WorkerController implements DataController<Worker, WorkerFilter> {
     public Worker findByID(String id) {
         return workerDAO.findByID(id);
     }
+
+    public int count() {
+        return workerDAO.count();
+    }
 }
