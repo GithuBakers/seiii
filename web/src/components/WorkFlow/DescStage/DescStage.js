@@ -10,6 +10,7 @@ import { Stage, Layer } from 'react-konva';
 import Image from '../components/Image';
 import { contributeWorkerTask } from '../../../services/apiList';
 import Loading from '../../Loading';
+import {randomString} from '../../../utils/random'
 const { TextArea } = Input;
 
 @connect()
@@ -22,6 +23,7 @@ class DescStage extends React.Component {
       id: this.state.currentImage.id,
       tags: [
         {
+          id:randomString(),
           mark: {
             type: 'DESC',
           },
