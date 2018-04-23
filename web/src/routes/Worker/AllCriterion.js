@@ -1,15 +1,17 @@
 import React, {PureComponent} from 'react';
 import {connect} from 'dva';
-import { Tag, Card, message, List } from 'antd';
+import { Tag, Card, Button, List } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import styles from './AllCriterion.less';
-import { receiveWorkerTask } from '../../services/apiList'
+import { contributeWorkerCriterion } from '../../services/apiList';
 import DetailCard from '../../components/DetailCard/DetailCard';
+import EditWorkPage from '../../components/EditWorkPage/EditWorkPage';
+import { WORKER_NORMAL } from '../../data/markRequestType';
 
 
 @connect(({ initiatorCriterion, loading }) => ({
   initiatorCriterion,
-  loading: loading.effects['workerCriterion/fetchAllCriterion'],
+  loading: loading.effects['initiatorCriterion/fetchAllCriterion'],
 }))
 export default class TaskList extends PureComponent {
 
@@ -20,10 +22,18 @@ export default class TaskList extends PureComponent {
 
   async componentDidMount() {
     await this.props.dispatch({
-      type: 'workerCriterion/fetchAllCriterion',
+      type: 'initiatorCriterion/fetchAllCriterion',
     });
+    await console.log('time');
   }
 
+  startCriterion = (criterionId) => {
+    this.setState({modalVisible:false});
+    this.props.dispatch({
+      type:'editWorkModel/fetchImageDetail',
+      payload:{id:criterionId,markRequestType:WORKER_NORMAL},
+    })
+  };
 
   handleCardClicked = async criterionItem => {
     await this.setState({ modalVisible: true, selectedCriterion: criterionItem });
@@ -33,6 +43,7 @@ export default class TaskList extends PureComponent {
 
     const { allCriterion } = this.props.initiatorCriterion;
     const { modalVisible, selectedCriterion } = this.state;
+    console.log('allCriterion', allCriterion);
     const CardList = () => allCriterion ? (
       <List
         rowKey="id"
@@ -75,7 +86,12 @@ export default class TaskList extends PureComponent {
           { title: '工人通过标准', value: `${selectedCriterion.aim} 张/人` },
           { title: '关键词', value: selectedCriterion.keywords?selectedCriterion.keywords.map(e => <Tag>{e}</Tag>):<div>无关键词</div> },
         ]}
-        footer={null}
+        footer={[
+          <Button key="back" onClick={() => this.setState({ modalVisible: false })}>Return</Button>,
+          <Button key="submit" type="primary" onClick={() => this.startCriterion(selectedCriterion.criterion_id)}>
+            开始完善标准集！
+          </Button>,
+        ]}
       />
 
     );
@@ -83,8 +99,16 @@ export default class TaskList extends PureComponent {
     return (
       <PageHeaderLayout
         title="公开的标准集"
-        content="您可以随意浏览开放的标准集，并在创建项目的时候使用它们，这会显著提高众包工人的工作质量，但同时提高工作门槛"
+        content="标准集是发起者制定的标注参考答案，我们将通过您完成标准集的正确率来评估您的水平，完成更多的标准集不仅能够让我们的任务推送更精准，还能解锁更多的任务喔~"
       >
+        <EditWorkPage
+          background='rgba(0, 0, 0, 0.65)'
+          keywords={selectedCriterion.keywords}
+          taskName={selectedCriterion.criterion_name}
+          type={selectedCriterion.type}
+          taskId={selectedCriterion.criterion_id}
+          request={contributeWorkerCriterion}
+        />
         <DetailModal/>
         <div className={styles.cardList}><CardList /></div>
 

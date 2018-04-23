@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import moment from 'moment';
 import { connect } from 'dva';
 import {
   List,
@@ -7,11 +6,7 @@ import {
   Row,
   Col,
   Radio,
-  Input,
-  Progress,
   Button,
-  Icon,
-  Popconfirm,
   Menu,
   Avatar,
   Tag,
@@ -19,13 +14,13 @@ import {
   message,
   Dropdown,
 } from 'antd';
-import DescriptionList from '../../components/DescriptionList/DescriptionList';
-import Description from '../../components/DescriptionList/Description';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 import styles from './MyTask.less';
 import { routerRedux } from 'dva/router';
 import EditWorkPage from '../../components/EditWorkPage/EditWorkPage';
+import { contributeWorkerTask } from '../../services/apiList';
+import {WORKER_NORMAL} from '../../data/markRequestType'
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -44,7 +39,7 @@ export default class MyTask extends PureComponent {
     this.setState({modalVisible:false});
     this.props.dispatch({
       type:'editWorkModel/fetchImageDetail',
-      payload:item,
+      payload:{id:item,markRequestType:WORKER_NORMAL},
     })
 
   };
@@ -66,7 +61,7 @@ export default class MyTask extends PureComponent {
     loading();
     await console.log('time');
     await this.setState({ modalVisible: true });
-  }
+  };
 
   render() {
     const {
@@ -134,21 +129,6 @@ export default class MyTask extends PureComponent {
       </div>
     );
 
-
-    const deleteTask = async taskName => {
-      // await this.props.dispatch({
-      //   type: 'workerTask/deleteTask',
-      //   payload: taskName,
-      // });
-      const hide = await message.loading('正在结束任务', 0);
-      // await finishWorkerTask(taskName);
-      await hide();
-      await this.setState({ modalVisible: false });
-      await this.props.dispatch({
-        type: 'workerTask/fetchAllList',
-      });
-    };
-
     const DetailModal = props => (
       <Modal
         width={600}
@@ -213,7 +193,14 @@ export default class MyTask extends PureComponent {
     return (
       <div>
         <DetailModal  />
-        <EditWorkPage background='rgba(0, 0, 0, 0.65)' keywords={selectedTask.keywords} taskName={selectedTask.task_name} type={selectedTask.type} taskId={selectedTask.task_id} />
+        <EditWorkPage
+          background='rgba(0, 0, 0, 0.65)'
+          keywords={selectedTask.keywords}
+          taskName={selectedTask.task_name}
+          type={selectedTask.type}
+          taskId={selectedTask.task_id}
+          request={contributeWorkerTask}
+        />
         <PageHeaderLayout
           loading={this.props.loading}
           title='我的任务列表'

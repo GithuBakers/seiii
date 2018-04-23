@@ -35,6 +35,12 @@ const menuData = [
     path: 'worker/task-list',
   },
   {
+    name: '全部标准集',
+    icon:'table',
+    authority: 'WORKER',
+    path: 'worker/all-criterion',
+  },
+  {
     name: '我的任务',
     icon: 'profile',
     authority: 'WORKER',

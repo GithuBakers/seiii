@@ -28,7 +28,7 @@ const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 
 @connect(({ loading }) => ({
-  submitting: loading.effects['initiatorTask/uploadNewTask'],
+  submitting: loading.effects['initiatorCriterion/createCriterion'],
 }))
 @Form.create()
 export default class NewCriterion extends PureComponent {
@@ -66,16 +66,16 @@ export default class NewCriterion extends PureComponent {
             updateValue.cover = cover.url;
             updateValue.data_set = dataList.map(e => ({ id: randomString(32), raw: e.response.url }));
             console.log("updateValue",updateValue);
-            updateValue.task_id=randomString();
+            updateValue.criterion_id=randomString(16);
             await this.props.dispatch({
-              type: 'initiatorTask/uploadNewTask',
+              type: 'initiatorCriterion/createCriterion',
               payload: updateValue,
             });
 
             message.success('提交成功');
             await this.props.dispatch(
               routerRedux.push({
-                pathname: '/initiator/my-task',
+                pathname: '/initiator/my-criterion',
               })
             );
           },
@@ -186,33 +186,33 @@ export default class NewCriterion extends PureComponent {
 
     return (
       <PageHeaderLayout
-        title="新增一个任务目标"
-        content="希望任务发起者本着认真负责的态度填写与上传要求和数据集。一经上传无法更改"
+        title="新增一个标准数据集"
+        content="标准数据集将作为工人标注能力的参照，请认真填写"
       >
         <Card bordered={false}>
           <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
-            <FormItem {...formItemLayout} label="任务标题">
-              {getFieldDecorator('task_name', {
+            <FormItem {...formItemLayout} label="数据集标题">
+              {getFieldDecorator('criterion_name', {
                 rules: [
                   {
                     required: true,
                     message: '请输入标题',
                   },
                 ],
-              })(<Input placeholder="给目标起个名字" />)}
+              })(<Input placeholder="请输入标题" />)}
             </FormItem>
-            <FormItem {...formItemLayout} label="任务要求">
+            <FormItem {...formItemLayout} label="数据集描述">
               {getFieldDecorator('requirement', {
                 rules: [
                   {
                     required: true,
-                    message: '请输入任务要求',
+                    message: '请输入数据集要求',
                   },
                 ],
               })(
                 <TextArea
                   style={{ minHeight: 32 }}
-                  placeholder="请输入您的任务描述与要求"
+                  placeholder="请输入您的数据集描述与要求"
                   rows={4}
                 />
               )}
@@ -226,26 +226,6 @@ export default class NewCriterion extends PureComponent {
                   },
                 ],
               })(<Input placeholder="填入你的标注数量期望" />)}
-            </FormItem>
-            <FormItem {...formItemLayout} label="用户标注限制">
-              {getFieldDecorator('limit', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入单个用户最多标注的数量',
-                  },
-                ],
-              })(<Input placeholder="填入单个用户最多标注的数量限制" />)}
-            </FormItem>
-            <FormItem {...formItemLayout} label="奖励值">
-              {getFieldDecorator('reward', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入奖励值',
-                  },
-                ],
-              })(<Input placeholder="填写关键词" />)}
             </FormItem>
             <FormItem {...formItemLayout} label="关键词" help="请使用回车或逗号分词">
               {getFieldDecorator('keywords')(<Select

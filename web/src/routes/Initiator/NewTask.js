@@ -245,7 +245,7 @@ export default class BasicForms extends PureComponent {
                   message: '请输入奖励值',
                 },
               ],
-            })(<Input placeholder="填写关键词" />)}
+            })(<Input placeholder='请输入奖励值'/>)}
           </FormItem>
             <FormItem {...formItemLayout} label="关键词" help="请使用回车或逗号分词">
               {getFieldDecorator('keywords')(<Select

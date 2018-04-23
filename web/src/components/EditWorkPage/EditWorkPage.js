@@ -12,31 +12,38 @@ class EditWorkPage extends React.Component {
   constructor(props) {
     super(props);
     this.startDelayTime = 900;
-    this.state={
-
-    }
   }
 
 
   render() {
-    const model=this.props.editWorkModel;
-    let isShow=model.finishFetch;
-    console.log(model.image);
-    console.log()
-    if(model.image.length===1){
+    const {request,background,loading,editWorkModel,type,taskId,taskName,keywords}=this.props;
+    let isShow=editWorkModel.finishFetch;
+    console.log(editWorkModel.image);
+    if(editWorkModel.image.length===1){
       isShow=true
     }else {
       isShow=false
     }
     return (
-      <BlackModel background={this.props.background} showModal={model.isOpen}>
+      <BlackModel background={background} showModal={editWorkModel.isOpen}>
         <QueueAnim
           type={['right', 'left']}
           ease={['easeOutQuart', 'easeInOutQuart']}
           delay={this.startDelayTime}
         >
-          {!this.props.loading ?
-            <WorkFlow key="b" isLabeled imageList={model.image} type={this.props.type} taskId={this.props.taskId} taskName={this.props.taskName} keywords={this.props.keywords}  /> :
+          {!loading ? (
+            <WorkFlow
+              key="b"
+              isLabeled
+              markRequestType={editWorkModel.markRequestType}
+              request={request}
+              imageList={editWorkModel.image}
+              type={type}
+              taskId={taskId}
+              taskName={taskName}
+              keywords={keywords}
+            />
+            ):
             <Loading key="a" />}
           <CloseButton key="e" />
         </QueueAnim>
