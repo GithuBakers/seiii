@@ -14,15 +14,18 @@ export default {
   effects: {
     *login({ payload }, { call, put }) {
       const response = yield call(login, payload);
+      console.log("login response",response);
       yield put({
         type: 'changeLoginStatus',
         payload: response,
       });
       // Login successfully
+
       if (response.status === 'ok') {
         reloadAuthorized();
         yield setUserName(payload.user_name);
         yield put(routerRedux.push('/dashboard/analysis'));
+        yield console.log("login ok");
       }
     },
     *logout(_, { put, select }) {

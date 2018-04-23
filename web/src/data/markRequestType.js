@@ -1,0 +1,6 @@
+
+module.exports={
+  WORKER_NORMAL:'WORKER_NORMAL', // 工人普通标注
+  WORKER_CRITERION:'WORKER_CRITERION',// 工人完成标准集
+  INITIATOR_CRITERION:'INITIATOR_CRITERION', // 发起者完成标准集
+}

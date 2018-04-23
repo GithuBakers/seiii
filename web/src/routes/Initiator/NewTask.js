@@ -64,7 +64,7 @@ export default class BasicForms extends PureComponent {
             const cover = this.state.coverList[0].response;
             const dataList = this.state.dataSetList.slice(0);
             updateValue.cover = cover.url;
-            updateValue.data_set = dataList.map(e => ({ id: e.response.url, url: e.response.url }));
+            updateValue.data_set = dataList.map(e => ({ id: randomString(32), raw: e.response.url }));
             console.log("updateValue",updateValue);
             updateValue.task_id=randomString();
             await this.props.dispatch({
@@ -143,6 +143,7 @@ export default class BasicForms extends PureComponent {
     reader.onloadend = () => {
       uploadToOss('data_set', file).then(ossData => {
         file.requestUrls = ossData.res.requestUrls[0];
+        file.requestUrls = file.requestUrls.replace(/\?uploadId.*/g,'');
         file.url = file.requestUrls;
         onSuccess(file);
       });

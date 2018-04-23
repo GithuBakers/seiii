@@ -1,8 +1,8 @@
 import React from 'react'
-import {Row, Col,Input,List,notification } from 'antd';
+import {Row, Col,Input,List,notification, AutoComplete } from 'antd';
 import {connect} from "dva";
 import QueueAnim from 'rc-queue-anim';
-import { Layer, Rect, Stage, Group, Transformer} from 'react-konva';
+import { Layer, Rect, Stage, Transformer} from 'react-konva';
 import CloseButton from "../../EditWorkPage/CloseButton";
 import Styles from "./styles.css"
 import Image from "../components/Image";
@@ -272,16 +272,19 @@ class RectStage extends React.Component {
                           >delete
                                     </a>]}
                         >
-                          <Input
-                            className={Styles["desc-input"]}
+                          <AutoComplete
+                            className="desc-input"
+                            key='c'
                             onClick={() => this.setState({selectedId: item.id})}
                             onChange={e => {
                                    const newShapesList = this.state.shapes.slice();
                                    newShapesList.filter(rect => rect.id === item.id)
-                                     .forEach(rect => rect.comment = e.target.value);
+                                     .forEach(rect => rect.comment = e);
                                    this.setState({shapes: newShapesList})
                                  }}
+                            dataSource={this.props.keywords}
                             value={item.comment}
+                            filterOption={(inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
                             placeholder="INPUT TAG HERE"
                           />
                         </List.Item>

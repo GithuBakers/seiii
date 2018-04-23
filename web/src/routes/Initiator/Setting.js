@@ -77,7 +77,7 @@ export default class Setting extends PureComponent {
         const result = values;
         result.avatar = this.avatarUrl;
         await this.props.dispatch({
-          type: 'user/updateWorkerProfile',
+          type: 'user/updateInitiatorProfile',
           payload: result,
         });
         message.success('设置成功~')

@@ -30,8 +30,9 @@ export default {
       });
     },
     *fetchSelectedTask({ payload }, { call, put }) {
-      const taskDetail = yield call(getWorkerReceivedTask, 1);
-      // const taskDetail = yield call(getWorkerReceivedTask, payload);
+      //TODO: 1 will
+      // const taskDetail = yield call(getWorkerReceivedTask, 1);
+      const taskDetail = yield call(getWorkerReceivedTask, payload);
       yield put({ type: 'setSelectedTaskData', payload: { taskDetail } });
     },
 

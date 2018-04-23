@@ -26,7 +26,7 @@ function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
     return response;
   }
-  const errortext = codeMessage[response.status] || response.statusText;
+  const errortext =  response.error||codeMessage[response.status];
   notification.error({
     message: `请求错误 ${response.status}: ${response.url}`,
     description: errortext,
@@ -73,25 +73,45 @@ export default async function request(url, options) {
     ...newOptions.headers,
   };
 
-  const response = await fetch(url, newOptions);
+  let response = await fetch(url, newOptions);
+  console.log('response', response);
+
   try {
-    await checkStatus(response);
-    if (newOptions.method === 'DELETE' || response.status === 204) {
-      return response.text();
+    // await checkStatus(response);
+    // await console.log('whole response', response);
+    // if (newOptions.method === 'DELETE' || response.status === 204) {
+    //   return response.text();
+    // }
+    let newStatus = 200;
+    if (url.includes('/login')||url.includes('/user/new_user')) {
+      if (response.status === 403) {
+        newStatus = 'error';
+      } else {
+        newStatus = 'ok';
+      }
+    }else{
+      await checkStatus(response);
+      await console.log('whole response', response);
+      if (newOptions.method === 'DELETE' || response.status === 204) {
+        return response.text();
+      }
     }
 
-    const data = await response.json();
+    let data=undefined;
+    if(!url.includes('/login')){
+      data = await response.json();
+    }
     console.log('data', data);
 
-    if (typeof data !== "object"||Array.isArray(data)) {
+    if (data!=undefined && (typeof data !== "object"||Array.isArray(data))) {
       return data;
     }
 
     let ret = {
       token: undefined,
       currentAuthority: undefined,
-      status: undefined,
       ...data,
+      status: newStatus,
     };
 
     if (response.headers.get('Authorization')) {
@@ -100,13 +120,7 @@ export default async function request(url, options) {
     if (response.headers.get('Roles')) {
       ret.currentAuthority = await response.headers.get('Roles');
     }
-    if (url.includes('/login')) {
-      if (ret.status === 403) {
-        ret.status = 'error';
-      } else {
-        ret.status = 'ok';
-      }
-    }
+
     await console.log('ret', ret);
 
     return ret;
@@ -114,6 +128,8 @@ export default async function request(url, options) {
     const { dispatch } = store;
     const status = e.name;
     console.log('status', status);
+    console.log('e',e);
+
     if (status === 401) {
       dispatch({
         type: 'login/logout',

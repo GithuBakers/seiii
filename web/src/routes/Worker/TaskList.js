@@ -106,7 +106,7 @@ export default class BasicForms extends PureComponent {
         ]}
       >
         <div style={{ margin: '-24px' }}>
-          <img style={{ maxWidth: '600px', height:'50%', margin: '0 auto' }} src={selectedTask.cover} />
+          <img style={{ maxWidth: '600px', margin: '0 auto' }} src={selectedTask.cover} />
           <div style={{ maxWidth: '500px', margin: '40px auto 0', paddingBottom: '10px' }}>
             <h1 style={{ textAlign: 'center' }}>{selectedTask.task_name}</h1>
             <ListInfo title="任务详细要求" value={selectedTask.requirement} />

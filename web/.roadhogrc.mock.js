@@ -8,7 +8,8 @@ import { getNotices } from './mock/notices';
 import { format, delay } from 'roadhog-api-doc';
 
 // 是否禁用代理
-const noProxy = process.env.NO_PROXY === 'true';
+// const noProxy = process.env.NO_PROXY === 'true';
+const noProxy =true;
 
 const typeList = ['RECT', 'DESC', 'EDGE'];
 
@@ -318,4 +319,7 @@ const proxy = {
   },
 };
 
-export default (noProxy ? {} : delay(proxy, 1000));
+// export default (noProxy ? {'GET /api/v2/*': 'http://172.28.134.246:8888/'} : delay(proxy, 1000));
+export default {};
+// export default {
+// };

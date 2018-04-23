@@ -69,7 +69,7 @@ export default class AvatarUpload extends React.Component {
           imageUrl: reader.result,
           loading: false,
         });
-        this.props.setAvatar(data.res.requestUrls[0]);
+        this.props.setAvatar(data.res.requestUrls[0].replace(/\?uploadId.*/g,''));
         // console.log(data);
       });
     };
