@@ -36,12 +36,14 @@ export async function createTask(params) {
 }
 
 export async function getInitiatorTask(finished) {
-  console.log(finished);
   return request(`${version}/initiator/task?finished=${finished}`);
 }
 
 export async function getInitiatorTaskDetail(taskId) {
-  return request(`${version}/initiator/task/${taskId}`);
+  //TODO: 1 FOR MOCK
+  return request(`${version}/initiator/task/1`);
+
+  // return request(`${version}/initiator/task/${taskId}`);
 }
 
 export async function finishInitiatorTask(taskId) {
@@ -70,30 +72,40 @@ export async function exploreTaskMarket() {
   return request(`${version}/worker/task_list`);
 }
 
-export async function getWorkerTaskDetail(taskName) {
-  return request(`${version}/worker/task/${taskName}`);
+export async function getWorkerTaskDetail(taskId) {
+  //TODO: 1 FOR MOCK
+  return request(`${version}/worker/task/1`);
+
+  // return request(`${version}/worker/task/${taskId}`);
 }
 
-export async function receiveWorkerTask(taskName) {
-  return request(`${version}/worker/task/received_task/${taskName}`, {
+export async function receiveWorkerTask(taskId) {
+  //TODO: 1 FOR MOCK
+  return request(`${version}/worker/task/received_task/1`, {
     method: 'POST',
   });
-}
-
-export async function getWorkerTaskImgs(taskName) {
-  return request(`${version}/worker/task/received_task/img/${taskName}`);
-}
-
-export async function contributeWorkerTask(taskName, imgId, params) {
-  //TODO:1  will return
-  // return request(`${version}/worker/task/received_task/1/1`, {
+  // return request(`${version}/worker/task/received_task/${taskId}`, {
   //   method: 'POST',
-  //   body: params,
   // });
-  return request(`${version}/worker/task/received_task/${taskName}/${imgId}`, {
+}
+
+export async function getWorkerTaskImgs(taskId) {
+  //TODO: 1 FOR MOCK
+  return request(`${version}/worker/task/received_task/img/1`);
+
+  // return request(`${version}/worker/task/received_task/img/${taskId}`);
+}
+
+export async function contributeWorkerTask(taskId, imgId, params) {
+  //TODO: 1 FOR MOCK
+  return request(`${version}/worker/task/received_task/1/1`, {
     method: 'POST',
     body: params,
   });
+  // return request(`${version}/worker/task/received_task/${taskId}/${imgId}`, {
+  //   method: 'POST',
+  //   body: params,
+  // });
 }
 
 export async function getWorkerReceivedTaskList() {
@@ -101,7 +113,9 @@ export async function getWorkerReceivedTaskList() {
 }
 
 export async function getWorkerReceivedTask(taskId) {
-  return request(`${version}/worker/task/received_task/${taskId}`);
+  //TODO: 1 FOR MOCK
+  return request(`${version}/worker/task/received_task/1`);
+  // return request(`${version}/worker/task/received_task/${taskId}`);
 }
 
 export async function getWorkerRecommendTask(type) {

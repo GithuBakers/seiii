@@ -8,8 +8,8 @@ import { getNotices } from './mock/notices';
 import { format, delay } from 'roadhog-api-doc';
 
 // 是否禁用代理
-// const noProxy = process.env.NO_PROXY === 'true';
-const noProxy =true;
+const noProxy = process.env.NO_PROXY === 'true';
+// const noProxy =true;
 
 const typeList = ['RECT', 'DESC', 'EDGE'];
 
@@ -121,7 +121,7 @@ const proxy = {
     task_id: () => mockjs.Random.string(), //达标比例
     task_name: () => mockjs.Random.cname() + 'task',
     cover: () => mockjs.Random.image('600x300', '#894FC4', '#FFF', 'TASK1'),
-    type: () => "EDGE",
+    type: () => "DESC",
     'limit|100-500': 1,
     'reward|200-300': 1,
     requirement: () => mockjs.Random.sentence(), //任务要求
@@ -319,7 +319,7 @@ const proxy = {
   },
 };
 
-// export default (noProxy ? {'GET /api/v2/*': 'http://172.28.134.246:8888/'} : delay(proxy, 1000));
-export default {};
+export default (delay(proxy, 1000));
+// export default {};
 // export default {
 // };

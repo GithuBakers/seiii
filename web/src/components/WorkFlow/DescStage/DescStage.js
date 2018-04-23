@@ -1,14 +1,16 @@
 import React from 'react';
 import CloseButton from '../../EditWorkPage/CloseButton';
 import Styles from './styles.css';
-import { Row, Col, AutoComplete,notification } from 'antd';
+import { Row, Col, AutoComplete,notification,Input } from 'antd';
 import QueueAnim from 'rc-queue-anim';
+import PerfectScrollbar from 'react-perfect-scrollbar';
+import 'react-perfect-scrollbar/dist/css/styles.css';
 import { connect } from 'dva';
 import { Stage, Layer } from 'react-konva';
 import Image from '../components/Image';
 import { contributeWorkerTask } from '../../../services/apiList';
 import Loading from '../../Loading';
-
+const { TextArea } = Input;
 
 @connect()
 class DescStage extends React.Component {
@@ -45,6 +47,7 @@ class DescStage extends React.Component {
     } else {
       this.setState({
         currentImage: nextImage,
+        comment: null,
         loading: false,
       });
     }
@@ -53,7 +56,7 @@ class DescStage extends React.Component {
     this.setState({ loading: true });
     await this.uploadMark();
     await this.props.dispatch({ type: 'editWorkModel/setOpenState', payload: { isOpen: false } });
-    notification['success']({
+    notification.success({
       message: '感谢您的付出',
       description: '您已成功完成了一系列描述任务，并获得了一定的奖励，剩余奖励将在本任务结束后根据您的正确率发放',
     });
@@ -90,16 +93,17 @@ class DescStage extends React.Component {
   render() {
     return (
       <div style={{ color: 'white' }}>
-        <CloseButton/>
-        {this.state.loading ? <div style={{ height: '100vh' }}><Loading/></div> : (
+        <CloseButton />
+        {this.state.loading ? <div style={{ height: '100vh' }}><Loading /></div> : (
           <Row>
             <Col span={16}>
               <Stage width={window.innerWidth} height={window.innerHeight}>
                 <Layer>
-                  <Image url={this.state.currentImage.raw}/>
+                  <Image url={this.state.currentImage.raw} />
                 </Layer>
               </Stage>
             </Col>
+
             <Col span={8}>
               <QueueAnim>
                 <div key="a" className={Styles['tags-section']}>
@@ -109,15 +113,17 @@ class DescStage extends React.Component {
                     ease={['easeOutQuart', 'easeInOutQuart']}
                   >
                     <h1 key="b">描述</h1>
-                    <AutoComplete
-                      className="desc-input"
-                      dataSource={this.props.keywords}
-                      key='c'
-                      placeholder="INPUT DESCRIPTION HERE.."
-                      filterOption={(inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
-                      value={this.state.comment}
-                      onChange={value => this.setState({ comment: value })}
-                    />
+                    <div
+                      key="c"
+                      className={Styles['list-section']}
+                    >
+                        <TextArea
+                          className={Styles["desc-input"]}
+                          placeholder="INPUT DESCRIPTION HERE.."
+                          value={this.state.comment}
+                          onChange={e => this.setState({comment: e.target.value})}
+                        />
+                    </div>
                     {this.state.finalPage ?
                       <div key="d" className={Styles['next-button']} onClick={this.finishButtonEvent}>FINISH</div> :
                       <div key="e" className={Styles['next-button']} onClick={this.nextButtonEvent}>NEXT</div>

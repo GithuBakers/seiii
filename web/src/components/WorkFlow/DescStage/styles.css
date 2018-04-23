@@ -25,6 +25,9 @@
   box-shadow: none;
 }
 
+.list-section{
+  height: 80vh;
+}
 
 
 .next-button{

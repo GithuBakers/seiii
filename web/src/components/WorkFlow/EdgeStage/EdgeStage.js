@@ -5,6 +5,8 @@ import {Row, Col,List,Input,AutoComplete,notification} from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import {connect} from "dva";
 import { Stage, Layer, Line, Text } from "react-konva";
+import PerfectScrollbar from 'react-perfect-scrollbar';
+import 'react-perfect-scrollbar/dist/css/styles.css';
 import Image from "../components/Image";
 import Loading from "../../Loading"
 import edgeIDUtils from "../../../utils/edgeIDUtils"
@@ -59,7 +61,7 @@ class EdgeStage extends React.Component {
     this.setState({loading:true});
     await this.uploadMark();
     await this.props.dispatch({type: 'editWorkModel/setOpenState', payload: {isOpen: false}});
-    notification['success']({
+    notification.success({
       message: '感谢您的付出',
       description: '您已成功完成了一系列框选任务，并获得了一定的奖励，剩余奖励将在本任务结束后根据您的正确率发放',
     });
@@ -178,41 +180,47 @@ class EdgeStage extends React.Component {
                     ease={['easeOutQuart', 'easeInOutQuart']}
                   >
                     <h1 key="b">描边</h1>
-                    <List
+                    <div
                       key="c"
-                      className={Styles.list}
-                      itemLayout="horizontal"
-                      dataSource={this.state.shapes}
-                      renderItem={item => (
-                        <List.Item
-                          key={item.id}
-                          onClick={() => this.setState({selectedId: item.id})}
-                          style={this.state.selectedId === item.id ? {boxShadow: "#1890ff45 0px 10px 50px"} : {}}
-                          actions={[<a onClick={() => {
+                      className={Styles['list-section']}
+                    >
+                      <PerfectScrollbar>
+                        <List
+                          className={Styles.list}
+                          itemLayout="horizontal"
+                          dataSource={this.state.shapes}
+                          renderItem={item => (
+                            <List.Item
+                              key={item.id}
+                              onClick={() => this.setState({selectedId: item.id})}
+                              style={this.state.selectedId === item.id ? {boxShadow: "#1890ff45 0px 10px 50px"} : {}}
+                              actions={[<a onClick={() => {
                                        let newShapesList = this.state.shapes.slice();
                                        newShapesList = newShapesList.filter(rect => rect.id !== item.id);
                                        this.setState({shapes: newShapesList})
                                      }}
-                          >delete
-                          </a>]}
-                        >
-                          <AutoComplete
-                            className="desc-input"
-                            key='c'
-                            onChange={value => {
+                              >delete
+                                        </a>]}
+                            >
+                              <AutoComplete
+                                className="desc-input"
+                                key='c'
+                                onChange={value => {
                                      const newShapesList = this.state.shapes.slice();
                                      newShapesList.filter(rect => rect.id === item.id)
                                        .forEach(rect => rect.comment = value);
                                      this.setState({shapes: newShapesList})
                                    }}
-                            dataSource={this.props.keywords}
-                            value={item.comment}
-                            filterOption={(inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
-                            placeholder="INPUT TAG HERE"
-                          />
-                        </List.Item>
+                                dataSource={this.props.keywords}
+                                value={item.comment}
+                                filterOption={(inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
+                                placeholder="INPUT TAG HERE"
+                              />
+                            </List.Item>
                         )}
-                    />
+                        />
+                      </PerfectScrollbar>
+                    </div>
                     {this.state.finalPage ?
                       <div key="d" className={Styles["next-button"]} onClick={this.finishButtonEvent}>FINISH</div> :
                       <div key="e" className={Styles["next-button"]} onClick={this.nextButtonEvent}>NEXT</div>
