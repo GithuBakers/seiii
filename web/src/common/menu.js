@@ -47,12 +47,29 @@ const menuData = [
     path: 'initiator/my-task',
   },
   {
+    name: '公共标准集',
+    icon: 'appstore-o',
+    authority: 'INITIATOR',
+    path: 'initiator/all-criterion',
+  },
+  {
+    name: '我的标准集',
+    icon: 'solution',
+    authority: 'INITIATOR',
+    path: 'initiator/my-criterion',
+  },
+  {
     name: '新增任务',
     icon: 'form',
     authority: 'INITIATOR',
     path: 'initiator/new-task',
   },
-
+  {
+    name: '创建标准集',
+    icon: 'edit',
+    authority:'INITIATOR',
+    path:'initiator/new-criterion',
+  },
   {
     name: '我的信息',
     icon: 'user',

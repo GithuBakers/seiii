@@ -55,8 +55,11 @@ export async function finishInitiatorTask(taskId) {
   });
 }
 
-export async function createCriterion() {
-  return request(`${version}/initiator/criterion/new_criterion`);
+export async function createCriterion(params) {
+  return request(`${version}/initiator/criterion/new_criterion`,{
+    method: 'POST',
+    body: params,
+  });
 }
 
 export async function getMyCriterion(initiatorId) {

@@ -2,9 +2,8 @@ import React, {PureComponent} from 'react';
 import {connect} from 'dva';
 import {Col,Row,Modal,Card,message,Progress,Popconfirm,Button, DatePicker, Form, Input, List, Select,Tag} from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import styles from './TaskList.less';
+import styles from './AllCriterion.less';
 import { receiveWorkerTask } from '../../services/apiList'
-import moment from 'moment/moment';
 
 
 @connect(({taskMarket, loading}) => ({
@@ -50,7 +49,6 @@ export default class TaskList extends PureComponent {
     const CardList =()=> taskList ? (
       <List
         rowKey="id"
-        // className={styles}
         loading={this.props.loading}
         grid={{ gutter: 24, xl: 4, lg: 3, md: 3, sm: 2, xs: 1 }}
         dataSource={taskList}
