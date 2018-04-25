@@ -122,7 +122,14 @@ export async function getWorkerTaskImgs(taskId) {
   // return request(`${version}/worker/task/received_task/img/${taskId}`);
 }
 
-export async function contributeWorkerTask(taskId, imgId, params) {
+/**
+ * 工人提交工作用图片
+ * @param taskId
+ * @param params
+ * @param imgId
+ * @return {Promise<Object>}
+ */
+export async function contributeWorkerTask(taskId, params, imgId) {
   console.log('contributeWorkerTask',params);
   //TODO: 1 FOR MOCK
   return request(`${version}/worker/task/received_task/1/1`, {

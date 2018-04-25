@@ -143,7 +143,7 @@ export default class TaskList extends PureComponent {
                 >
                   <List.Item.Meta
                     avatar={<Avatar shape="square" size="large"  src={item.cover} />}
-                    title={<a href="https://ant.design">{item.criterion_name}</a>}
+                    title={item.criterion_name}
 
                     description={
                       <div style={{maxWidth: "100%" }}>
