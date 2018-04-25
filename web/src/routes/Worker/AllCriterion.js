@@ -11,7 +11,7 @@ import { WORKER_NORMAL } from '../../data/markRequestType';
 
 @connect(({ initiatorCriterion, loading }) => ({
   initiatorCriterion,
-  loading: loading.effects['initiatorCriterion/fetchAllCriterion'],
+  loading: loading.effects['workerCriterion/fetchAllCriterion'],
 }))
 export default class TaskList extends PureComponent {
 
@@ -22,7 +22,7 @@ export default class TaskList extends PureComponent {
 
   async componentDidMount() {
     await this.props.dispatch({
-      type: 'initiatorCriterion/fetchAllCriterion',
+      type: 'workerCriterion/fetchAllCriterion',
     });
     if(this.props.location.state&&this.props.location.state.criterion_id){
       const criterionId=this.props.location.state.criterion_id;

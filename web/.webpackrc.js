@@ -21,12 +21,12 @@ export default {
   disableDynamicImport: true,
   publicPath: '/',
   hash: true,
-
+  proxy: {
+    "/api": {
+      "target": "http://192.168.1.102:8888/",
+      "changeOrigin": true,
+    }
+  }
 
 };
-//  proxy: {
-//     "/api": {
-//       "target": "http://192.168.1.102:8888/",
-//       "changeOrigin": true,
-//     }
-//   }
+
