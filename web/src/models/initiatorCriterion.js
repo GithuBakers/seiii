@@ -15,7 +15,7 @@ export default {
 
   effects: {
     *fetchAllCriterion(_, { call, put }) {
-      const allCriterion = yield call(getAllCriterionForInitiator, true);
+      const allCriterion = yield call(getAllCriterionForInitiator);
       yield put({
         type: 'refreshList',
         payload: {

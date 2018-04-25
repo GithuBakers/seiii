@@ -24,6 +24,20 @@ export default class TaskList extends PureComponent {
     await this.props.dispatch({
       type: 'initiatorCriterion/fetchAllCriterion',
     });
+    if(this.props.location.state&&this.props.location.state.criterion_id){
+      const criterionId=this.props.location.state.criterion_id;
+      const { allCriterion } = this.props.initiatorCriterion;
+      console.log("criterion_id",criterionId);
+      console.log("allCriterion",allCriterion);
+      const selectedCriterion=allCriterion.filter(e=>e.criterion_id===criterionId)[0];
+      console.log("selectedCriterion",selectedCriterion);
+      if(selectedCriterion.criterion_id) {
+        await this.setState({
+          selectedCriterion,
+          modalVisible: true,
+        })
+      }
+    }
     await console.log('time');
   }
 

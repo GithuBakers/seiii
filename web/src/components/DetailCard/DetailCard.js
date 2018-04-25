@@ -26,7 +26,7 @@ export default class DetailCard extends PureComponent {
         footer={this.props.footer}
       >
         <div style={{ margin: '-24px' }}>
-          <img style={{ maxWidth: '600px', margin: '0 auto' }} src={this.props.cover} />
+          <img style={{ width: '100%', margin: '0 auto' }} src={this.props.cover} />
           <div style={{ maxWidth: '500px', margin: '40px auto 10px', paddingBottom: '20px' }}>
             <h1 style={{ textAlign: 'center' }}>{this.props.title}</h1>
             {this.props.content.map((e,index)=>(<ListInfo key={index} title={e.title} value={e.value} />))}

@@ -24,6 +24,7 @@ import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 import styles from './MyTask.less';
 import { routerRedux } from 'dva/router';
+import Ellipsis from '../../components/Ellipsis/index';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -136,7 +137,7 @@ export default class MyTask extends PureComponent {
         footer={null}
       >
         <div style={{ margin: '-24px' }}>
-          <img style={{ maxWidth: '600px', margin: '0 auto' }} src={selectedTask.cover} />
+          <img style={{ width: '100%', margin: '0 auto' }} src={selectedTask.cover} />
           <div style={{ maxWidth: '500px', margin: '40px auto 50px', paddingBottom: '40px' }}>
             <h1 style={{ textAlign: 'center' }}>{selectedTask.task_name}</h1>
             <p style={{ textAlign: 'center' }}>by {selectedTask.initiator_name}</p>
@@ -173,6 +174,27 @@ export default class MyTask extends PureComponent {
                 )
               }
             />
+            <ListInfo
+              title="依赖的标准集"
+            />
+            <List
+              bordered
+              itemLayout="horizontal"
+              dataSource={selectedTask.dependencies}
+              renderItem={item => (
+                <List.Item>
+                  <List.Item.Meta
+                    avatar={<Avatar shape="square" size="large"  src={item.cover} />}
+                    title={<a href="https://ant.design">{item.criterion_name}</a>}
+                    description={
+                      <div style={{maxWidth: "100%" }}>
+                        <Ellipsis tooltip lines={1}>{item.requirement}</Ellipsis >
+                      </div>}
+                  />
+                </List.Item>
+              )}
+            />
+
             {selectedTask.finished ? (
               {}
             ) : (
@@ -194,11 +216,6 @@ export default class MyTask extends PureComponent {
 
     const showDetail = async taskId => {
       console.log("taskId",taskId)
-      //TODO:1  will return
-      // await this.props.dispatch({
-      //   type: 'initiatorTask/fetchSelectedTask',
-      //   payload: 1,
-      // });
       await this.props.dispatch({
         type: 'initiatorTask/fetchSelectedTask',
         payload: taskId,

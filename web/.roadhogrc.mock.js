@@ -17,6 +17,7 @@ const typeList = ['RECT', 'DESC', 'EDGE'];
 const rawCriterionList=mockjs.mock({
   'list|5-7': [
     {
+      "qualified|1":true,
       "criterion_id":()=>mockjs.Random.string(),
       "criterion_name":()=>mockjs.Random.cname(),
       "cover": () => mockjs.Random.image('600x300', '#c4ab3f', '#FFF', 'criterion'),
@@ -153,7 +154,8 @@ const proxy = {
     requirement: () => mockjs.Random.sentence(), //任务要求
     "actual_number|3-5":1,
     "total_reward|50-100":1,
-    "keywords|5-10":[ ()=>mockjs.Random.name()]
+    "keywords|5-10":[ ()=>mockjs.Random.name()],
+    dependencies:rawCriterionList
   }),
   'GET /api/v2/worker/task/received_task/img/1' :(req, res) => {
     let list = {
