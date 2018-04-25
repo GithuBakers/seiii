@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -117,19 +118,19 @@ public class InitiatorServiceTest extends AbstractTestNGSpringContextTests {
         assertEquals(temp.getNickName(), "巨无霸");
     }
 
-    @Test(dependsOnMethods = "createTaskTest1")
-    //查找任务
-    public void findTaskTest1() {
+//    @Test(dependsOnMethods = "createTaskTest1")
+//    //查找任务
+//    public void findTaskTest1() {
 //        Task temp = initiatorService.findTaskByName(testTask.getPrimeKey(), testInitiator.getPrimeKey());
 //        assertEquals(temp.getResult(), testTask.getResult());
-    }
+//    }
 
-    @Test(expectedExceptions = PermissionDeniedException.class)
-    //查找不存在的任务
-    public void findTaskTest2() {
+//    @Test(expectedExceptions = PermissionDeniedException.class)
+//    //查找不存在的任务
+//    public void findTaskTest2() {
 //        Task temp = initiatorService.findTaskByName("不存在", testInitiator.getPrimeKey());
 //        assertNull(temp);
-    }
+//    }
 
     //查找任务列表
     @Test(dependsOnMethods = "createTaskTest1")

@@ -81,7 +81,6 @@ public class InitiatorService {
      * @return 符合条件的任务
      */
     public List<InitiatorTaskVO> findInitiatorTask(TaskFilter taskFilter) {
-
         return taskService.findTask(taskFilter).stream()
                 .map(InitiatorTaskVO::new)
                 .collect(Collectors.toList());

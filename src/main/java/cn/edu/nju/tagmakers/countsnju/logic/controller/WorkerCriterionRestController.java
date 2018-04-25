@@ -18,7 +18,6 @@ import static cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType.DESC;
 /**
  * Description:
  * 工人与标准集交互的controller
- * TODO:这个controller交给小温啦
  *
  * @author xxz
  * Created on 04/21/2018

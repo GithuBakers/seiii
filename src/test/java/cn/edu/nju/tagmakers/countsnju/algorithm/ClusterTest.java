@@ -39,7 +39,7 @@ public class ClusterTest extends TestNG {
                 {0, 0, 10, 10},
 
         };
-        int N = 1000;
+        int N = 10;
         for (int i = 0; i < N; i++) {
             for (int[] anInit : init) {
                 rects.add(build(anInit[0], anInit[1], anInit[2], anInit[3]));

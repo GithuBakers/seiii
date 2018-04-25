@@ -60,11 +60,10 @@ public class TaskDAO extends DAO<Task, TaskFilter> {
                 taskStream = taskStream.filter(task -> task.getType() == filter.getMarkType());
             }
             if (filter.getFinished() != null) {
-//                taskStream = taskStream.filter(task -> task.getFinished().equals(filter.getFinished()));
-                return taskStream.filter(task -> task.getFinished().equals(filter.getFinished()))
-                        .collect(Collectors.toList());
+                taskStream = taskStream.filter(task -> task.getFinished().equals(filter.getFinished()));
+
             }
-//            taskList=taskStream.;
+            taskList = taskStream.collect(Collectors.toList());
         }
         return taskList;
     }
