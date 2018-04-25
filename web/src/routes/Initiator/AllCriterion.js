@@ -9,7 +9,7 @@ import DetailCard from '../../components/DetailCard/DetailCard';
 
 @connect(({ initiatorCriterion, loading }) => ({
   initiatorCriterion,
-  loading: loading.effects['workerCriterion/fetchAllCriterion'],
+  loading: loading.effects['initiatorCriterion/fetchAllCriterion'],
 }))
 export default class TaskList extends PureComponent {
 
@@ -20,7 +20,7 @@ export default class TaskList extends PureComponent {
 
   async componentDidMount() {
     await this.props.dispatch({
-      type: 'workerCriterion/fetchAllCriterion',
+      type: 'initiatorCriterion/fetchAllCriterion',
     });
   }
 
@@ -33,6 +33,7 @@ export default class TaskList extends PureComponent {
 
     const { allCriterion } = this.props.initiatorCriterion;
     const { modalVisible, selectedCriterion } = this.state;
+    console.log("allCriterion",allCriterion);
     const CardList = () => allCriterion ? (
       <List
         rowKey="id"
