@@ -20,17 +20,17 @@ export default class DetailCard extends PureComponent {
     return (
       <Modal
         width={600}
-        visible={this.state.modalVisible}
+        visible={this.props.visible}
         destroyOnClose="true"
-        onCancel={() => this.setState({ modalVisible: false })}
+        onCancel={this.props.onCancel}
         footer={this.props.footer}
       >
         <div style={{ margin: '-24px' }}>
           <img style={{ maxWidth: '600px', margin: '0 auto' }} src={this.props.cover} />
-          <div style={{ maxWidth: '500px', margin: '40px auto 0', paddingBottom: '10px' }}>
+          <div style={{ maxWidth: '500px', margin: '40px auto 10px', paddingBottom: '20px' }}>
             <h1 style={{ textAlign: 'center' }}>{this.props.title}</h1>
-            {this.props.content.map(e=>(<ListInfo title={e.title} value={e.value} />))}
-            </div>
+            {this.props.content.map((e,index)=>(<ListInfo key={index} title={e.title} value={e.value} />))}
+          </div>
         </div>
       </Modal>);
   }

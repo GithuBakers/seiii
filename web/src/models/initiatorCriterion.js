@@ -30,6 +30,7 @@ export default {
     },
 
     *createCriterion ({payload},{call}){
+      yield console.log(payload);
       yield call(createCriterion, payload);
     },
 

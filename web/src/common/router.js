@@ -87,6 +87,9 @@ export const getRouterData = app => {
     '/worker/worker-profile': {
       component: dynamicWrapper(app, ['form'], () => import('../routes/Worker/WorkerProfile')),
     },
+    '/worker/all-criterion':{
+      component: dynamicWrapper(app, ['workerCriterion'], () => import('../routes/Worker/AllCriterion')),
+    },
     '/initiator/initiator-Profile': {
       component: dynamicWrapper(app, ['form'], () =>
         import('../routes/Initiator/InitiatorProfile')

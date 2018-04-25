@@ -1,4 +1,5 @@
-import {getWorkerTaskImgs} from "../services/apiList";
+import {getWorkerTaskImgs,getInitiatorCriterionImgs,getWorkerCriterionImgs} from "../services/apiList";
+import {WORKER_NORMAL,WORKER_CRITERION,INITIATOR_CRITERION} from '../data/markRequestType'
 
 export default {
 
@@ -8,6 +9,7 @@ export default {
     finishFetch:false,
     isOpen: false,
     image:[],
+    markRequestType:undefined,
   },
 
 
@@ -29,23 +31,57 @@ export default {
     setFinishFetch(state, action) {
       return {...state, ...action.payload}
     },
+
+    setMarkRequestType(state, action) {
+      return {...state, ...action.payload}
+    },
   },
 
   effects: {
     * fetchImageDetail({payload}, {call, put}) {
+      const requestType=payload.markRequestType||WORKER_NORMAL;
+
       yield console.log("start fetch");
       yield put({type: 'setOpenState', payload: {isOpen: true}});
-      const results = yield call(getWorkerTaskImgs,payload);
-      //TODO:1  will return
-      // const results = yield call(getWorkerTaskImgs,1);
-      yield console.log(results);
+      yield put({type: 'setMarkRequestType', payload: {markRequestType: requestType}});
+
+      let results;
+      switch (requestType){
+        case WORKER_NORMAL:
+          results = yield call(getWorkerTaskImgs,payload.id);
+          break;
+        case WORKER_CRITERION:
+          results = yield call(getWorkerCriterionImgs,payload.id);
+          break;
+        case INITIATOR_CRITERION:
+          results = yield call(getInitiatorCriterionImgs,payload.id);
+          break;
+        default:
+          results = null;
+          break;
+      }
       yield put({type: `setImage`, payload: {image: results}});
       yield put({type: `setFinishFetch`, payload: {finishFetch: true}});
     },
-    *setOpenState({payload},{put}){
+    *setOpenState({payload},{put,select}){
       yield put({type: 'setState', payload});
+      const requestType = yield select(state => state.editWorkModel.markRequestType);
       if(payload.isOpen===false){
         yield put({type:'workerTask/fetchAllList'});
+      }
+
+      switch (requestType){
+        case WORKER_NORMAL:
+          yield put({type:'workerTask/fetchAllList'});
+          break;
+        case WORKER_CRITERION:
+          yield put({type:'workerTask/fetchAllList'});
+          break;
+        case INITIATOR_CRITERION:
+          yield put({type:'workerTask/fetchAllList'});
+          break;
+        default:
+          break;
       }
     },
   },
