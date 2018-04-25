@@ -34,7 +34,8 @@ public class Cluster {
         //计算距离
         double distance[][] = new double[src.size()][src.size()];
 
-//        System.out.println(distance+" out here");
+        //used to benchmark
+
         distance(vectors, distance);
         for (int i = 0; i < src.size(); i++) {
             for (int j = 0; j < i; j++) {

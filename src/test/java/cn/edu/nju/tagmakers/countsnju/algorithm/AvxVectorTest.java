@@ -67,13 +67,18 @@ public class AvxVectorTest extends TestNG {
 
     @Test
     public void testDis() {
+        int TIME = 100;
         AvxVector vector = new AvxVector(a);
         AvxVector vectorb = new AvxVector(b);
-        assertEquals(vector.distance(vectorb), vectorb.distance(vector));
-        assertEquals(vectorb.distance(vector), 0.0);
-        AvxVector a = vector.add(vectorb);
-        assertEquals(vector.distance(a), a.distance(vector));
-        System.out.println(a.sum());
+        for (int i = 0; i < TIME; i++) {
+            vector.distance(vectorb);
+        }
+        System.out.println(vector.distance(vectorb));
+//        assertEquals(vector.distance(vectorb), vectorb.distance(vector));
+//        assertEquals(vectorb.distance(vector), 0.0);
+//        AvxVector a = vector.add(vectorb);
+//        assertEquals(vector.distance(a), a.distance(vector));
+//        System.out.println(a.sum());
 
     }
 

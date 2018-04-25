@@ -7,7 +7,6 @@ import org.testng.annotations.Test;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Description:
@@ -40,7 +39,7 @@ public class ClusterTest extends TestNG {
                 {0, 0, 10, 10},
 
         };
-        int N = 1;
+        int N = 1000;
         for (int i = 0; i < N; i++) {
             for (int[] anInit : init) {
                 rects.add(build(anInit[0], anInit[1], anInit[2], anInit[3]));
@@ -60,9 +59,10 @@ public class ClusterTest extends TestNG {
     @Test
     public void testCluster() {
         Cluster cluster = new Cluster();
-        System.out.println(cluster.clusterRect(rects).stream().map(rect ->
-                rect.getX() + " #### " + rect.getY() + " #### " + rect.getHeight() + " #### " + rect.getWidth()
-        ).collect(Collectors.toList()));
+//        System.out.println(cluster.clusterRect(rects).stream().map(rect ->
+//                rect.getX() + " #### " + rect.getY() + " #### " + rect.getHeight() + " #### " + rect.getWidth()
+//        ).collect(Collectors.toList()));
+        System.out.println(cluster.clusterRect(rects));
     }
 
 }
