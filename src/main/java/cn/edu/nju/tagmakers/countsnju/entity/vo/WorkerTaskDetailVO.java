@@ -5,7 +5,10 @@ import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import org.springframework.security.core.context.SecurityContextHolder;
+import util.SecurityUtility;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,14 +41,19 @@ public class WorkerTaskDetailVO {
     private String requirement;
 
     @JsonUnwrapped
-    private List<Criterion> dependencies;
+    private List<CriterionCompletenessVO> dependencies;
 
     public WorkerTaskDetailVO(Task task) {
         taskVOBasicInformation = new TaskVOBasicInformation(task);
         limit = task.getLimit();
         reward = task.getReward();
         requirement = task.getRequirement();
-        dependencies = task.getDependencies();
+
+        dependencies = new ArrayList<>();
+        String workerID = SecurityUtility.getUserName(SecurityContextHolder.getContext());
+        for (Criterion temp : task.getDependencies()) {
+            dependencies.add(new CriterionCompletenessVO(temp, workerID));
+        }
     }
 
     public TaskVOBasicInformation getTaskVOBasicInformation() {

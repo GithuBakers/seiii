@@ -1,19 +1,14 @@
 package cn.edu.nju.tagmakers.countsnju.logic.controller;
 
-import cn.edu.nju.tagmakers.countsnju.algorithm.ResultJudger;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Image;
-import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.CriterionImageAnswerVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerCriterionVO;
-import cn.edu.nju.tagmakers.countsnju.logic.service.CriterionService;
 import cn.edu.nju.tagmakers.countsnju.logic.service.WorkerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import static cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType.DESC;
 
 /**
  * Description:

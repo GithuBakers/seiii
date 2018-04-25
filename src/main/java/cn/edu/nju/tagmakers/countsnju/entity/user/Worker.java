@@ -1,5 +1,7 @@
 package cn.edu.nju.tagmakers.countsnju.entity.user;
 
+import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Criterion;
+import cn.edu.nju.tagmakers.countsnju.entity.Sex;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -66,11 +68,23 @@ public class Worker extends User implements Serializable {
         this.rank = toCopy.rank;
     }
 
-    @JsonProperty
+    @JsonProperty(value = "credit")
     private int credit;
 
-    @JsonProperty
+    @JsonProperty(value = "rank")
     private int rank;
+
+    @JsonProperty(value = "dependencies")
+    private List<Criterion> dependencies;
+
+    @JsonProperty(value = "sex")
+    private Sex sex;
+
+    @JsonProperty(value = "birthday")
+    //todo：日期相关不知道是不是要用String
+    private String birthday;
+
+
 
     public List<String> getTaskIDs() {
         return Optional.ofNullable(taskIDs).orElse(new ArrayList<>());
