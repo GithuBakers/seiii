@@ -64,6 +64,11 @@ class RectStage extends React.Component {
     }
     this.setState({delayTime: 0,loading:false})
   };
+  checkButtonEvent =async () =>{
+    await this.props.require;
+    this.props.dispatch(this.props.require);
+
+  }
   handleClick = (e) => {
     if (this.isInRect) return
     // if we are drawing a shape, a click finishes the drawing
@@ -104,6 +109,18 @@ class RectStage extends React.Component {
       description: '您已成功完成了一系列框选任务，并获得了一定的奖励，剩余奖励将在本任务结束后根据您的正确率发放',
     });
   };
+
+  finishCriterionEvent =async() =>{
+    this.setState({loading:true});
+    await this.uploadMark();
+    //TODO need to be checked
+    await this.props.dispatch({type:'need to be checked',payload:{isOpen:false}});
+    notification.success({
+      message:'您已完成标准集'
+    })
+  }
+
+
 
   handleMouseMove = (e) => {
 
@@ -299,8 +316,8 @@ class RectStage extends React.Component {
                       </PerfectScrollbar>
                     </div>
                     {this.state.finalPage ?
-                      <div key="d" className={Styles["next-button"]} onClick={this.finishButtonEvent}>FINISH</div> :
-                      <div key="e" className={Styles["next-button"]} onClick={this.nextButtonEvent}>NEXT</div>
+                      <div key="d" className={Styles["next-button"]} onClick={this.props.markRequestType=="WORKER_CRITERION"?this.finishCriterionEvent:this.finishButtonEvent}>FINISH</div> :
+                      this.props.markRequestType=="WORKER_CRITERION"?<div key="e" className={Styles["next-button"]} onClick={this.checkButtonEvent}>Check</div>:<div key="e" className={Styles["next-button"]} onClick={this.nextButtonEvent}>NEXT</div>
                 }
                   </QueueAnim>
                 </div>
