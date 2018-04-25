@@ -13,7 +13,7 @@ public class DistanceCalculator extends RecursiveTask<Integer> {
     private int beginRow;
     private int taskNumber;
     private AvxVector[] data;
-    private int THRESHOLD = 100000;
+    private int THRESHOLD = 10;
 
     public DistanceCalculator(double[][] distance, int beginRow, int taskNumber, AvxVector[] data) {
         this.distance = distance;
