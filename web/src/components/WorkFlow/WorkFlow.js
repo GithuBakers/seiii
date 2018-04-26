@@ -5,6 +5,9 @@ import DescStage from './DescStage'
 import EdgeStage from './EdgeStage'
 import RectStage from './RectStage'
 import MarkType from "../../data/markType"
+import WORKER_NORMAL from "../../data/markRequestType"
+import WORKER_CRITERION from "../../data/markRequestType"
+import INITIATOR_CRITERION from "../../data/markRequestType"
 
 const openNotification = () => {
   notification.open({
@@ -25,20 +28,21 @@ class WorkFlow extends React.Component {
     }
 
     //TODO: API  request={} **每张图片上传后需要调用的函数** markRequestType={} **返回值类型**
-    const {isLabeled,imageList, taskName, keywords,taskId }= this.props;
+    const {isLabeled,imageList, taskName, keywords,taskId,markRequestType,request}= this.props;
     const type = this.props.type;
     console.log("type",type);
 
     // 修改这里改变测试类型
-    // switch (type) {
+    //     // switch (type) {
+    //     // DESC EDGE RECT
 
-    switch ("DESC") {
+    switch ("RECT") {
       case MarkType.DESC:
-        return <DescStage isLabeled={isLabeled} imageList={imageList} taskName={taskName} taskId={taskId} keywords={keywords} />;
+        return <DescStage isLabeled={isLabeled} imageList={imageList} taskName={taskName} taskId={taskId} keywords={keywords} markRequestType={markRequestType} request={request}/>;
       case MarkType.EDGE:
-        return <EdgeStage isLabeled={isLabeled} imageList={imageList} taskName={taskName} taskId={taskId} keywords={keywords} />;
+        return <EdgeStage isLabeled={isLabeled} imageList={imageList} taskName={taskName} taskId={taskId} keywords={keywords} markRequestType={markRequestType} request={request}/>;
       case MarkType.RECT:
-        return <RectStage isLabeled={isLabeled} imageList={imageList} taskName={taskName} taskId={taskId} keywords={keywords} />;
+        return <RectStage isLabeled={isLabeled} imageList={imageList} taskName={taskName} taskId={taskId} keywords={keywords} markRequestType={markRequestType} request={request}/>;
       default:
         return <div />;
     }

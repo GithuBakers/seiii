@@ -122,7 +122,7 @@ export async function getWorkerTaskImgs(taskId) {
   // return request(`${version}/worker/task/received_task/img/${taskId}`);
 }
 
-export async function contributeWorkerTask(taskId, imgId, params) {
+export async function contributeWorkerTask(taskId,params, imgId) {
   console.log('contributeWorkerTask',params);
   //TODO: 1 FOR MOCK
   return request(`${version}/worker/task/received_task/1/1`, {
@@ -157,7 +157,7 @@ export async function getWorkerCriterionImgs(criterionId) {
   return request(`${version}/worker/criterion/img?criterion_id=${criterionId}`);
 }
 
-export async function contributeWorkerCriterion(criterionId, params) {
+export async function contributeWorkerCriterion(criterionId, params,imgId) {
   return request(`${version}/worker/criterion/img?criterion_id=${criterionId}`, {
     method: 'POST',
     body: params,
@@ -176,6 +176,8 @@ export async function updatePassword(userName, params) {
     body: params,
   });
 }
+
+
 
 
 

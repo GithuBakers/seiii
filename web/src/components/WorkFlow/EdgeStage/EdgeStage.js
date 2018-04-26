@@ -36,7 +36,7 @@ class EdgeStage extends React.Component {
       id: this.state.currentImage.id,
       tags,
     };
-    const back=await contributeWorkerTask(this.props.taskId, result.id, result);
+    const back=await contributeWorkerTask(this.props.taskId, result, result.id);
     return back;
   };
   nextButtonEvent = async () => {
@@ -64,6 +64,15 @@ class EdgeStage extends React.Component {
     notification.success({
       message: '感谢您的付出',
       description: '您已成功完成了一系列框选任务，并获得了一定的奖励，剩余奖励将在本任务结束后根据您的正确率发放',
+    });
+  };
+  finishCriterionButtonEvent = async () => {
+    this.setState({loading:true});
+    await this.uploadMark();
+    await this.props.dispatch({type: 'editWorkModel/setOpenState', payload: {isOpen: false}});
+    notification.success({
+      message: '感谢您的付出',
+      description: '您已成功完成了一标准集任务',
     });
   };
   handleMouseDown = () => {
@@ -222,8 +231,8 @@ class EdgeStage extends React.Component {
                       </PerfectScrollbar>
                     </div>
                     {this.state.finalPage ?
-                      <div key="d" className={Styles["next-button"]} onClick={this.finishButtonEvent}>FINISH</div> :
-                      <div key="e" className={Styles["next-button"]} onClick={this.nextButtonEvent}>NEXT</div>
+                      <div key="d" className={Styles["next-button"]} onClick={this.props.markRequestType=="WORKER_CRITERION"?this.finishCriterionButtonEvent:this.finishButtonEvent}>FINISH</div> :
+                      this.props.markRequestType=="WORKER_CRITERION"?<div key="e" className={Styles["next-button"]} onClick={this.nextButtonEvent}>Check</div>:<div key="e" className={Styles["next-button"]} onClick={this.nextButtonEvent}>NEXT</div>
                   }
                   </QueueAnim>
                 </div>

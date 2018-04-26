@@ -6,7 +6,7 @@ import QueueAnim from 'rc-queue-anim';
 import { connect } from 'dva';
 import { Stage, Layer } from 'react-konva';
 import Image from '../components/Image';
-import { contributeWorkerTask } from '../../../services/apiList';
+import { contributeWorkerTask,contributeWorkerCriterion,contributeInitiatorCriterion } from '../../../services/apiList';
 import Loading from '../../Loading';
 import {randomString} from '../../../utils/random'
 const { TextArea } = Input;
@@ -14,9 +14,24 @@ const { TextArea } = Input;
 @connect()
 class DescStage extends React.Component {
 
-
   uploadMark = async () => {
 
+      const result = {
+      id: this.state.currentImage.id,
+      tags: [
+        {
+          id:randomString(),
+          mark: {
+            type: 'DESC',
+          },
+          comment: this.state.comment,
+        },
+      ],
+    };
+    const back = await contributeWorkerTask(this.props.taskId,result, result.id);
+    return back;
+  };
+  checkButtonEvent = async () =>{
     const result = {
       id: this.state.currentImage.id,
       tags: [
@@ -29,9 +44,12 @@ class DescStage extends React.Component {
         },
       ],
     };
-    const back = await contributeWorkerTask(this.props.taskId, result.id, result);
+    const back =await contributeWorkerCriterion(this.props.taskId, result, result.id);
+    console.log(back);
+
     return back;
-  };
+  }
+
 
   nextButtonEvent = async () => {
     this.setState({ loading: true });
@@ -52,6 +70,7 @@ class DescStage extends React.Component {
       });
     }
   };
+
   finishButtonEvent = async () => {
     this.setState({ loading: true });
     await this.uploadMark();
@@ -61,12 +80,22 @@ class DescStage extends React.Component {
       description: '您已成功完成了一系列描述任务，并获得了一定的奖励，剩余奖励将在本任务结束后根据您的正确率发放',
     });
   };
-
+  finishCriterionButtonEvent = async () => {
+    this.setState({ loading: true });
+    await this.checkButtonEvent();
+    await this.props.dispatch({ type: 'editWorkModel/setOpenState', payload: { isOpen: false } });
+    notification.success({
+      message: '感谢您的付出',
+      description: '您已成功完成了一系列标准集任务',
+    });
+  };
   constructor(props) {
     super(props);
 
 
     this.leftImages = this.props.imageList.slice(0);
+
+
 
     const image = this.leftImages.shift();
     this.state = {
@@ -80,9 +109,7 @@ class DescStage extends React.Component {
     if (this.props.isLabeled && this.leftImages.length === 0) {
       this.state.finalPage = true;
     }
-    // if(image.tags.length>0&&image.tags[0].comment!==undefined){
-    //   this.state.comment=image.tags[0].comment;
-    // }
+
 
     if (this.state.currentImage.raw === undefined) {
       this.props.dispatch({ type: 'editWorkModel/setOpenState', payload: { isOpen: false } });
@@ -123,10 +150,12 @@ class DescStage extends React.Component {
                           value={this.state.comment}
                           onChange={e => this.setState({comment: e.target.value})}
                         />
+                      <h1 key="b" value={this.state.constructor}/>
+
                     </div>
                     {this.state.finalPage ?
-                      <div key="d" className={Styles['next-button']} onClick={this.finishButtonEvent}>FINISH</div> :
-                      <div key="e" className={Styles['next-button']} onClick={this.nextButtonEvent}>NEXT</div>
+                      <div key="d" className={Styles['next-button']} onClick={this.props.markRequestType=="WORKER_CRITERION"?this.finishCriterionButtonEvent:this.finishButtonEvent}>FINISH</div> :
+                      this.props.markRequestType=="WORKER_CRITERION"?<div key="e" className={Styles["next-button"]} onClick={this.checkButtonEvent}>Check</div>:<div key="e" className={Styles["next-button"]} onClick={this.nextButtonEvent}>NEXT</div>
                     }
                   </QueueAnim>
                 </div>
