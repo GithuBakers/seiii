@@ -2,6 +2,7 @@ package cn.edu.nju.tagmakers.countsnju.entity.vo;
 
 import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Criterion;
 import cn.edu.nju.tagmakers.countsnju.entity.Task;
+import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
@@ -43,16 +44,15 @@ public class WorkerTaskDetailVO {
     @JsonUnwrapped
     private List<CriterionCompletenessVO> dependencies;
 
-    public WorkerTaskDetailVO(Task task) {
+    public WorkerTaskDetailVO(Task task, String workerName) {
         taskVOBasicInformation = new TaskVOBasicInformation(task);
         limit = task.getLimit();
         reward = task.getReward();
         requirement = task.getRequirement();
 
         dependencies = new ArrayList<>();
-        String workerID = SecurityUtility.getUserName(SecurityContextHolder.getContext());
         for (Criterion temp : task.getDependencies()) {
-            dependencies.add(new CriterionCompletenessVO(temp, workerID));
+            dependencies.add(new CriterionCompletenessVO(temp, workerName));
         }
     }
 

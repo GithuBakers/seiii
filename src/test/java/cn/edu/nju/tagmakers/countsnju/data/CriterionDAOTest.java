@@ -23,7 +23,7 @@ import static org.testng.Assert.assertEquals;
 
 @ContextConfiguration(classes = CountsnjuApplication.class)
 @SpringBootTest
-public class CriterionTest extends AbstractTestNGSpringContextTests {
+public class CriterionDAOTest extends AbstractTestNGSpringContextTests {
     private Criterion criterion1;
 
     @Autowired

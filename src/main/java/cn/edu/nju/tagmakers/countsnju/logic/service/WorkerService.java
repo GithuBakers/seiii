@@ -99,7 +99,7 @@ public class WorkerService {
         Task detail = taskService.findByID(taskID);
         if (detail.getUserMarked().get(workerName) == null
                 || detail.getUserMarked().get(workerName) < detail.getLimit()) {
-            return new WorkerTaskDetailVO(detail);
+            return new WorkerTaskDetailVO(detail, workerName);
         } else {
             throw new PermissionDeniedException("你暂时无法接受此任务");
         }
@@ -267,7 +267,7 @@ public class WorkerService {
         List<Task> taskList = taskService.findTask(filter);
         for (Task task : taskList) {
             if (!task.getUserMarked().keySet().contains(workerName)) {
-                return new WorkerTaskDetailVO(task);
+                return new WorkerTaskDetailVO(task, workerName);
             }
         }
         throw new NotFoundException("暂时没有推荐给你的任务喔");

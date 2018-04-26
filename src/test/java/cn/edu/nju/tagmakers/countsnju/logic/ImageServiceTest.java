@@ -47,7 +47,8 @@ public class ImageServiceTest extends AbstractTestNGSpringContextTests {
     public void addImageTest1() {
         Image image1 = new Image();
         Bare bare1 = new Bare();
-        bare1.setId("xxxxxxz");
+        bare1.setId("test");
+        bare1.setState(BareState.MARKED);
         ArrayList tagList = new ArrayList();
         Tag tag1 = new Tag();
         tagList.add(tag1);
@@ -87,5 +88,11 @@ public class ImageServiceTest extends AbstractTestNGSpringContextTests {
         filter.setBareState(BareState.MARKED);
         filter.setMarkType(MarkType.DESC);
         assertEquals(false, service.findImage(filter).size() > 0);
+    }
+
+    @Test(dependsOnMethods = "addImageTest1")
+    public void findImageTest2() {
+        Image image = service.findImageByID("test");
+        assertEquals(image.getTags().size() > 0, true);
     }
 }
