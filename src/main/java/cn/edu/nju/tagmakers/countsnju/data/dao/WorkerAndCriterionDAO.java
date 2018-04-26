@@ -40,7 +40,7 @@ public class WorkerAndCriterionDAO {
      */
     public WorkerAndCriterion findByID(String workerID, String criterionID) {
         for (WorkerAndCriterion temp : set) {
-            if (workerID.equals(temp.getCriterionID()) && criterionID.equals(temp.getCriterionID())) {
+            if (workerID.equals(temp.getWorkerID()) && criterionID.equals(temp.getCriterionID())) {
                 return temp;
             }
         }
@@ -57,5 +57,14 @@ public class WorkerAndCriterionDAO {
         if (criterion == null) throw new InvalidInputException("添加的标准集为空");
         WorkerAndCriterion temp = new WorkerAndCriterion(workerID, criterion);
         set.add(temp);
+    }
+
+    public void update(WorkerAndCriterion workerAndCriterion) {
+        for (WorkerAndCriterion temp : set) {
+            if (workerAndCriterion.getWorkerID().equals(temp.getWorkerID()) && workerAndCriterion.getCriterionID().equals(temp.getCriterionID())) {
+                set.remove(temp);
+                set.add(workerAndCriterion);
+            }
+        }
     }
 }

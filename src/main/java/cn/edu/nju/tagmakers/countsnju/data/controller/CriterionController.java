@@ -36,7 +36,7 @@ public class CriterionController implements DataController<Criterion, CriterionF
      */
     @Override
     public Criterion update(Criterion obj) {
-        return criterionDAO.add(obj);
+        return criterionDAO.update(obj);
     }
 
     /**

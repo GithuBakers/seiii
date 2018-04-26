@@ -4,9 +4,11 @@ import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Image;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.CriterionImageAnswerVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerCriterionVO;
-import cn.edu.nju.tagmakers.countsnju.logic.service.WorkerService;
+import cn.edu.nju.tagmakers.countsnju.logic.service.WorkerCriterionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import util.SecurityUtility;
 
 import java.util.List;
 
@@ -21,11 +23,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/worker/criterion")
 public class WorkerCriterionRestController {
-    private final WorkerService workerService;
+    private final WorkerCriterionService workerCriterionService;
 
     @Autowired
-    public WorkerCriterionRestController(WorkerService workerService) {
-        this.workerService = workerService;
+    public WorkerCriterionRestController(WorkerCriterionService workerCriterionService) {
+        this.workerCriterionService = workerCriterionService;
     }
 
     /**
@@ -33,7 +35,8 @@ public class WorkerCriterionRestController {
      */
     @RequestMapping(method = RequestMethod.GET)
     public List<WorkerCriterionVO> getAllCriterion() {
-        return workerService.getAllCriterion();
+        String workerID = SecurityUtility.getUserName(SecurityContextHolder.getContext());
+        return workerCriterionService.getAllCriterion(workerID);
     }
 
     /**
@@ -41,7 +44,8 @@ public class WorkerCriterionRestController {
      */
     @RequestMapping(value = "/img", method = RequestMethod.GET)
     public List<Bare> getBares(@RequestParam("criterion_id") String criterion_id) {
-        return workerService.getCriterionBares(criterion_id);
+        String workerID = SecurityUtility.getUserName(SecurityContextHolder.getContext());
+        return workerCriterionService.getCriterionBares(criterion_id, workerID);
     }
 
     /**
@@ -51,8 +55,8 @@ public class WorkerCriterionRestController {
      */
     @RequestMapping(value = "/img", method = RequestMethod.POST)
     public CriterionImageAnswerVO submitImage(@RequestParam("criterion_id") String criterionID, @RequestBody Image image) {
-
-        return workerService.submitCriterionResult(criterionID, image);
+        String workerID = SecurityUtility.getUserName(SecurityContextHolder.getContext());
+        return workerCriterionService.submitCriterionResult(criterionID, image, workerID);
     }
 
 }

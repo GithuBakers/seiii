@@ -133,6 +133,14 @@ public class User extends Entity<User> implements Serializable {
         this.birthday = birthday;
     }
 
+    public String getBirthdayString() {
+        return birthdayString;
+    }
+
+    public void setBirthdayString(String birthdayString) {
+        this.birthdayString = birthdayString;
+    }
+
     /**
      * 获取实体对象的主键
      *
