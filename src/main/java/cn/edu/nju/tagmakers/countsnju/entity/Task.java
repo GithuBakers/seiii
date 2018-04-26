@@ -147,7 +147,7 @@ public class Task extends Entity<Task> implements Serializable {
         if (toCopy.bareMarked != null) {
             this.bareMarked = new HashMap<>(toCopy.bareMarked);
         }
-        if (toCopy.getDependencies() != null) {
+        if (toCopy.dependencies != null) {
             this.dependencies = new ArrayList<>(toCopy.dependencies);
         }
     }
@@ -278,7 +278,7 @@ public class Task extends Entity<Task> implements Serializable {
     }
 
     public List<Criterion> getDependencies() {
-        return dependencies;
+        return Optional.ofNullable(dependencies).orElse(new ArrayList<>());
     }
 
     public void setDependencies(List<Criterion> dependencies) {

@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
 import {connect} from 'dva';
-import {Col,Row,Modal,Card,message,Avatar,Icon,Button, DatePicker, Form, Input, List, Select,Tag} from 'antd';
+import {Col,Row,Modal,Card,message,Avatar,Icon,Button, Menu, Dropdown, Input, List, Select,Tag} from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import styles from './TaskList.less';
 import { receiveWorkerTask } from '../../services/apiList'
@@ -10,7 +10,7 @@ import { routerRedux } from 'dva/router';
 
 @connect(({taskMarket, loading}) => ({
   taskMarket,
-  loading: loading.models.taskMarket,
+  loading: loading.models.taskMarket&&!loading.effects['taskMarket/fetchRecommendTask'],
   submitting: loading.effects['taskMarket/receiveTask'],
 }))
 export default class TaskList extends PureComponent {
@@ -44,6 +44,17 @@ export default class TaskList extends PureComponent {
     await this.setState({modalVisible:true});
   };
 
+  handleMenuClick=async ({key})=>{
+    console.log("key",key);
+    const loading= message.loading("正在为您生成推荐");
+    await this.props.dispatch({
+      type: 'taskMarket/fetchRecommendTask',
+      payload:key,
+    });
+    loading();
+    await console.log('time');
+    await this.setState({ modalVisible: true });
+  };
   render() {
 
     const {taskList, selectedTask} = this.props.taskMarket;
@@ -81,6 +92,26 @@ export default class TaskList extends PureComponent {
       />
     ) : null;
 
+    const menu = (
+      <Menu onClick={this.handleMenuClick}>
+        <Menu.Item key="RECT">
+          <a style={{ lineHeight:'60px',textAlign:'center',fontSize:'30px',fontWeight:'bold'}}>RECT</a>
+        </Menu.Item>
+        <Menu.Item key="EDGE">
+          <a style={{ lineHeight:'60px',textAlign:'center',fontSize:'30px',fontWeight:'bold'}}>EDGE</a>
+        </Menu.Item>
+        <Menu.Item key="DESC">
+          <a style={{ lineHeight:'60px',textAlign:'center',fontSize:'30px',fontWeight:'bold'}}>DESC</a>
+        </Menu.Item>
+      </Menu>
+    );
+    const recommendWrapper=(
+      <div style={{width:"100%",marginTop:'-10px'}} >
+        <Dropdown style={{width:"100%"}}  overlay={menu} placement="bottomCenter">
+          <Button icon='like-o' size='large' style={{width:"100%"}} >智能推荐在这里~</Button>
+        </Dropdown>
+      </div>
+    );
     const ListInfo = ({ title, value }) => (
       <div style={{ padding: '20px 0' }}>
         <Row>
@@ -143,7 +174,7 @@ export default class TaskList extends PureComponent {
                 >
                   <List.Item.Meta
                     avatar={<Avatar shape="square" size="large"  src={item.cover} />}
-                    title={<a href="https://ant.design">{item.criterion_name}</a>}
+                    title={item.criterion_name}
 
                     description={
                       <div style={{maxWidth: "100%" }}>
@@ -163,6 +194,7 @@ export default class TaskList extends PureComponent {
       <PageHeaderLayout
         title="任务市场"
         content="任务市场展示正在开放中的任务，选择擅长的领域赚取积分吧~"
+        extraContent={recommendWrapper}
       >
         <DetailModal />
         <div className={styles.cardList}><CardList /></div>

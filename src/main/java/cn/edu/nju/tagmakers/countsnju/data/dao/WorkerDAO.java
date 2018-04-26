@@ -36,6 +36,7 @@ public class WorkerDAO extends DAO<Worker,WorkerFilter>{
      */
     @Override
     public List<Worker> find(WorkerFilter filter) {
+        //todo:
         List<Worker> workerList;
         if(filter == null){
             workerList = new ArrayList<>(map.values());
@@ -55,8 +56,6 @@ public class WorkerDAO extends DAO<Worker,WorkerFilter>{
         if(cur.getAvatar() != null)ori.setAvatar(cur.getAvatar());
         if(cur.getNickName() != null)ori.setNickName(cur.getNickName());
         if(cur.getPassword() != null)ori.setPassword(cur.getPassword());
-//        if(cur.getRole() != Role.DEFAULT)ori.setRole(cur.getRole());
-
         if (cur.getBareIDs().size() > 0) ori.setBareIDs(new ArrayList<>(cur.getBareIDs()));
         if (cur.getTaskIDs().size() > 0) ori.setTaskIDs(new ArrayList<>(cur.getTaskIDs()));
         if(cur.getCredit() > 0)ori.setCredit(cur.getCredit());

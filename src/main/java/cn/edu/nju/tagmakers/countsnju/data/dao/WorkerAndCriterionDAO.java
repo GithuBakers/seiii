@@ -21,6 +21,7 @@ import java.util.Set;
  */
 @Component
 public class WorkerAndCriterionDAO {
+    //todo
     private Set<WorkerAndCriterion> set;
 
     public WorkerAndCriterionDAO() {

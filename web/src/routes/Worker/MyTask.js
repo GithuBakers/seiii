@@ -52,17 +52,7 @@ export default class MyTask extends PureComponent {
     await console.log('time');
   }
 
-  handleMenuClick=async ({key})=>{
-    console.log("key",key);
-    const loading= message.loading("正在为您生成推荐");
-    await this.props.dispatch({
-      type: 'workerTask/fetchRecommendTask',
-      payload:key,
-    });
-    loading();
-    await console.log('time');
-    await this.setState({ modalVisible: true });
-  };
+
 
   render() {
     const {
@@ -76,7 +66,7 @@ export default class MyTask extends PureComponent {
       },
       loading,
     } = this.props;
-
+    console.log("workerTask",this.props.workerTask);
     const Info = ({ title, value, bordered }) => (
       <div className={styles.headerInfo}>
         <span>{title}</span>
@@ -164,7 +154,7 @@ export default class MyTask extends PureComponent {
                 <List.Item>
                   <List.Item.Meta
                     avatar={<Avatar shape="square" size="large"  src={item.cover} />}
-                    title={<a href="https://ant.design">{item.criterion_name}</a>}
+                    title={item.criterion_name}
                     description={
                       <div style={{maxWidth: "100%" }}>
                         <Ellipsis tooltip lines={1}>{item.requirement}</Ellipsis >
@@ -191,26 +181,26 @@ export default class MyTask extends PureComponent {
       });
       await this.setState({ modalVisible: true });
     };
-    const menu = (
-      <Menu onClick={this.handleMenuClick}>
-        <Menu.Item key="RECT">
-          <a style={{ lineHeight:'60px',textAlign:'center',fontSize:'30px',fontWeight:'bold'}}>RECT</a>
-        </Menu.Item>
-        <Menu.Item key="EDGE">
-          <a style={{ lineHeight:'60px',textAlign:'center',fontSize:'30px',fontWeight:'bold'}}>EDGE</a>
-        </Menu.Item>
-        <Menu.Item key="DESC">
-          <a style={{ lineHeight:'60px',textAlign:'center',fontSize:'30px',fontWeight:'bold'}}>DESC</a>
-        </Menu.Item>
-      </Menu>
-    );
-    const recommendWrapper=(
-      <div style={{width:"100%",marginTop:'-10px'}} >
-        <Dropdown style={{width:"100%"}}  overlay={menu} placement="bottomCenter">
-          <Button icon='like-o' size='large' style={{width:"100%"}} >智能推荐在这里~</Button>
-        </Dropdown>
-      </div>
-    );
+    // const menu = (
+    //   <Menu onClick={this.handleMenuClick}>
+    //     <Menu.Item key="RECT">
+    //       <a style={{ lineHeight:'60px',textAlign:'center',fontSize:'30px',fontWeight:'bold'}}>RECT</a>
+    //     </Menu.Item>
+    //     <Menu.Item key="EDGE">
+    //       <a style={{ lineHeight:'60px',textAlign:'center',fontSize:'30px',fontWeight:'bold'}}>EDGE</a>
+    //     </Menu.Item>
+    //     <Menu.Item key="DESC">
+    //       <a style={{ lineHeight:'60px',textAlign:'center',fontSize:'30px',fontWeight:'bold'}}>DESC</a>
+    //     </Menu.Item>
+    //   </Menu>
+    // );
+    // const recommendWrapper=(
+    //   <div style={{width:"100%",marginTop:'-10px'}} >
+    //     <Dropdown style={{width:"100%"}}  overlay={menu} placement="bottomCenter">
+    //       <Button icon='like-o' size='large' style={{width:"100%"}} >智能推荐在这里~</Button>
+    //     </Dropdown>
+    //   </div>
+    // );
 
     return (
       <div>
@@ -228,7 +218,6 @@ export default class MyTask extends PureComponent {
           loading={this.props.loading}
           title='我的任务列表'
           content="这里有您做过的所有任务，您可以在这里查看工作，开始工作，或是接受一个专为你准备的推荐"
-          extraContent={recommendWrapper}
         >
           <div className={styles.standardList}>
 

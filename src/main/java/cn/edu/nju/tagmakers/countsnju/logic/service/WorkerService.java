@@ -5,8 +5,8 @@ import cn.edu.nju.tagmakers.countsnju.data.controller.WorkerAndCriterionControll
 import cn.edu.nju.tagmakers.countsnju.data.controller.WorkerController;
 import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Criterion;
 import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Result;
-import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.Criterion.WorkerAndCriterion;
+import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.*;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.*;
@@ -97,8 +97,8 @@ public class WorkerService {
      */
     public WorkerTaskDetailVO getTaskDetail(String taskID, String workerName) {
         Task detail = taskService.findByID(taskID);
-        if (detail.getUserMarked().get(workerName) == null
-                || detail.getUserMarked().get(workerName) < detail.getLimit()) {
+        //检查是否可接受此任务
+        if (check(workerName, detail)) {
             return new WorkerTaskDetailVO(detail);
         } else {
             throw new PermissionDeniedException("你暂时无法接受此任务");
@@ -122,11 +122,10 @@ public class WorkerService {
         if (toReceive == null) {
             throw new NotFoundException("没有此任务");
         }
-        //查看是否有权限
-        if (toReceive.getUserMarked().get(workerName) == null
-                || toReceive.getUserMarked().get(workerName) < toReceive.getLimit()) {
+        //查看是否可接受此任务
+        if (check(workerName, toReceive)) {
 
-            //将任务加入工人的任务列表
+            //将任务加入工人的任务列表, 并记录下其添加时间
             Worker receiver = workerController.findByID(workerName);
             if (receiver == null) {
                 throw new NotFoundException("没有此任务");
@@ -134,12 +133,16 @@ public class WorkerService {
             List<String> taskList = receiver.getTaskIDs();
             if (!taskList.contains(taskID)) {
                 taskList.add(taskID);
+                receiver.setTaskIDs(taskList);
+                Map<String, Long> receiveTime = receiver.getReceivedTime();
+                receiveTime.put(taskID, new Date().getTime());
+                receiver.setReceivedTime(receiveTime);
             } else {
                 throw new PermissionDeniedException("重复接受某一任务");
             }
-            Worker worker = workerController.findByID(workerName);
-            worker.setTaskIDs(taskList);
-            workerController.update(worker);
+
+//            Worker worker = workerController.findByID(workerName);
+            workerController.update(receiver);
 
             //在任务的userMarked中添加此工人
             toReceive.getUserMarked().putIfAbsent(workerName, 0);
@@ -148,6 +151,11 @@ public class WorkerService {
             return true;
         }
         throw new PermissionDeniedException("你已经达到此任务上限");
+    }
+
+    private boolean check(String workerName, Task toReceive) {
+        return toReceive.getUserMarked().get(workerName) == null
+                || toReceive.getUserMarked().get(workerName) < toReceive.getLimit();
     }
 
 

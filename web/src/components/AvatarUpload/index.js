@@ -51,12 +51,9 @@ export default class AvatarUpload extends React.Component {
     }
     if (info.file.status === 'done') {
       // Get this url from response in real world.
-      getBase64(info.file.originFileObj, imageUrl =>
-        this.setState({
-          imageUrl,
+      this.setState({
           loading: false,
-        })
-      );
+      });
     }
   };
   beforeUpload = file => {
@@ -69,7 +66,9 @@ export default class AvatarUpload extends React.Component {
           imageUrl: reader.result,
           loading: false,
         });
-        this.props.setAvatar(data.res.requestUrls[0].replace(/\?uploadId.*/g,''));
+        const avatarUrl=`${data.res.requestUrls[0].replace(/\?uploadId.*/g,'')}?x-oss-process=style/avatar`;
+        this.props.setAvatar(avatarUrl);
+        this.setState({imageUrl:avatarUrl});
         // console.log(data);
       });
     };

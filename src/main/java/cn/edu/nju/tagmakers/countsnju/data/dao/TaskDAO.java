@@ -26,7 +26,7 @@ import java.util.stream.Stream;
  * 增加了keywords关键字
  * @author xxz
  * Created on 04/14/2018
- *
+ * <p>
  * Update:
  * 增加了filter中的"类型"关键字
  * @author xxz
@@ -60,11 +60,10 @@ public class TaskDAO extends DAO<Task, TaskFilter> {
                 taskStream = taskStream.filter(task -> task.getType() == filter.getMarkType());
             }
             if (filter.getFinished() != null) {
-//                taskStream = taskStream.filter(task -> task.getFinished().equals(filter.getFinished()));
-                return taskStream.filter(task -> task.getFinished().equals(filter.getFinished()))
-                        .collect(Collectors.toList());
+                taskStream = taskStream.filter(task -> task.getFinished().equals(filter.getFinished()));
+
             }
-//            taskList=taskStream.;
+            taskList = taskStream.collect(Collectors.toList());
         }
         return taskList;
     }
@@ -90,7 +89,8 @@ public class TaskDAO extends DAO<Task, TaskFilter> {
         if (cur.getFinished()) ori.setFinished(true);
         if (cur.getUserMarked().size() > 0) ori.setUserMarked(new ConcurrentHashMap<>(cur.getUserMarked()));
         if (cur.getBareMarked().size() > 0) ori.setBareMarked(new ConcurrentHashMap<>(cur.getBareMarked()));
-        if (cur.getDependencies().size() > 0) ori.setDependencies(new ArrayList<>(cur.getDependencies()));
+        if (cur.getDependencies() != null && cur.getDependencies().size() > 0)
+            ori.setDependencies(new ArrayList<>(cur.getDependencies()));
         if (cur.getKeywords().size() > 0) ori.setKeywords(new ArrayList<>(cur.getKeywords()));
         return ori;
     }

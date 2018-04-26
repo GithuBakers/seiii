@@ -50,7 +50,7 @@ export async function finishInitiatorTask(taskId) {
   return request(`${version}/initiator/task/finished_task`, {
     method: 'POST',
     body: {
-      task_name: taskId,
+      task_id: taskId,
     },
   });
 }
@@ -122,7 +122,14 @@ export async function getWorkerTaskImgs(taskId) {
   // return request(`${version}/worker/task/received_task/img/${taskId}`);
 }
 
-export async function contributeWorkerTask(taskId,params, imgId) {
+/**
+ * 工人提交工作用图片
+ * @param taskId
+ * @param params
+ * @param imgId
+ * @return {Promise<Object>}
+ */
+export async function contributeWorkerTask(taskId, params, imgId) {
   console.log('contributeWorkerTask',params);
   //TODO: 1 FOR MOCK
   return request(`${version}/worker/task/received_task/1/1`, {
@@ -157,7 +164,7 @@ export async function getWorkerCriterionImgs(criterionId) {
   return request(`${version}/worker/criterion/img?criterion_id=${criterionId}`);
 }
 
-export async function contributeWorkerCriterion(criterionId, params,imgId) {
+export async function contributeWorkerCriterion(criterionId, params) {
   return request(`${version}/worker/criterion/img?criterion_id=${criterionId}`, {
     method: 'POST',
     body: params,
@@ -176,8 +183,6 @@ export async function updatePassword(userName, params) {
     body: params,
   });
 }
-
-
 
 
 

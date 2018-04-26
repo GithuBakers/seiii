@@ -24,9 +24,11 @@ export default {
 
 
 };
-//  proxy: {
-//     "/api": {
-//       "target": "http://192.168.1.102:8888/",
+
+// proxy: {
+//   "/api": {
+//     "target": "http://192.168.1.102:8888/",
 //       "changeOrigin": true,
-//     }
 //   }
+// }
+
