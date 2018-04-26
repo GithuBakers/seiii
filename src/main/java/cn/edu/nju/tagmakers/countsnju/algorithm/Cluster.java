@@ -26,18 +26,44 @@ public class Cluster {
                 .collect(Collectors.toList())
                 .toArray(vectors);
 
-        Map<AvxVector, Integer> indexMap = new HashMap<>();
-        for (int i = 0; i < src.size(); i++) {
-            indexMap.put(vectors[i], i);
-        }
 
         //计算距离
         double distance[][] = new double[src.size()][src.size()];
 
-        //used to benchmark
+
+        List<Set<AvxVector>> clusters = cluster(R, MIN, vectors, distance);
+
+        return clusters.parallelStream()
+                .filter(avxVectors -> avxVectors.size() != 0)
+                //每个簇取平均
+                .map(avxVectors -> avxVectors.parallelStream()
+                        .reduce(AvxVector::add)
+                        .orElse(avxVectors.iterator().next())
+                        .scale(1.0 / avxVectors.size()))
+
+                .map(AvxVector::getData)
+                .map(AlgoRect::new)
+                .map(AlgoRect::getRect)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 聚类算法（参考西瓜书）
+     *
+     * @param r        邻域半径
+     * @param MIN      聚类最小值
+     * @param vectors  要聚类的向量数组
+     * @param distance 用于储存距离的数组（这样同时还能告诉这个方法数据规模有多大
+     */
+    private List<Set<AvxVector>> cluster(int r, int MIN, AvxVector[] vectors, double[][] distance) {
+
+        Map<AvxVector, Integer> indexMap = new HashMap<>();
+        for (int i = 0; i < distance.length; i++) {
+            indexMap.put(vectors[i], i);
+        }
 
         distance(vectors, distance);
-        for (int i = 0; i < src.size(); i++) {
+        for (int i = 0; i < distance.length; i++) {
             for (int j = 0; j < i; j++) {
                 distance[i][j] = distance[j][i];
             }
@@ -46,10 +72,10 @@ public class Cluster {
 
         //计算核心对象
         Set<AvxVector> cores = new HashSet<>();
-        for (int i = 0; i < src.size(); i++) {
+        for (int i = 0; i < distance.length; i++) {
             int cnt = 0;
-            for (int k = 0; k < src.size(); k++) {
-                if (distance[i][k] < R) {
+            for (int k = 0; k < distance.length; k++) {
+                if (distance[i][k] < r) {
                     cnt++;
                 }
             }
@@ -74,8 +100,8 @@ public class Cluster {
                 q.remove(cur);
                 LinkedList<AvxVector> neighbour = new LinkedList<>();
                 int i = indexMap.get(cur);
-                for (int j = 0; j < src.size(); j++) {
-                    if (distance[i][j] <= R && unvisited.contains(vectors[j])) {
+                for (int j = 0; j < distance.length; j++) {
+                    if (distance[i][j] <= r && unvisited.contains(vectors[j])) {
                         neighbour.add(vectors[j]);
                     }
                 }
@@ -94,19 +120,7 @@ public class Cluster {
             clusters.add(newCluster);
             cores.removeAll(newCluster);
         }
-
-        return clusters.parallelStream()
-                .filter(avxVectors -> avxVectors.size() != 0)
-                //每个簇取平均
-                .map(avxVectors -> avxVectors.parallelStream()
-                        .reduce(AvxVector::add)
-                        .orElse(avxVectors.iterator().next())
-                        .scale(1.0 / avxVectors.size()))
-
-                .map(AvxVector::getData)
-                .map(AlgoRect::new)
-                .map(AlgoRect::getRect)
-                .collect(Collectors.toList());
+        return clusters;
     }
 
     private void distance(AvxVector[] vectors, double[][] distance) {
