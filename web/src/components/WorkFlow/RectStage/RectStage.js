@@ -47,7 +47,7 @@ class RectStage extends React.Component {
        id: this.state.currentImage.id,
        tags,
      };
-    const back=await contributeWorkerTask(this.props.taskId, result, result.id);
+    const back=await this.props.require(this.props.taskId, result, result.id);
     return back;
    };
   nextButtonEvent = async () => {
@@ -89,13 +89,12 @@ class RectStage extends React.Component {
       comment: rect.comment,
     }));
 
-    // TODO:rotate
     const result = {
       id: this.state.currentImage.id,
       tags,
     };
 
-    const back=await contributeWorkerCriterion(this.props.taskId, result, result.id);
+    const back=await this.props.request(this.props.taskId, result, result.id);
     console.log(back.correct);
     this.setState({checkAnswer:back.correct})
     this.setState({shapes:[]});
