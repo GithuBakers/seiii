@@ -14,6 +14,7 @@ import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import static org.testng.AssertJUnit.assertEquals;
@@ -52,6 +53,7 @@ public class TaskDAOTest extends AbstractTestNGSpringContextTests {
         task1.setInitiatorName("xxz");
         task1.setRequirement("打倒辣鸡翔哲");
         task1.setResult("no result");
+        task1.setDependencies(new ArrayList<>());
     }
 
     @AfterSuite

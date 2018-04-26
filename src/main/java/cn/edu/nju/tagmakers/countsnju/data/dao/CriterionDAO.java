@@ -5,9 +5,11 @@ import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
 import cn.edu.nju.tagmakers.countsnju.filter.CriterionFilter;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Description:
@@ -23,6 +25,11 @@ import java.util.List;
 
 @Component
 public class CriterionDAO extends DAO<Criterion, CriterionFilter> {
+    public CriterionDAO() {
+        map = new ConcurrentHashMap<>();
+        filePath = "data" + File.separator + "Criterion.txt";
+        read();
+    }
     /**
      * 复合查找符合条件的对象
      *
@@ -51,6 +58,7 @@ public class CriterionDAO extends DAO<Criterion, CriterionFilter> {
         if (cur.getDataSet().size() > 0) ori.setDataSet(new ArrayList<>(cur.getDataSet()));
         if (cur.getKeywords().size() > 0) ori.setKeywords(new ArrayList<>(cur.getKeywords()));
         if (cur.getWorkerPassed().size() > 0) ori.setWorkerPassed(new HashSet<>(cur.getWorkerPassed()));
+        if (cur.getInitiatorID() != null) ori.setInitiatorID(cur.getInitiatorID());
         return ori;
     }
 }
