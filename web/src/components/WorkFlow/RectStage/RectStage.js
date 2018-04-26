@@ -70,7 +70,6 @@ class RectStage extends React.Component {
       })
     }
     this.setState({delayTime: 0,loading:false})
-    console.log(this.state.goNext);
   };
   checkButtonEvent =async () =>{
     this.setState({hasCheckAnswer:true})

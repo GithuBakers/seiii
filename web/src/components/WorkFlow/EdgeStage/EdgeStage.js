@@ -39,9 +39,45 @@ class EdgeStage extends React.Component {
     const back=await contributeWorkerTask(this.props.taskId, result, result.id);
     return back;
   };
+  checkButtonEvent = async () => {
+    this.setState({goNext:true});
+    this.setState({hasCheckAnswer:true})
+    const uploadShapesList = this.state.shapes.slice();
+    const tags = uploadShapesList.map(shape => ({
+      id: shape.id,
+      mark: {
+        type: "EDGE",
+        fill: '#ffffff24',
+        stroke: "white",
+        points: shape.line,
+      },
+      comment: shape.comment,
+    }));
+
+    const result = {
+      id: this.state.currentImage.id,
+      tags,
+    };
+    const back=await this.props.request(this.props.taskId, result, result.id);
+    console.log(back);
+    let tempList =Object.values(back.tags);
+    let tempFinalList=tempList.map(tag=>({
+      id: tag.id,
+      closed: true,
+      line: tag.mark.points,
+      comment: tag.comment,
+    }));
+    this.setState({shapes:tempFinalList});
+    console.log(this.state.shapes);
+    return back;
+  };
   nextButtonEvent = async () => {
     this.setState({loading:true});
+    this.setState({hasCheckAnswer:false});
     await this.uploadMark();
+    if(!this.state.goNext)
+    {await this.uploadMark();}
+    this.setState({goNext:false});
     const nextImage=this.leftImages.shift();
     if (this.leftImages.length === 0) {
       this.setState({
@@ -57,6 +93,7 @@ class EdgeStage extends React.Component {
     }
     this.setState({delayTime: 0, loading: false})
   };
+
   finishButtonEvent = async () => {
     this.setState({loading:true});
     await this.uploadMark();
@@ -66,7 +103,7 @@ class EdgeStage extends React.Component {
       description: '您已成功完成了一系列框选任务，并获得了一定的奖励，剩余奖励将在本任务结束后根据您的正确率发放',
     });
   };
-  finishCriterionButtonEvent = async () => {
+  finishCriterionEvent = async () => {
     this.setState({loading:true});
     await this.uploadMark();
     await this.props.dispatch({type: 'editWorkModel/setOpenState', payload: {isOpen: false}});
@@ -131,6 +168,9 @@ class EdgeStage extends React.Component {
       lines: [],
       shapes: [],
       selectedId: null,
+      goNext:false,
+      checkAnswer:false,
+      hasCheckAnswer:false,
     };
 
 
@@ -150,6 +190,8 @@ class EdgeStage extends React.Component {
   }
 
   render() {
+    const isChected = this.props.markRequestType=="WORKER_CRITERION"&&!this.state.goNext;
+    const isFinalChecked =this.state.finalPage &&this.state.goNext;
     return (
       <div style={{color: "white"}}>
         <CloseButton />
@@ -188,8 +230,16 @@ class EdgeStage extends React.Component {
                     type={['right', 'left']}
                     ease={['easeOutQuart', 'easeInOutQuart']}
                   >
-                    <h1 key="b">描边</h1>
-                    <div
+                    {
+                      this.state.hasCheckAnswer == false ? (
+                        <h1 key="b">描边
+                        </h1>
+                      ) : (
+                        this.state.checkAnswer == true ? (
+                          <h1 key="b">正确</h1>
+                        ) : ( <h1 key="b">错误</h1>)
+                      )
+                    }                      <div
                       key="c"
                       className={Styles['list-section']}
                     >
@@ -198,42 +248,60 @@ class EdgeStage extends React.Component {
                           className={Styles.list}
                           itemLayout="horizontal"
                           dataSource={this.state.shapes}
-                          renderItem={item => (
-                            <List.Item
-                              key={item.id}
-                              onClick={() => this.setState({selectedId: item.id})}
-                              style={this.state.selectedId === item.id ? {boxShadow: "#1890ff45 0px 10px 50px"} : {}}
-                              actions={[<a onClick={() => {
-                                       let newShapesList = this.state.shapes.slice();
-                                       newShapesList = newShapesList.filter(rect => rect.id !== item.id);
-                                       this.setState({shapes: newShapesList})
-                                     }}
-                              >delete
-                                        </a>]}
-                            >
-                              <AutoComplete
-                                className="desc-input"
-                                key='c'
-                                onChange={value => {
-                                     const newShapesList = this.state.shapes.slice();
-                                     newShapesList.filter(rect => rect.id === item.id)
-                                       .forEach(rect => rect.comment = value);
-                                     this.setState({shapes: newShapesList})
-                                   }}
-                                dataSource={this.props.keywords}
-                                value={item.comment}
-                                filterOption={(inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
-                                placeholder="INPUT TAG HERE"
-                              />
-                            </List.Item>
-                        )}
+                          renderItem={!this.state.hasCheckAnswer?(item => (
+                              <List.Item
+                                key={item.id}
+                                onClick={() => this.setState({selectedId: item.id})}
+                                style={this.state.selectedId === item.id ? {boxShadow: "#1890ff45 0px 10px 50px"} : {}}
+                                actions={[<a onClick={() => {
+                                  let newShapesList = this.state.shapes.slice();
+                                  newShapesList = newShapesList.filter(rect => rect.id !== item.id);
+                                  this.setState({shapes: newShapesList})
+                                }}
+                                >delete
+                                </a>]}
+                              >
+                                <AutoComplete
+                                  className="desc-input"
+                                  key='c'
+                                  onClick={() => this.setState({selectedId: item.id})}
+                                  onChange={e => {
+                                    const newShapesList = this.state.shapes.slice();
+                                    newShapesList.filter(rect => rect.id === item.id)
+                                      .forEach(rect => rect.comment = e);
+                                    this.setState({shapes: newShapesList})
+                                  }}
+                                  dataSource={this.props.keywords}
+                                  value={item.comment}
+                                  filterOption={(inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
+                                  placeholder="INPUT TAG HERE"
+                                />
+                              </List.Item>
+                            )):
+                            (item => (
+                              <List.Item
+                                key={item.id}
+                                editable ={false}
+                                onClick={() => this.setState({selectedId: item.id})}
+                                style={this.state.selectedId === item.id ? {boxShadow: "#1890ff45 0px 10px 50px"} : {}}
+                              >
+                                <AutoComplete
+                                  className="desc-input"
+                                  key='c'
+                                  disable={"false"}
+                                  onClick={() => this.setState({selectedId: item.id})}
+                                  value={item.comment}
+                                  filterOption={(inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
+                                />
+                              </List.Item>
+                            ))
+                          }
                         />
                       </PerfectScrollbar>
                     </div>
-                    {this.state.finalPage ?
-                      <div key="d" className={Styles["next-button"]} onClick={this.props.markRequestType=="WORKER_CRITERION"?this.finishCriterionButtonEvent:this.finishButtonEvent}>FINISH</div> :
-                      this.props.markRequestType=="WORKER_CRITERION"?<div key="e" className={Styles["next-button"]} onClick={this.nextButtonEvent}>Check</div>:<div key="e" className={Styles["next-button"]} onClick={this.nextButtonEvent}>NEXT</div>
-                  }
+                    {isFinalChecked?<div key="d" className={Styles["next-button"]} onClick={this.props.markRequestType=="WORKER_CRITERION"?this.finishCriterionEvent:this.finishButtonEvent}>FINISH</div>:<div/>}
+                    { (isChected)?<div key="e" className={Styles["next-button"]} onClick={this.checkButtonEvent}>Check</div>:<div key="e" className={Styles["next-button"]} onClick={this.nextButtonEvent}>NEXT</div>
+                    }
                   </QueueAnim>
                 </div>
               </QueueAnim>
