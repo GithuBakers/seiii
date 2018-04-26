@@ -28,10 +28,12 @@ class DescStage extends React.Component {
         },
       ],
     };
-    const back = await contributeWorkerTask(this.props.taskId,result, result.id);
+const back = await contributeWorkerTask(this.props.taskId,result, result.id);
     return back;
   };
   checkButtonEvent = async () =>{
+    this.setState({goNext:true});
+    this.setState({hasCheckAnswer:true})
     const result = {
       id: this.state.currentImage.id,
       tags: [
@@ -44,16 +46,24 @@ class DescStage extends React.Component {
         },
       ],
     };
-    const back =await contributeWorkerCriterion(this.props.taskId, result, result.id);
-    console.log(back);
-
+    const back =await this.props.request(this.props.taskId, result, result.id);
+    console.log(back.correct);
+    console.log(back.tags);
+    let tempList =Object.values(back.tags);
+    let rightTag =tempList[0].comment;
+    this.setState({rightAnswer:rightTag});
+    console.log(rightTag);
     return back;
   }
 
 
   nextButtonEvent = async () => {
     this.setState({ loading: true });
+    this.setState({hasCheckAnswer:false});
     await this.uploadMark();
+    if(!this.state.goNext)
+    {await this.uploadMark();}
+    this.setState({goNext:false});
     const nextImage = this.leftImages.shift();
     if (this.leftImages.length === 0) {
       this.setState({
@@ -80,7 +90,7 @@ class DescStage extends React.Component {
       description: '您已成功完成了一系列描述任务，并获得了一定的奖励，剩余奖励将在本任务结束后根据您的正确率发放',
     });
   };
-  finishCriterionButtonEvent = async () => {
+  finishCriterionEvent = async () => {
     this.setState({ loading: true });
     await this.checkButtonEvent();
     await this.props.dispatch({ type: 'editWorkModel/setOpenState', payload: { isOpen: false } });
@@ -91,7 +101,6 @@ class DescStage extends React.Component {
   };
   constructor(props) {
     super(props);
-
 
     this.leftImages = this.props.imageList.slice(0);
 
@@ -104,6 +113,10 @@ class DescStage extends React.Component {
       currentImage: image,
       comment: null,
       loading: false,
+      goNext:false,
+      checkAnswer:false,
+      hasCheckAnswer:false,
+      rightAnswer:""
     };
 
     if (this.props.isLabeled && this.leftImages.length === 0) {
@@ -118,6 +131,8 @@ class DescStage extends React.Component {
 
 
   render() {
+    const isChected = this.props.markRequestType=="WORKER_CRITERION"&&!this.state.goNext;
+    const isFinalChecked =this.state.finalPage &&this.state.goNext;
     return (
       <div style={{ color: 'white' }}>
         <CloseButton />
@@ -139,23 +154,37 @@ class DescStage extends React.Component {
                     type={['right', 'left']}
                     ease={['easeOutQuart', 'easeInOutQuart']}
                   >
-                    <h1 key="b">描述</h1>
-                    <div
+                    {
+                      this.state.hasCheckAnswer == false ? (
+                        <h1 key="b">描述</h1>
+                      ) : (
+                        this.state.checkAnswer == true ? (
+                          <h1 key="b">正确</h1>
+                        ) : ( <h1 key="b">错误</h1>)
+                      )
+                    }                    <div
                       key="c"
                       className={Styles['list-section']}
                     >
-                        <TextArea
-                          className={Styles["desc-input"]}
-                          placeholder="INPUT DESCRIPTION HERE.."
-                          value={this.state.comment}
-                          onChange={e => this.setState({comment: e.target.value})}
-                        />
+                    {this.state.hasCheckAnswer?
+                      (<TextArea
+                        className={Styles["desc-input"]}
+                        value={this.state.rightAnswer}
+
+                      />)
+                      :
+                      (<TextArea
+                      className={Styles["desc-input"]}
+                      placeholder="INPUT DESCRIPTION HERE.."
+                      value={this.state.comment}
+                      onChange={e => this.setState({comment: e.target.value})}
+                    />)}
+
                       <h1 key="b" value={this.state.constructor}/>
 
                     </div>
-                    {this.state.finalPage ?
-                      <div key="d" className={Styles['next-button']} onClick={this.props.markRequestType=="WORKER_CRITERION"?this.finishCriterionButtonEvent:this.finishButtonEvent}>FINISH</div> :
-                      this.props.markRequestType=="WORKER_CRITERION"?<div key="e" className={Styles["next-button"]} onClick={this.checkButtonEvent}>Check</div>:<div key="e" className={Styles["next-button"]} onClick={this.nextButtonEvent}>NEXT</div>
+                    {isFinalChecked?<div key="d" className={Styles["next-button"]} onClick={this.props.markRequestType=="WORKER_CRITERION"?this.finishCriterionEvent:this.finishButtonEvent}>FINISH</div>:<div/>}
+                    { (isChected)?<div key="e" className={Styles["next-button"]} onClick={this.checkButtonEvent}>Check</div>:<div key="e" className={Styles["next-button"]} onClick={this.nextButtonEvent}>NEXT</div>
                     }
                   </QueueAnim>
                 </div>
