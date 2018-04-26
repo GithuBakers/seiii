@@ -1,15 +1,13 @@
 package cn.edu.nju.tagmakers.countsnju.entity.user;
 
 import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Criterion;
-import cn.edu.nju.tagmakers.countsnju.entity.Sex;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Description:
@@ -22,7 +20,13 @@ import java.util.Optional;
  * 增加了从user到众包工人的构造方法（用于注册）
  * @author xxz
  * Created on 04/07/2018
+ * <p>
+ * Update:
+ * 增加Map记录下工人接受任务的时间
+ * @author xxz
+ * Created on 04/26/2018
  */
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class Worker extends User implements Serializable {
     private static final long serialVersionUID = 60L;
 
@@ -37,17 +41,6 @@ public class Worker extends User implements Serializable {
         this.nickName = user.getNickName();
         this.role = user.getRole();
     }
-
-    /**
-     * 已标注的图片(ID)列表
-     */
-    private List<String> bareIDs;
-
-    /**
-     * 已接受的任务列表
-     */
-    @JsonIgnore
-    private List<String> taskIDs;
 
     private Worker(Worker toCopy) {
         //公共字段
@@ -68,6 +61,18 @@ public class Worker extends User implements Serializable {
         this.rank = toCopy.rank;
     }
 
+    /**
+     * 已标注的图片(ID)列表
+     */
+    private List<String> bareIDs;
+
+    /**
+     * 已接受的任务列表
+     */
+    @JsonIgnore
+    private List<String> taskIDs;
+
+
     @JsonProperty(value = "credit")
     private int credit;
 
@@ -77,13 +82,52 @@ public class Worker extends User implements Serializable {
     @JsonProperty(value = "dependencies")
     private List<Criterion> dependencies;
 
-    @JsonProperty(value = "sex")
-    private Sex sex;
+    /**
+     * 工人接受任务的时间(保留最近30项）
+     * Map ( taskID, receiveTime )
+     */
+    @JsonIgnore
+    private Map<String, Long> receivedTime;
 
-    @JsonProperty(value = "birthday")
-    //todo：日期相关不知道是不是要用String
-    private String birthday;
+    public List<Criterion> getDependencies() {
+        return Optional.ofNullable(dependencies).orElse(new LinkedList<>());
+    }
 
+    public void setDependencies(List<Criterion> dependencies) {
+        this.dependencies = dependencies;
+    }
+
+    public Map<String, Long> getReceivedTime() {
+        return Optional.of(receivedTime).orElse(new TreeMap<>());
+    }
+
+    public void setReceivedTime(Map<String, Long> receivedTime) {
+        int MAX = 30;
+        if (receivedTime != null && receivedTime.size() > MAX) {
+            this.receivedTime = new HashMap<>();
+            receivedTime.entrySet().stream()
+                    .sorted(((o1, o2) -> {
+                        if (o2.getValue().equals(o1.getValue())) {
+                            return 0;
+                        } else {
+                            return o2.getValue() - o1.getValue() > 0 ? 1 : -1;
+                        }
+                    }))
+                    .collect(Collectors.toList())
+                    //外层if条件句已保证至少有MAX个元素
+                    .subList(0, MAX)
+                    .forEach(entry -> this.receivedTime.put(entry.getKey(), entry.getValue()));
+
+        } else {
+            this.receivedTime = receivedTime;
+        }
+    }
+    //这部分已经放在公共字段里了
+//    @JsonProperty(value = "sex")
+//    private Sex sex;
+//
+//    @JsonProperty(value = "birthday")
+//    private String birthday;
 
 
     public List<String> getTaskIDs() {

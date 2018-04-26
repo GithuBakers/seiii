@@ -22,6 +22,7 @@ import java.util.Optional;
  */
 public class Initiator extends User implements Serializable {
     private static final long serialVersionUID = 40L;
+
     public Initiator() {
 
     }
@@ -33,6 +34,9 @@ public class Initiator extends User implements Serializable {
         this.password = user.getPassword();
         this.nickName = user.getNickName();
         this.role = user.getRole();
+        this.birthday = user.getBirthday();
+        this.sex = user.sex;
+        this.birthdayString = user.birthdayString;
     }
 
     private Initiator(Initiator toCopy) {
@@ -42,7 +46,9 @@ public class Initiator extends User implements Serializable {
         this.password = toCopy.getPassword();
         this.nickName = toCopy.getNickName();
         this.role = toCopy.getRole();
-
+        this.birthdayString = toCopy.birthdayString;
+        this.sex = toCopy.sex;
+        this.birthday = toCopy.getBirthday();
         //发起者字段
         if (toCopy.taskNames != null) {
             this.taskNames = new LinkedList<>(toCopy.taskNames);
