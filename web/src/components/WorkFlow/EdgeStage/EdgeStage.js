@@ -36,7 +36,7 @@ class EdgeStage extends React.Component {
       id: this.state.currentImage.id,
       tags,
     };
-    const back=await contributeWorkerTask(this.props.taskId, result.id, result);
+    const back=await contributeWorkerTask(this.props.taskId, result, result.id);
     return back;
   };
   nextButtonEvent = async () => {

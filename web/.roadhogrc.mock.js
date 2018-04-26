@@ -385,7 +385,7 @@ const proxy = {
   },
 };
 
-// export default (delay(proxy, 1000));
-export default {};
+export default (delay(proxy, 1000));
+// export default {};
 // export default {
 // };

@@ -159,7 +159,7 @@ export default class MyTask extends PureComponent {
             <ListInfo
               title="结果下载链接"
               value={
-                <a url="selectedTask.result" download>
+                <a download={selectedTask.result} href={selectedTask.result}>
                   点击下载
                 </a>
               }
@@ -196,7 +196,7 @@ export default class MyTask extends PureComponent {
             />
 
             {selectedTask.finished ? (
-              {}
+              []
             ) : (
               <Popconfirm
                 onConfirm={() => deleteTask(selectedTask.task_id)}
@@ -215,7 +215,7 @@ export default class MyTask extends PureComponent {
     );
 
     const showDetail = async taskId => {
-      console.log("taskId",taskId)
+      console.log("taskId",taskId);
       await this.props.dispatch({
         type: 'initiatorTask/fetchSelectedTask',
         payload: taskId,

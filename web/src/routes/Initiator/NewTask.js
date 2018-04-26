@@ -18,6 +18,7 @@ import {
   Modal,
   Tag,
   Checkbox,
+  InputNumber,
 } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import styles from './NewTask.less';
@@ -92,7 +93,7 @@ export default class BasicForms extends PureComponent {
         const updateValue = values;
         const cover = this.state.coverList[0].response;
         const dataList = this.state.dataSetList.slice(0);
-        updateValue.cover = cover.url;
+        updateValue.cover = `${cover.url}?x-oss-process=style/cover`;
         updateValue.data_set = dataList.map(e => ({ id: randomString(32), raw: e.response.url }));
         console.log("updateValue",updateValue);
         updateValue.task_id=randomString();
@@ -258,7 +259,7 @@ export default class BasicForms extends PureComponent {
               message: '请输入目标标注人数/张',
             },
           ],
-        })(<Input placeholder="填入你的标注数量期望" />)}
+        })(<InputNumber precision={0} style={{width:"100%"}} min={1} max={100000000}  placeholder="请输入目标标注人数/张"  />)}
         </FormItem>
         <FormItem {...formItemLayout} label="用户标注限制">
           {getFieldDecorator('limit', {
@@ -268,7 +269,7 @@ export default class BasicForms extends PureComponent {
               message: '请输入单个用户最多标注的数量',
             },
           ],
-        })(<Input placeholder="填入单个用户最多标注的数量限制" />)}
+        })( <InputNumber precision={0}  style={{width:"100%"}} min={1} max={100000000} placeholder="填入单个用户最多标注的数量限制" />)}
         </FormItem>
         <FormItem {...formItemLayout} label="奖励值">
           {getFieldDecorator('reward', {
@@ -278,7 +279,7 @@ export default class BasicForms extends PureComponent {
               message: '请输入奖励值',
             },
           ],
-        })(<Input placeholder='请输入奖励值' />)}
+        })(<InputNumber precision={0}  style={{width:"100%"}} min={1} max={100000000} placeholder='请输入奖励值' /> )}
         </FormItem>
         <FormItem {...formItemLayout} label="关键词" help="请使用回车或逗号分词">
           {getFieldDecorator('keywords')(<Select

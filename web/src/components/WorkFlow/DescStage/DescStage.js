@@ -29,7 +29,7 @@ class DescStage extends React.Component {
         },
       ],
     };
-    const back = await contributeWorkerTask(this.props.taskId, result.id, result);
+    const back = await contributeWorkerTask(this.props.taskId, result, result.id);
     return back;
   };
 

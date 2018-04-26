@@ -63,7 +63,7 @@ export default class NewCriterion extends PureComponent {
             const updateValue = values;
             const cover = this.state.coverList[0].response;
             const dataList = this.state.dataSetList.slice(0);
-            updateValue.cover = cover.url;
+            updateValue.cover = `${cover.url}?x-oss-process=style/cover`;
             updateValue.data_set = dataList.map(e => ({ id: randomString(32), raw: e.response.url }));
             console.log("updateValue",updateValue);
             updateValue.criterion_id=randomString(16);
@@ -225,7 +225,7 @@ export default class NewCriterion extends PureComponent {
                     message: '请输入目标标注人数/张',
                   },
                 ],
-              })(<Input placeholder="填入你的标注数量期望" />)}
+              })(<InputNumber precision={0} style={{width:"100%"}} min={1} max={100000000} placeholder="填入你的标注数量期望" />)}
             </FormItem>
             <FormItem {...formItemLayout} label="关键词" help="请使用回车或逗号分词">
               {getFieldDecorator('keywords')(<Select

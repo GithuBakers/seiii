@@ -9,8 +9,8 @@ import EditWorkPage from '../../components/EditWorkPage/EditWorkPage';
 import { WORKER_NORMAL } from '../../data/markRequestType';
 
 
-@connect(({ initiatorCriterion, loading }) => ({
-  initiatorCriterion,
+@connect(({ workerCriterion, loading }) => ({
+  workerCriterion,
   loading: loading.effects['workerCriterion/fetchAllCriterion'],
 }))
 export default class TaskList extends PureComponent {
@@ -26,7 +26,7 @@ export default class TaskList extends PureComponent {
     });
     if(this.props.location.state&&this.props.location.state.criterion_id){
       const criterionId=this.props.location.state.criterion_id;
-      const { allCriterion } = this.props.initiatorCriterion;
+      const { allCriterion } = this.props.workerCriterion;
       console.log("criterion_id",criterionId);
       console.log("allCriterion",allCriterion);
       const selectedCriterion=allCriterion.filter(e=>e.criterion_id===criterionId)[0];
@@ -55,7 +55,7 @@ export default class TaskList extends PureComponent {
 
   render() {
 
-    const { allCriterion } = this.props.initiatorCriterion;
+    const { allCriterion } = this.props.workerCriterion;
     const { modalVisible, selectedCriterion } = this.state;
     console.log('allCriterion', allCriterion);
     const CardList = () => allCriterion ? (
