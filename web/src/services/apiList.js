@@ -39,6 +39,10 @@ export async function getInitiatorTask(finished) {
   return request(`${version}/initiator/task?finished=${finished}`);
 }
 
+export async function getInitiatorTaskResult(taskId) {
+  return request(`${version}/initiator/task/task_result?taskID=${taskId}`);
+}
+
 export async function getInitiatorTaskDetail(taskId) {
   //TODO: 1 FOR MOCK
   return request(`${version}/initiator/task/1`);

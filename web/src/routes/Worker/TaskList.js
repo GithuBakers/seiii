@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
 import {connect} from 'dva';
-import {Col,Row,Modal,Card,message,Avatar,Icon,Button, Menu, Dropdown, Input, List, Select,Tag} from 'antd';
+import {Col,Row,Modal,Card,message,Avatar,Icon,Button, Menu, Dropdown, notification, List, Select,Tag} from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import styles from './TaskList.less';
 import { receiveWorkerTask } from '../../services/apiList'
@@ -53,7 +53,14 @@ export default class TaskList extends PureComponent {
     });
     loading();
     await console.log('time');
-    await this.setState({ modalVisible: true });
+    if(this.props.taskMarket.selectedTask.status==='ok'){
+      await this.setState({ modalVisible: true });
+    }else {
+      notification.info({
+        message: '没有符合条件的任务',
+        description: '请完成更多的标准集或等待更多的任务出现.',
+      });
+    }
   };
   render() {
 

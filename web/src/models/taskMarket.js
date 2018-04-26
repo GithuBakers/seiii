@@ -41,7 +41,7 @@ export default {
     setSelectedTaskData(state, action) {
       return {
         ...state,
-        selectedTask: action.payload.taskDetail,
+        selectedTask: action.payload.taskDetail||{},
       };
     },
   },
