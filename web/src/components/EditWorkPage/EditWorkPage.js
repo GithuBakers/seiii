@@ -16,7 +16,7 @@ class EditWorkPage extends React.Component {
 
 
   render() {
-    const {request,background,loading,editWorkModel,type,taskId,taskName,keywords}=this.props;
+    const {request,background,loading,editWorkModel,type,taskId,taskName,keywords,markRequestType}=this.props;
     let isShow=editWorkModel.finishFetch;
     console.log(editWorkModel.image);
     if(editWorkModel.image.length===1){
@@ -35,7 +35,7 @@ class EditWorkPage extends React.Component {
             <WorkFlow
               key="b"
               isLabeled
-              markRequestType={editWorkModel.markRequestType}
+              markRequestType={markRequestType}
               request={request}
               imageList={editWorkModel.image}
               type={type}

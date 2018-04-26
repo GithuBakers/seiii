@@ -6,7 +6,7 @@ import styles from './AllCriterion.less';
 import { contributeWorkerCriterion } from '../../services/apiList';
 import DetailCard from '../../components/DetailCard/DetailCard';
 import EditWorkPage from '../../components/EditWorkPage/EditWorkPage';
-import { WORKER_NORMAL } from '../../data/markRequestType';
+import { WORKER_CRITERION } from '../../data/markRequestType';
 
 
 @connect(({ workerCriterion, loading }) => ({
@@ -45,7 +45,7 @@ export default class TaskList extends PureComponent {
     this.setState({modalVisible:false});
     this.props.dispatch({
       type:'editWorkModel/fetchImageDetail',
-      payload:{id:criterionId,markRequestType:WORKER_NORMAL},
+      payload:{id:criterionId,markRequestType:WORKER_CRITERION},
     })
   };
 
@@ -122,6 +122,7 @@ export default class TaskList extends PureComponent {
           type={selectedCriterion.type}
           taskId={selectedCriterion.criterion_id}
           request={contributeWorkerCriterion}
+          markRequestType={WORKER_CRITERION}
         />
         <DetailModal/>
         <div className={styles.cardList}><CardList /></div>

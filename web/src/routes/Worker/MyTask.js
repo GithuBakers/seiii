@@ -212,6 +212,7 @@ export default class MyTask extends PureComponent {
           type={selectedTask.type}
           taskId={selectedTask.task_id}
           request={contributeWorkerTask}
+          markRequestType= {WORKER_NORMAL}
         />
         <PageHeaderLayout
           loading={this.props.loading}

@@ -18,10 +18,12 @@ import cn.edu.nju.tagmakers.countsnju.logic.service.WorkerService;
 import cn.edu.nju.tagmakers.countsnju.security.SecurityUserController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import util.SecurityUtility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +83,6 @@ public class WorkerServiceTest extends AbstractTestNGSpringContextTests {
         testTask.setDataSet(dataSet);
         testTask.setType(MarkType.DESC);
 
-        System.out.println(securityUserController == null);
         securityUserController.signUp(testWorker);
         taskService.addTask(testTask);
     }
@@ -175,5 +176,33 @@ public class WorkerServiceTest extends AbstractTestNGSpringContextTests {
     public void getReceivedTaskTest() {
         List<WorkerReceivedTaskVO> list = workerService.getReceivedTasks(testWorker.getUserID());
         assertTrue(list.size() > 0);
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void getRecommendTaskTest1() {
+        workerService.getRecommendTask(MarkType.EDGE, testWorker.getUserID());
+    }
+
+    @Test(dependsOnMethods = {"getRecommendTaskTest1", "receiveTaskTest4"})
+    public void getRecommendTaskTest2() {
+        Task temp = new Task();
+        temp.setLimit(10);
+        temp.setAim(5);
+        temp.setType(MarkType.EDGE);
+        temp.setReward(10);
+        temp.setRequirement("no requirement");
+        temp.setTaskID("11111");
+        temp.setInitiatorName(randomizedID + "1");
+        bare1 = new Bare();
+        bare1.setId("图1" + new Random(System.currentTimeMillis()).nextInt() + "");
+        bare2 = new Bare();
+        bare2.setId("图2" + new Random(System.currentTimeMillis()).nextInt() + "");
+        List<Bare> dataSet = new ArrayList<>();
+        dataSet.add(bare1);
+        dataSet.add(bare2);
+        temp.setDataSet(dataSet);
+        taskService.addTask(temp);
+
+        workerService.getRecommendTask(MarkType.EDGE, testWorker.getPrimeKey());
     }
 }

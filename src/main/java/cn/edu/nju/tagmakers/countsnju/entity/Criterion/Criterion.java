@@ -36,17 +36,17 @@ import java.util.*;
  * Last modified on 4/22
  */
 public class Criterion extends Entity<Criterion> implements Serializable {
+    private static final long serialVersionUID = 86L;
+
+    @JsonIgnore
+    private final int numOfPerGet = 10;
+
     /**
      * 由发起者提供的答案
      * Map[BareID, Tags]
      */
     @JsonIgnore
     private Map<String, List<Tag>> result;
-
-    private static final long serialVersionUID = 86L;
-
-    @JsonIgnore
-    private final int numOfPerGet = 10;
 
     @JsonProperty(value = "criterion_id")
     private String criterionID;
