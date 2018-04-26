@@ -34,10 +34,7 @@ export default {
       yield put({ type: 'setSelectedTaskData', payload: { taskDetail } });
     },
 
-    *fetchRecommendTask({payload},{call,put}){
-      const taskDetail = yield call(getWorkerRecommendTask, payload);
-      yield put({ type: 'setSelectedTaskData', payload: { taskDetail } });
-    },
+
   },
 
   reducers: {
@@ -55,7 +52,7 @@ export default {
     setSelectedTaskData(state, action) {
       return {
         ...state,
-        selectedTask: action.payload.taskDetail,
+        selectedTask: action.payload.taskDetail||{},
       };
     },
   },

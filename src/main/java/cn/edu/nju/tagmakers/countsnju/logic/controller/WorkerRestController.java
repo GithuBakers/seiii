@@ -152,6 +152,9 @@ public class WorkerRestController {
         return workerService.getReceivedTaskDetails(taskName, workerName);
     }
 
+    /**
+     * 获取推荐的任务
+     */
     @RequestMapping(value = "/recommend_task", method = RequestMethod.GET)
     public WorkerTaskDetailVO getRecommendTask(@PathParam("type") String type) {
         String workerName = SecurityUtility.getUserName(SecurityContextHolder.getContext());

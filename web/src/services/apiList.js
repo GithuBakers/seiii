@@ -50,7 +50,7 @@ export async function finishInitiatorTask(taskId) {
   return request(`${version}/initiator/task/finished_task`, {
     method: 'POST',
     body: {
-      task_name: taskId,
+      task_id: taskId,
     },
   });
 }

@@ -13,6 +13,7 @@ export default {
   effects: {
     *fetchAllCriterion(_, { call, put }) {
       const allCriterion = yield call(getAllCriterionForWorker, true);
+      yield console.log("allCriterion_worker",allCriterion);
       yield put({
         type: 'refreshList',
         payload: {

@@ -17,7 +17,7 @@ import styles from './MyCriterion.less';
 import { routerRedux } from 'dva/router';
 import EditWorkPage from '../../components/EditWorkPage/EditWorkPage';
 import Ellipsis from '../../components/Ellipsis';
-import { WORKER_NORMAL } from '../../data/markRequestType';
+import { INITIATOR_CRITERION } from '../../data/markRequestType';
 import { contributeInitiatorCriterion } from '../../services/apiList';
 
 
@@ -35,7 +35,7 @@ export default class MyTask extends PureComponent {
     this.setState({modalVisible:false});
     this.props.dispatch({
       type:'editWorkModel/fetchImageDetail',
-      payload:{id:criterionId,markRequestType:WORKER_NORMAL},
+      payload:{id:criterionId,markRequestType:INITIATOR_CRITERION},
     })
   }
 
@@ -86,6 +86,7 @@ export default class MyTask extends PureComponent {
           type={selectedCriterion.type}
           taskId={selectedCriterion.criterion_id}
           request={contributeInitiatorCriterion}
+          markRequestType= {INITIATOR_CRITERION}
         />
         <PageHeaderLayout
           loading={this.props.loading}
