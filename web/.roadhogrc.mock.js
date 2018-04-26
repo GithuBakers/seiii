@@ -14,6 +14,7 @@ const noProxy = process.env.NO_PROXY === 'true';
 // 代码中会兼容本地 service mock 以及部署站点的静态数据
 
 const typeList = ['RECT', 'DESC', 'EDGE'];
+const sexType = ['MALE','FEMALE','NA'];
 const rawCriterionList=mockjs.mock({
   'list|5-7': [
     {
@@ -47,13 +48,42 @@ const proxy = {
     nick_name: () => mockjs.Random.cname(),
     'credit|1-100': 1,
     'rank|1-10000': 1,
-    dependencies:rawCriterionList
+    sex: () => sexType[mockjs.Random.integer(0, 2)],
+    birthday: '@date',
+    dependencies:rawCriterionList,
+    "capability":[
+      {"item":"完成标准集", "a":90},
+      {"item":"错误学习能力", "a":80},
+      {"item":"完成任务量", "a":60},
+      {"item":"标注准确度", "a":70},//任务
+      {"item":"近期情况", "a":60}
+    ],
+    "recent":getFakeChartData.offlineChartData,
+    //饼图，用户近期各种标注的占比
+    "tags":[
+      {"item":"标准描述","number":20},
+      {"item":"标准矩形","number":30},
+      {"item":"标准边界","number":40},
+      {"item":"任务描述","number":50},
+      {"item":"任务矩形","number":90},
+      {"item":"任务边界","number":70}
+    ]
   }),
   'GET /api/v2/initiator/information/initiator': mockjs.mock({
     user_name: 'initiator',
     role: 'INITIATOR',
     avatar: () => mockjs.Random.image('100x100', '#894FC4', '#FFF', 'I'),
     nick_name: () => mockjs.Random.cname(),
+    sex: () => sexType[mockjs.Random.integer(0, 2)],
+    birthday: '@date',
+    "tasks|5-10":[
+      {
+        "task_name":'@name',//任务名
+        "task_id":() => mockjs.Random.string(),//任务ID
+        "completeness|0-100":1,//0-100，完成情况
+        "recent":getFakeChartData.offlineChartData,
+      },
+    ]
   }),
   'POST /api/v2/initiator/information/initiator': true,
   'POST /api/v2/worker/information/worker': true,
@@ -100,8 +130,48 @@ const proxy = {
     completeness: () => mockjs.Random.integer(0, 100), //达标比例
     result: () => mockjs.mock('@url'), //结果所在地
     finished: false, //状态
+    "has_result":true,
     "keywords|5-10":[ ()=>mockjs.Random.name()],
     "dependencies": rawCriterionList
+  }),
+  'GET /api/v2/initiator/task/task_result': mockjs.mock({
+    task_id: () => mockjs.Random.string(), //达标比例
+    task_name: () => mockjs.Random.cname() + 'task',
+    cover: () => mockjs.Random.image('600x300', '#894FC4', '#FFF', 'TASK1'),
+    type: () => typeList[mockjs.Random.integer(0, 2)],
+    'aim|50-2000': 1,
+    'limit|100-500': 1,
+    "keywords|5-10":[ ()=>mockjs.Random.name()],
+    "dependencies": rawCriterionList,
+    "hive|1000":[
+      {
+        "x|200-1000":1,//单张图片用户标注数目
+        "y|200-1000":1//标注聚集程度
+      }
+    ],
+    "sex_age":[
+      {
+        "name":'Male',
+        "under20": 18.9,
+        "under30": 28.8,
+        "under40":39.3,
+        "above": 81.4
+      },
+      {
+        "name":'Female',
+        "under20": 18.9,
+        "under30": 28.8,
+        "under40":39.3,
+        "above": 81.4
+      },
+      {
+        "name":'Others',
+        "under20": 18.9,
+        "under30": 28.8,
+        "under40":39.3,
+        "above": 81.4
+      }
+    ]
   }),
   'GET /api/v2/worker/task/1': mockjs.mock({
     task_id: () => mockjs.Random.string(), //达标比例
@@ -142,7 +212,8 @@ const proxy = {
       "total_reward|50-100":1,
       "keywords|5-10":[ ()=>mockjs.Random.name()]
     });
-    res.send(JSON.stringify(value));
+    res.sendStatus(404);
+    // res.send(JSON.stringify(value));
   },
   'GET /api/v2/worker/task/received_task/1':  mockjs.mock({
     task_id: () => mockjs.Random.string(), //达标比例
@@ -186,7 +257,6 @@ const proxy = {
     };
     res.send(JSON.stringify(mockjs.mock(list).list));
   },
-
   'POST /api/v2/worker/task/received_task/1':  mockjs.mock({
     task_id: () => mockjs.Random.string(), //达标比例
     task_name: () => mockjs.Random.cname() + 'task',
@@ -256,7 +326,7 @@ const proxy = {
     };
     res.send(JSON.stringify(mockjs.mock(list).list));
   },
-  'POST /api/v2/worker/criterion/img':{...FakeRectTags,correct:false},
+  'POST /api/v2/worker/criterion/img':{...FakeEdgeTags,correct:false},
 
   'GET /api/currentUser': {
     $desc: '获取当前用户接口',

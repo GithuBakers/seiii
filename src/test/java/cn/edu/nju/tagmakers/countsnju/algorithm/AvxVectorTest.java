@@ -57,7 +57,7 @@ public class AvxVectorTest extends TestNG {
     }
 
     @Test
-    public void testScala() {
+    public void testScale() {
         AvxVector vector = new AvxVector(a);
         AvxVector vectorb = new AvxVector(b);
 

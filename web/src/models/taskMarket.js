@@ -1,4 +1,4 @@
-import {exploreTaskMarket, getWorkerTaskDetail,receiveWorkerTask} from '../services/apiList';
+import { exploreTaskMarket, getWorkerRecommendTask, getWorkerTaskDetail, receiveWorkerTask } from '../services/apiList';
 
 export default {
   namespace: 'taskMarket',
@@ -24,7 +24,10 @@ export default {
     * receiveTask({payload},{call}){
       yield call(receiveWorkerTask, payload);
     },
-
+    *fetchRecommendTask({payload},{call,put}){
+      const taskDetail = yield call(getWorkerRecommendTask, payload);
+      yield put({ type: 'setSelectedTaskData', payload: { taskDetail } });
+    },
 
   },
 
@@ -38,7 +41,7 @@ export default {
     setSelectedTaskData(state, action) {
       return {
         ...state,
-        selectedTask: action.payload.taskDetail,
+        selectedTask: action.payload.taskDetail||{},
       };
     },
   },

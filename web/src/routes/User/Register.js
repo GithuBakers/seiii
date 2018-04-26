@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { routerRedux, Link } from 'dva/router';
-import { Radio, Form, Input, Button, Select, Row, Col, Popover, Progress } from 'antd';
+import { Radio, Form, Input, Button, Select, Row, Col, Popover, Progress,notification } from 'antd';
 import styles from './Register.less';
 import AvatarUpload from '../../components/AvatarUpload';
 
@@ -53,6 +53,11 @@ export default class Register extends Component {
           status: undefined,
         },
       });
+    } else {
+      notification.warning({
+        message: '用户名已被注册',
+        description: '请再尝试使用一个新的用户名进行注册.',
+      });
     }
   }
 
@@ -83,6 +88,7 @@ export default class Register extends Component {
             avatar: this.state.avatarUrl,
           },
         });
+
       }
     });
   };

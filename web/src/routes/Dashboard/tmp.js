@@ -492,3 +492,110 @@ export default class Analysis extends Component {
     );
   }
 }
+
+
+
+// import React, { Component, Fragment } from 'react';
+// import { connect } from 'dva';
+// import {Card,Tabs,Row,Col} from 'antd'
+// import NumberInfo from '../../components/NumberInfo';
+// import styles from './Analysis.less'
+// import {
+//   ChartCard,
+//   yuan,
+//   MiniArea,
+//   MiniBar,
+//   MiniProgress,
+//   Field,
+//   Bar,
+//   Pie,
+//   TimelineChart,
+// } from '../../components/Charts';
+//
+// const { TabPane } = Tabs;
+//
+//
+//
+//
+//
+// @connect(({ user, loading }) => ({
+//   user,
+//   loading: loading.models.user,
+// }))
+// export default class Analysis extends Component {
+//
+//   state={
+//     currentTabKey:'',
+//   }
+//
+//
+//   handleTabChange = key => {
+//     this.setState({
+//       currentTabKey: key,
+//     });
+//   };
+//
+//
+//   render() {
+//     const {currentUser,currentAuthority}=this.props.user;
+//     const loading = this.props.loading;
+//     const tasks=currentUser.tasks?currentUser.tasks:[];
+//     const activeKey = this.state.currentTabKey || (tasks[0] && tasks[0].task_id);
+//
+//     const CustomTab = ({ data:{task_id,task_name,completeness}, currentTabKey: currentKey }) => (
+//       <Row gutter={8} style={{ width: 138, margin: '8px 0' }}>
+//         <Col span={12}>
+//           <NumberInfo
+//             // title="????"
+//             title={task_name}
+//             subTitle="完成度"
+//             gap={2}
+//             total={`${completeness}%`}
+//             theme={currentKey !== task_id && 'light'}
+//           />
+//         </Col>
+//         <Col span={12} style={{ paddingTop: 36 }}>
+//           <Pie
+//             animate={false}
+//             color={currentKey !== task_id && '#BDE4FF'}
+//             inner={0.55}
+//             tooltip={false}
+//             margin={[0, 0, 0, 0]}
+//             percent={completeness}
+//             height={64}
+//           />
+//         </Col>
+//       </Row>
+//     );
+//
+//     const Initiator=()=>(
+//       <Card
+//         loading={loading}
+//         className={styles.offlineCard}
+//         bordered={false}
+//         bodyStyle={{ padding: '0 0 32px 0' }}
+//         style={{ marginTop: 32 }}
+//       >
+//         <Tabs activeKey={activeKey} onChange={this.handleTabChange}>
+//           {tasks.map(item => (
+//             <TabPane tab={<CustomTab data={item} currentTabKey={activeKey} />} key={item.task_id}>
+//               <div style={{ padding: '0 24px' }}>
+//                 <TimelineChart
+//                   height={400}
+//                   data={item.recent}
+//                   titleMap={{ y1: '时间段完成量',y2:'???' }}
+//                 />
+//               </div>
+//             </TabPane>
+//           ))}
+//         </Tabs>
+//       </Card>
+//     );
+//
+//     return (
+//       <Fragment>
+//         <Initiator />
+//       </Fragment>
+//     );
+//   }
+// }

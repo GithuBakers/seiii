@@ -6,12 +6,12 @@ import styles from './AllCriterion.less';
 import { contributeWorkerCriterion } from '../../services/apiList';
 import DetailCard from '../../components/DetailCard/DetailCard';
 import EditWorkPage from '../../components/EditWorkPage/EditWorkPage';
-import { WORKER_NORMAL } from '../../data/markRequestType';
+import { WORKER_CRITERION } from '../../data/markRequestType';
 
 
-@connect(({ initiatorCriterion, loading }) => ({
-  initiatorCriterion,
-  loading: loading.effects['initiatorCriterion/fetchAllCriterion'],
+@connect(({ workerCriterion, loading }) => ({
+  workerCriterion,
+  loading: loading.effects['workerCriterion/fetchAllCriterion'],
 }))
 export default class TaskList extends PureComponent {
 
@@ -22,11 +22,11 @@ export default class TaskList extends PureComponent {
 
   async componentDidMount() {
     await this.props.dispatch({
-      type: 'initiatorCriterion/fetchAllCriterion',
+      type: 'workerCriterion/fetchAllCriterion',
     });
     if(this.props.location.state&&this.props.location.state.criterion_id){
       const criterionId=this.props.location.state.criterion_id;
-      const { allCriterion } = this.props.initiatorCriterion;
+      const { allCriterion } = this.props.workerCriterion;
       console.log("criterion_id",criterionId);
       console.log("allCriterion",allCriterion);
       const selectedCriterion=allCriterion.filter(e=>e.criterion_id===criterionId)[0];
@@ -45,7 +45,7 @@ export default class TaskList extends PureComponent {
     this.setState({modalVisible:false});
     this.props.dispatch({
       type:'editWorkModel/fetchImageDetail',
-      payload:{id:criterionId,markRequestType:WORKER_NORMAL},
+      payload:{id:criterionId,markRequestType:WORKER_CRITERION},
     })
   };
 
@@ -55,7 +55,7 @@ export default class TaskList extends PureComponent {
 
   render() {
 
-    const { allCriterion } = this.props.initiatorCriterion;
+    const { allCriterion } = this.props.workerCriterion;
     const { modalVisible, selectedCriterion } = this.state;
     console.log('allCriterion', allCriterion);
     const CardList = () => allCriterion ? (
@@ -122,6 +122,7 @@ export default class TaskList extends PureComponent {
           type={selectedCriterion.type}
           taskId={selectedCriterion.criterion_id}
           request={contributeWorkerCriterion}
+          markRequestType={WORKER_CRITERION}
         />
         <DetailModal/>
         <div className={styles.cardList}><CardList /></div>

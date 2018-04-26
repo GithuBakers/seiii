@@ -83,7 +83,10 @@ export default async function request(url, options) {
     //   return response.text();
     // }
     let newStatus = 200;
-    if (url.includes('/login')||url.includes('/user/new_user')) {
+    if (url.includes('/login')
+      ||url.includes('/user/new_user')
+      ||url.includes('/worker/recommend_task')
+    ) {
       if (response.status === 403) {
         newStatus = 'error';
       } else {
