@@ -1,5 +1,6 @@
 package cn.edu.nju.tagmakers.countsnju.algorithm;
 
+import cn.edu.nju.tagmakers.countsnju.entity.pic.Edge;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Rect;
 
 import java.util.*;
@@ -44,6 +45,30 @@ public class Cluster {
                 .map(AvxVector::getData)
                 .map(AlgoRect::new)
                 .map(AlgoRect::getRect)
+                .collect(Collectors.toList());
+    }
+
+    public List<Edge> clusterEdge(List<Edge> src) {
+        int R = 10, MIN = 5;
+        List<AlgoEdge> algoEdges = EdgeNormalize.normalize(src);
+        AvxVector[] vectors = new AvxVector[algoEdges.size()];
+        algoEdges.stream()
+                .map(AlgoEdge::getAvxVector)
+                .collect(Collectors.toList())
+                .toArray(vectors);
+        double[][] distance = new double[vectors.length][vectors.length];
+
+        List<Set<AvxVector>> clusters = cluster(R, MIN, vectors, distance);
+
+        return clusters.parallelStream()
+                .filter(avxVectors -> avxVectors.size() != 0)
+                .map(avxVectors -> avxVectors.parallelStream()
+                        .reduce(AvxVector::add)
+                        .orElse(avxVectors.iterator().next())
+                        .scale(1.0 / avxVectors.size()))
+                .map(AvxVector::getData)
+                .map(AlgoEdge::new)
+                .map(AlgoEdge::getEdge)
                 .collect(Collectors.toList());
     }
 
