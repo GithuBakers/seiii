@@ -54,4 +54,9 @@ public class Edge extends Mark implements Serializable {
     public void setPoints(List<Integer> points) {
         this.points = points;
     }
+
+    @Override
+    public String toString() {
+        return points.toString();
+    }
 }

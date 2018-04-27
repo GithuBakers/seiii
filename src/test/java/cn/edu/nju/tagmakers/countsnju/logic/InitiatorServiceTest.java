@@ -6,6 +6,7 @@ import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Initiator;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Role;
+import cn.edu.nju.tagmakers.countsnju.entity.user.Sex;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.InitiatorTaskVO;
 import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
@@ -49,6 +50,8 @@ public class InitiatorServiceTest extends AbstractTestNGSpringContextTests {
         testInitiator.setPassword("123");
         testInitiator.setAvatar("没有头像");
         testInitiator.setRole(Role.INITIATOR);
+        testInitiator.setSex(Sex.NA);
+        testInitiator.setBirthdayString("1998-02-27");
 
         Bare bare1 = new Bare();
         bare1.setId("图1" + new Random(System.currentTimeMillis()).nextInt());
@@ -148,6 +151,7 @@ public class InitiatorServiceTest extends AbstractTestNGSpringContextTests {
         Initiator temp = new Initiator();
         temp.setUserID("fake owner");
         temp.setRole(Role.INITIATOR);
+        temp.setBirthdayString("1998-12-23");
         securityUserController.signUp(temp);
         initiatorService.finishTask(testTask.getPrimeKey(), temp.getPrimeKey());
     }

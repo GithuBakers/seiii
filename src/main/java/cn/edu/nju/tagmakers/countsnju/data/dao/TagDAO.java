@@ -20,11 +20,16 @@ import java.util.stream.Collectors;
  * Update:重构
  * @author wym
  * Last modified on 04/06/2018
+ * <p>
+ * Update:
+ * 增加字段 提交时间
+ * @author xxz
+ * Created on 04/27/2018
  */
 @Component
 public class TagDAO extends DAO<Tag, TagFilter> {
 
-    public TagDAO(){
+    public TagDAO() {
         map = new ConcurrentHashMap<>();
         filePath = "data" + File.separator + "Tag.txt";
         read();
@@ -62,6 +67,7 @@ public class TagDAO extends DAO<Tag, TagFilter> {
         if (cur.getTagID() != null) ori.setTagID(cur.getTagID());
         if (cur.getMark() != null) ori.setMark(cur.getMark());
         if (cur.getBareID() != null) ori.setBareID(cur.getBareID());
+        if (cur.getSubmitTime() != null) ori.setSubmitTime(cur.getSubmitTime());
         return ori;
     }
 

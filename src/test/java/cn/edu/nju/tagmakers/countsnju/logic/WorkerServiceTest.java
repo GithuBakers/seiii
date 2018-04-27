@@ -10,6 +10,7 @@ import cn.edu.nju.tagmakers.countsnju.entity.user.Role;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerReceivedTaskDetailVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerReceivedTaskVO;
+import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
 import cn.edu.nju.tagmakers.countsnju.exception.NotFoundException;
 import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
@@ -94,10 +95,10 @@ public class WorkerServiceTest extends AbstractTestNGSpringContextTests {
         assertEquals(temp.getNickName(), "拔丝地瓜");
     }
 
-    @Test
+    @Test(expectedExceptions = InvalidInputException.class)
     //查找不存在的工人
     public void findTest2() {
-        assertNull(workerService.findWorkerByName("不存在"));
+        workerService.findWorkerByName("不存在");
     }
 
     @Test(dependsOnMethods = "receiveTaskTest1")

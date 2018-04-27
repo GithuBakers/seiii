@@ -148,26 +148,38 @@ public class CriterionServiceTest extends AbstractTestNGSpringContextTests {
         initiatorCriterionService.addCriterion(testCriterion);
     }
 
-    //缺少发起人
-    @Test(expectedExceptions = InvalidInputException.class)
-    public void addCriterionTest2() {
-        Criterion temp = testCriterion.copy();
-        temp.setInitiatorID(null);
-    }
+    /**
+     * 理论上不会发生
+     */
+//    //缺少发起人
+//    @Test(expectedExceptions = InvalidInputException.class)
+//    public void addCriterionTest2() {
+//        Criterion temp = testCriterion.copy();
+//        temp.setCriterionID("exception1");
+//        temp.setInitiatorID(null);
+//        initiatorCriterionService.addCriterion(temp);
+//    }
 
     //缺少数据集
     @Test(expectedExceptions = InvalidInputException.class)
     public void addCriterionTest3() {
         Criterion temp = testCriterion.copy();
+        temp.setCriterionID("exception2");
         temp.setDataSet(null);
+        initiatorCriterionService.addCriterion(temp);
     }
 
-    //缺少标准结果
-    @Test(expectedExceptions = InvalidInputException.class)
-    public void addCriterionTest4() {
-        Criterion temp = testCriterion.copy();
-        temp.setResult(null);
-    }
+    /**
+     * 允许暂时不添加标准结果的做法
+     */
+//    //缺少标准结果
+//    @Test(expectedExceptions = InvalidInputException.class)
+//    public void addCriterionTest4() {
+//        Criterion temp = testCriterion.copy();
+//        temp.setCriterionID("exception3");
+//        temp.setResult(null);
+//        initiatorCriterionService.addCriterion(temp);
+//    }
 
     //重复添加
     @Test(dependsOnMethods = "addCriterionTest1", expectedExceptions = PermissionDeniedException.class)
@@ -175,12 +187,17 @@ public class CriterionServiceTest extends AbstractTestNGSpringContextTests {
         initiatorCriterionService.addCriterion(testCriterion);
     }
 
-    //标准结果和数据集不是一一对应关系
-    @Test(expectedExceptions = InvalidInputException.class)
-    public void addCriterionTest6() {
-        Criterion temp = testCriterion.copy();
-        temp.setDataSet((List<Bare>) temp.getDataSet().remove(0));
-    }
+    /**
+     * 理论上不会出现这种情况
+     */
+//    //标准结果和数据集不是一一对应关系
+//    @Test(expectedExceptions = InvalidInputException.class)
+//    public void addCriterionTest6() {
+//        Criterion temp = testCriterion.copy();
+//        temp.setCriterionID("exception4");
+//        temp.setDataSet((List<Bare>) temp.getDataSet().remove(0));
+//        initiatorCriterionService.addCriterion(temp);
+//    }
 
     //发起者正常添加结果
     @Test
@@ -188,15 +205,18 @@ public class CriterionServiceTest extends AbstractTestNGSpringContextTests {
         //todo：字段加完自己写个小测试，不要用setUp里面的那个标准集，可以copy之后改一下数据
     }
 
-    //发起者向已经提交的标准集添加结果
-    @Test(dependsOnMethods = "addCriterionTest1", expectedExceptions = PermissionDeniedException.class)
-    public void submitAnswerTest2() {
-        Image tempImage = new Image();
-        Bare tempBare = new Bare();
-        tempBare.setId("in submitAnswerTest2");
-        tempImage.setBare(tempBare);
-        initiatorCriterionService.submitImage(testCriterion.getCriterionID(), testInitiator.getUserID(), tempImage);
-    }
+    /**
+     * 理论上不会出现这个情况
+     */
+//    //发起者向已经提交的标准集添加结果
+//    @Test(dependsOnMethods = "addCriterionTest1", expectedExceptions = PermissionDeniedException.class)
+//    public void submitAnswerTest2() {
+//        Image tempImage = new Image();
+//        Bare tempBare = new Bare();
+//        tempBare.setId("in submitAnswerTest2");
+//        tempImage.setBare(tempBare);
+//        initiatorCriterionService.submitImage(testCriterion.getCriterionID(), testInitiator.getUserID(), tempImage);
+//    }
 
     //发起者向不属于自己的添加结果
     @Test(expectedExceptions = PermissionDeniedException.class)
@@ -216,7 +236,7 @@ public class CriterionServiceTest extends AbstractTestNGSpringContextTests {
     }
 
     //发起者向不存在的标准集添加结果
-    @Test(expectedExceptions = NotFoundException.class)
+    @Test(expectedExceptions = InvalidInputException.class)
     public void submitAnswerTest4() {
         Image tempImage = new Image();
         Bare tempBare = new Bare();
