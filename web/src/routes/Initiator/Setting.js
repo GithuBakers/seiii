@@ -20,8 +20,9 @@ import styles from './style.less';
 import { routerRedux } from 'dva/router';
 import { randomString } from '../../utils/random';
 import Password from '../../components/PasswordSetting/Password';
+import moment from 'moment'
 
-
+const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -76,6 +77,7 @@ export default class Setting extends PureComponent {
       if (!err) {
         const result = values;
         result.avatar = this.avatarUrl;
+        result.birthday = values['birthday'].format('YYYY-MM-DD');
         await this.props.dispatch({
           type: 'user/updateInitiatorProfile',
           payload: result,
@@ -90,13 +92,13 @@ export default class Setting extends PureComponent {
     const { submitting } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
 
-    const { nick_name, avatar } = this.props.user.currentUser;
+    const { nick_name, avatar,birthday,sex } = this.props.user.currentUser;
     this.avatarUrl = avatar;
     const normalSetting = (
       <div>
         <Form onSubmit={this.onNormalSubmit} hideRequiredMark style={{ marginTop: 8 }}>
 
-          <FormItem  {...formItemLayout} label="新昵称">
+          <FormItem  {...formItemLayout} label="昵称">
             {getFieldDecorator('nick_name', {
               rules: [
                 {
@@ -107,8 +109,30 @@ export default class Setting extends PureComponent {
               initialValue: nick_name,
             })(<Input size="large" onKeyUp={e => console.log(e)} placeholder="昵称"/>)}
           </FormItem>
-          <FormItem  {...formItemLayout} label="新头像">
+          <FormItem  {...formItemLayout} label="头像">
             {getFieldDecorator('avatar')(<AvatarUpload defaultUrl={avatar} setAvatar={url => this.avatarUrl = url}/>)}
+          </FormItem>
+          <FormItem  {...formItemLayout} label="性别">
+            {getFieldDecorator('sex', {
+              initialValue: sex,
+            })(
+              <RadioGroup>
+                <Radio value="MALE">男性</Radio>
+                <Radio value="FEMALE">女性</Radio>
+                <Radio value="NA">不愿透露</Radio>
+              </RadioGroup>
+            )}
+          </FormItem>
+          <FormItem  {...formItemLayout} label="生日">
+            {getFieldDecorator('birthday', {
+              rules: [{
+                type: 'object',
+                required: true,
+                message: '抱歉，您的生日对我们很重要' }],
+              initialValue: moment(birthday),
+            })(
+              <DatePicker size="large"  style={{width:'100%'}} placeholder='请输入生日' />
+            )}
           </FormItem>
           <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
             <Button

@@ -9,19 +9,22 @@ import { getRoutes } from '../utils/utils';
 
 const links = [
   {
-    key: 'help',
-    title: '帮助',
-    href: '',
+    key: '首页',
+    title: '首页',
+    href: 'https://tagmaker.netlify.com/',
+    blankTarget: true,
   },
   {
-    key: 'privacy',
-    title: '隐私',
-    href: '',
+    key: 'gitlab',
+    title: <Icon type="gitlab" />,
+    href: 'http://114.215.188.21/groups/161250151_TagMakers',
+    blankTarget: true,
   },
   {
-    key: 'terms',
-    title: '条款',
-    href: '',
+    key: '文档',
+    title: '文档',
+    href: 'https://tagmaker.netlify.com/docs',
+    blankTarget: true,
   },
 ];
 

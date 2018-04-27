@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { routerRedux, Link } from 'dva/router';
-import { Radio, Form, Input, Button, Select, Row, Col, Popover, Progress,notification } from 'antd';
+import { Radio, Form, Input, Button, Select, Row, Col, Popover, Progress,notification,DatePicker } from 'antd';
 import styles from './Register.less';
 import AvatarUpload from '../../components/AvatarUpload';
 
@@ -53,7 +53,7 @@ export default class Register extends Component {
           status: undefined,
         },
       });
-    } else {
+    } else if (nextProps.register.status === 'error') {
       notification.warning({
         message: '用户名已被注册',
         description: '请再尝试使用一个新的用户名进行注册.',
@@ -85,6 +85,7 @@ export default class Register extends Component {
           type: 'register/submit',
           payload: {
             ...values,
+            birthday:values['birthday'].format('YYYY-MM-DD'),
             avatar: this.state.avatarUrl,
           },
         });
@@ -222,6 +223,22 @@ export default class Register extends Component {
                 },
               ],
             })(<Input size="large" type="password" placeholder="确认密码" />)}
+          </FormItem>
+          <FormItem>
+            {getFieldDecorator('sex', {
+              initialValue: 'NA',
+            })(
+              <RadioGroup>
+                <Radio value="MALE">男性</Radio>
+                <Radio value="FEMALE">女性</Radio>
+                <Radio value="NA">不愿透露</Radio>
+              </RadioGroup>
+            )}
+          </FormItem>
+          <FormItem>
+            {getFieldDecorator('birthday', {rules: [{ type: 'object', required: true, message: '抱歉，您的生日对我们很重要' }]})(
+              <DatePicker size="large"  style={{width:'100%'}} placeholder='请输入生日' />
+            )}
           </FormItem>
           <FormItem>
             {getFieldDecorator('role', {

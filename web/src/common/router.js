@@ -98,6 +98,11 @@ export const getRouterData = app => {
     '/initiator/new-task': {
       component: dynamicWrapper(app, ['form'], () => import('../routes/Initiator/NewTask')),
     },
+    '/initiator/task-result': {
+      component: dynamicWrapper(app, [], () => import('../routes/Initiator/TaskResult')),
+      name: '任务统计数据',
+      authority: 'INITIATOR',
+    },
     '/initiator/setting': {
       component: dynamicWrapper(app, ['user'], () => import('../routes/Initiator/Setting')),
     },

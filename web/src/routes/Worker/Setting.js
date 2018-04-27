@@ -20,8 +20,10 @@ import styles from './style.less';
 import { routerRedux } from 'dva/router';
 import { randomString } from '../../utils/random';
 import Password from '../../components/PasswordSetting/Password';
+import moment from 'moment/moment';
 
 
+const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -76,6 +78,7 @@ export default class Setting extends PureComponent {
       if (!err) {
         const result = values;
         result.avatar = this.avatarUrl;
+        result.birthday = values['birthday'].format('YYYY-MM-DD');
         await this.props.dispatch({
           type: 'user/updateWorkerProfile',
           payload: result,
@@ -90,7 +93,7 @@ export default class Setting extends PureComponent {
     const { submitting } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
 
-    const { nick_name, avatar } = this.props.user.currentUser;
+    const { nick_name, avatar,birthday,sex } = this.props.user.currentUser;
     this.avatarUrl = avatar;
     const normalSetting = (
       <div>
@@ -109,6 +112,28 @@ export default class Setting extends PureComponent {
           </FormItem>
           <FormItem  {...formItemLayout} label="新头像">
             {getFieldDecorator('avatar')(<AvatarUpload defaultUrl={avatar} setAvatar={url => this.avatarUrl = url}/>)}
+          </FormItem>
+          <FormItem  {...formItemLayout} label="性别">
+            {getFieldDecorator('sex', {
+              initialValue: sex,
+            })(
+              <RadioGroup>
+                <Radio value="MALE">男性</Radio>
+                <Radio value="FEMALE">女性</Radio>
+                <Radio value="NA">不愿透露</Radio>
+              </RadioGroup>
+            )}
+          </FormItem>
+          <FormItem  {...formItemLayout} label="生日">
+            {getFieldDecorator('birthday', {
+              rules: [{
+                type: 'object',
+                required: true,
+                message: '抱歉，您的生日对我们很重要' }],
+              initialValue: moment(birthday),
+            })(
+              <DatePicker size="large"  style={{width:'100%'}} placeholder='请输入生日' />
+            )}
           </FormItem>
           <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
             <Button
