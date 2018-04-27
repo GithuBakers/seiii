@@ -127,23 +127,35 @@ export default class MyTask extends PureComponent {
         type: 'initiatorTask/fetchAllList',
       });
     };
-
+    // selectedTask.finished=true;
+    // selectedTask.has_result=false;
     const DetailModal = props => (
       <Modal
         width={600}
         visible={this.state.modalVisible}
         destroyOnClose="true"
         onCancel={() => this.setState({ modalVisible: false })}
-        footer={null}
+        footer={
+          selectedTask.finished?
+            selectedTask.has_result?
+              <Button type="primary" onClick={()=>this.props.dispatch(routerRedux.push({
+                pathname: `/initiator/task-result`,
+                state: {
+                  task_id:selectedTask.task_id,
+                },
+              }))} > 查看任务统计数据 </Button>
+              :<Button loading>正在努力计算统计数据！</Button>
+          :null}
       >
         <div style={{ margin: '-24px' }}>
           <img style={{ width: '100%', margin: '0 auto' }} src={selectedTask.cover} />
-          <div style={{ maxWidth: '500px', margin: '40px auto 50px', paddingBottom: '40px' }}>
+          <div style={{ maxWidth: '500px', margin: '40px auto 30px', paddingBottom: '30px' }}>
             <h1 style={{ textAlign: 'center' }}>{selectedTask.task_name}</h1>
             <p style={{ textAlign: 'center' }}>by {selectedTask.initiator_name}</p>
             <ListInfo title="任务详细要求" value={selectedTask.requirement} />
             <ListInfo title="任务类型" value={selectedTask.type} />
             <ListInfo title="目标标注人数" value={selectedTask.aim} />
+            <ListInfo title="奖励值" value={selectedTask.reward} />
             <ListInfo title="总奖励" value={selectedTask.total_reward} />
             <ListInfo
               title="达标比例"
@@ -156,14 +168,14 @@ export default class MyTask extends PureComponent {
                 />
               }
             />
-            <ListInfo
+            {selectedTask.has_result?<ListInfo
               title="结果下载链接"
               value={
                 <a download={selectedTask.result} href={selectedTask.result}>
                   点击下载
                 </a>
               }
-            />
+            />:[]}
             <ListInfo
               title="是否结束"
               value={
@@ -174,6 +186,7 @@ export default class MyTask extends PureComponent {
                 )
               }
             />
+            <ListInfo title="关键词" value={selectedTask.keywords?selectedTask.keywords.map(e => <Tag>{e}</Tag>):<div>无关键词</div>} />
             <ListInfo
               title="依赖的标准集"
             />
