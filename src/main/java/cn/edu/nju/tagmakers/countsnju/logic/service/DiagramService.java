@@ -6,6 +6,7 @@ import cn.edu.nju.tagmakers.countsnju.entity.pic.Tag;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.diagram.TimeAndValue;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.diagram.WorkerRecentTaskVO;
+import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
 import cn.edu.nju.tagmakers.countsnju.filter.TagFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,6 +36,9 @@ public class DiagramService {
     }
 
     public List<WorkerRecentTaskVO> getWorkerRecentActivity(Worker worker) {
+        if (worker == null) {
+            throw new InvalidInputException("在 图表生成逻辑模块 出现 工人为null");
+        }
         TagFilter tagFilter = new TagFilter();
         tagFilter.setWorkerID(worker.getPrimeKey());
         List<Tag> tags = tagService.findTag(tagFilter);
