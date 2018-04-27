@@ -38,9 +38,9 @@ export default class LoginPage extends Component {
           <div>
             {login.status === 'error' &&
               !login.submitting &&
-              this.renderMessage('账户或密码错误（admin/888888）')}
-            <UserName name="user_name" placeholder="admin/initiator/worker" />
-            <Password name="password" placeholder="888888/1/1" />
+              this.renderMessage('账户或密码错误')}
+            <UserName name="user_name" placeholder="username" />
+            <Password name="password" placeholder="password" />
             <Submit style={{marginTop:'0'}} loading={submitting}>登录</Submit>
           </div>
 

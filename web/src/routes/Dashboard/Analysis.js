@@ -28,6 +28,7 @@ import styles from './Analysis.less';
 import Ellipsis from 'components/Ellipsis';
 import { Chart, Geom, Axis, Tooltip, Coord, Label, Legend, View, Guide, Shape, G2 } from 'bizcharts';
 import { DataSet } from '@antv/data-set';
+
 const { TabPane } = Tabs;
 
 const rankingListData = [];
@@ -125,61 +126,105 @@ export default class Analysis extends Component {
 
     return (
       <Fragment>
-        {currentUser.capability ? <Card
-          loading={loading}
-          className={styles.offlineCard}
-          bordered={false}
-          style={{ marginBottom: '24px' }}
+        <h1
+          style={{
+            fontWeight: 'normal',
+            fontSize: '100px',
+            fontFamily: 'Lobster, cursive',
+            lineHeight: '100px',
+            color: '#d9d9d9',
+            textAlign: 'center',
+            margin: 0,
+          }}
         >
-          <h3 style={{marginLeft:'30px'}}>用户可信程度</h3>
-          <Chart height={400} data={capability} padding={[20, 20, 95, 20]} scale={cols} forceFit>
-            <Coord type="polar" radius={0.8}/>
-            <Axis name="item" line={null} tickLine={null} grid={{
-              lineStyle: {
-                lineDash: null,
-              },
-              hideFirstLine: false,
-            }}/>
-            <Tooltip/>
-            <Axis name="score" line={null} tickLine={null} grid={{
-              type: 'polygon',
-              lineStyle: {
-                lineDash: null,
-              },
-              alternateColor: 'rgba(0, 0, 0, 0.04)',
-            }}/>
-            <Legend name="user" marker="circle" offset={30}/>
-            <Geom type='area' position="item*score" color="user"/>
-            <Geom type='line' position="item*score" color="user" size={2}/>
-            <Geom type='point' position="item*score" color="user" shape="circle" size={4} style={{
-              stroke: '#fff',
-              lineWidth: 1,
-              fillOpacity: 1,
-            }}/>
-          </Chart>
-        </Card> : []}
-        {currentUser.tags?<Card
-          loading={loading}
-          className={styles.offlineCard}
-          bordered={false}
-          style={{ marginBottom: '24px' }}
-        >
-          <Pie
-            hasLegend
-            title="销售额"
-            subTitle="销售额"
-            total={() => (
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: yuan(tagsData.reduce((pre, now) => now.y + pre, 0))
+          Welcome
+        </h1>
+        <div style={{ width: '100%' }}>
+          <div style={{ width: '160px', margin: '0px auto 24px', backgroundColor: '#d9d9d9', height: '3px' }} />
+        </div>
+        <Row gutter={24}>
+          <Col lg={12}>
+            {currentUser.capability ? (
+              <Card
+                loading={loading}
+                className={styles.offlineCard}
+                bordered={false}
+                style={{ marginBottom: '24px', height:'500px' }}
+                title={loading?null:"用户信任值"}
+              >
+                <Chart height={400} data={capability} padding={[20, 20, 40, 20]} scale={cols} forceFit>
+                  <Coord type="polar" radius={0.8} />
+                  <Axis
+                    name="item"
+                    line={null}
+                    tickLine={null}
+                    grid={{
+                  lineStyle: {
+                    lineDash: null,
+                  },
+                  hideFirstLine: false,
                 }}
-              />
-            )}
-            data={tagsData}
-            valueFormat={val => <span dangerouslySetInnerHTML={{ __html: yuan(val) }} />}
-            height={294}
-          />,
-        </Card>:[]}
+                  />
+                  <Tooltip />
+                  <Axis
+                    name="score"
+                    line={null}
+                    tickLine={null}
+                    grid={{
+                  type: 'polygon',
+                  lineStyle: {
+                    lineDash: null,
+                  },
+                  alternateColor: 'rgba(0, 0, 0, 0.04)',
+                }}
+                  />
+                  <Legend name="user" marker="circle" offset={30} />
+                  <Geom type='area' position="item*score" color="user" />
+                  <Geom type='line' position="item*score" color="user" size={2} />
+                  <Geom
+                    type='point'
+                    position="item*score"
+                    color="user"
+                    shape="circle"
+                    size={4}
+                    style={{
+                  stroke: '#fff',
+                  lineWidth: 1,
+                  fillOpacity: 1,
+                }}
+                  />
+                </Chart>
+              </Card>) : []}
+          </Col>
+          <Col lg={12}>
+            {currentUser.tags?(
+              <Card
+                loading={loading}
+                className={styles.offlineCard}
+                bordered={false}
+                title={loading?null:"完成各类任务比例"}
+                style={{ marginBottom: '24px',height:'500px'  }}
+              >
+                <Pie
+                  hasLegend
+                  title="任务数"
+                  subTitle="任务数"
+                  total={() => (
+                    <span
+                      dangerouslySetInnerHTML={{
+                      __html: `${tagsData.reduce((pre, now) => now.y + pre, 0)}个`,
+                    }}
+                    />
+                )}
+                  data={tagsData}
+                  valueFormat={val => <span dangerouslySetInnerHTML={{ __html: `${val}个` }} />}
+                  height={350}
+                />,
+              </Card>
+):[]}
+          </Col>
+        </Row>
+
         <Card
           loading={loading}
           className={styles.offlineCard}
@@ -200,13 +245,28 @@ export default class Analysis extends Component {
               </TabPane>
             ))}
           </Tabs>
-          {currentUser.recent ? <div style={{ padding: '0 24px' }}>
-            <TimelineChart
-              height={500}
-              data={currentUser.recent}
-              titleMap={{ y1: '时间段内新增完成度', y2: '支付笔数' }}
-            />
-          </div> : []}
+          {currentUser.recent ? (
+            <div style={{ padding: '0 24px' }}>
+              <TimelineChart
+                height={500}
+                data={currentUser.recent}
+                titleMap={{ y1: '时间段内新增完成度', y2: '支付笔数' }}
+              />
+            </div>
+            ) :[]}
+          {currentAuthority==='ADMIN'?<h1
+            style={{
+              fontWeight: 'normal',
+              fontSize: '50px',
+              fontFamily: 'Lobster, cursive',
+              lineHeight: '100px',
+              color: '#d9d9d9',
+              textAlign: 'center',
+              margin: 0,
+            }}
+          >
+            Coming Soon
+          </h1>:[] }
         </Card>
       </Fragment>
     );
