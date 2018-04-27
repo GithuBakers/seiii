@@ -3,17 +3,18 @@ package cn.edu.nju.tagmakers.countsnju.logic.service;
 import cn.edu.nju.tagmakers.countsnju.algorithm.ResultJudger;
 import cn.edu.nju.tagmakers.countsnju.data.controller.CriterionController;
 import cn.edu.nju.tagmakers.countsnju.data.controller.WorkerAndCriterionController;
+import cn.edu.nju.tagmakers.countsnju.data.controller.WorkerController;
 import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Criterion;
 import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Result;
 import cn.edu.nju.tagmakers.countsnju.entity.Criterion.WorkerAndCriterion;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.*;
+import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.CriterionImageAnswerVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerCriterionVO;
 import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
+import cn.edu.nju.tagmakers.countsnju.filter.CriterionFilter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import util.SecurityUtility;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,6 +32,11 @@ import java.util.stream.Collectors;
  * Update:
  * @author wym
  * Last modified on
+ * <p>
+ * Update:
+ * 工人获取标准集的时候 应该只获取发起者做完的部分
+ * @author xxz
+ * Created on 04/27/2018
  */
 @Component
 public class WorkerCriterionService {
@@ -40,20 +46,28 @@ public class WorkerCriterionService {
 
     private CriterionController criterionController;
 
+    private WorkerController workerController;
+
     @Autowired
-    public WorkerCriterionService(CriterionService criterionService, WorkerAndCriterionController workerAndCriterionController, CriterionController criterionController) {
+    public WorkerCriterionService(CriterionService criterionService, WorkerAndCriterionController workerAndCriterionController,
+                                  CriterionController criterionController, WorkerController workerController) {
         this.criterionService = criterionService;
         this.workerAndCriterionController = workerAndCriterionController;
         this.criterionController = criterionController;
+        this.workerController = workerController;
     }
 
     /**
      * 工人查看所有的标准集
+     * <p>
+     * 这些标准集只包括发起者提供完整答案的部分
      *
      * @return 所有的标准集
      */
     public List<WorkerCriterionVO> getAllCriterion(String workerID) {
-        List<Criterion> criterionList = criterionService.find(null);
+        CriterionFilter filter = new CriterionFilter();
+        filter.setFinished(true);
+        List<Criterion> criterionList = criterionService.find(filter);
         List<WorkerCriterionVO> ret = new ArrayList<>();
         for (Criterion temp : criterionList) {
             String criterionID = temp.getCriterionID();
@@ -94,14 +108,22 @@ public class WorkerCriterionService {
     private List<Bare> countRemain(WorkerAndCriterion workerAndCriterion) {
         List<Result> resultList = workerAndCriterion.getResults();
         List<Bare> latestBares = workerAndCriterion.getLatestBares();
+        List<Bare> remainBares = new ArrayList<>(latestBares);
+
+        //在迭代的时候删除会出现问题，因此先记录要删除的内容
+        List<Bare> toDelete = new ArrayList<>();
         for (Bare bare : latestBares) {
             for (Result result : resultList) {
                 if (result.getBare().equals(bare)) {
-                    if (result.isHasTested()) latestBares.remove(bare);
+                    //这里判断的是当前若干张图片里面的这张图片有没有被标注过
+                    if (result.isFinishedInCurrentTest()) toDelete.add(bare);
                 }
             }
         }
-        return latestBares;
+        for (Bare delete : toDelete) {
+            remainBares.remove(delete);
+        }
+        return remainBares;
     }
 
     /**
@@ -154,12 +176,13 @@ public class WorkerCriterionService {
                 }
             }
         }
+        //返回新的要标注的图片需要触发一系列的更改
         trig(workerAndCriterion, ret);
         return ret;
     }
 
     /**
-     * 由于返回了固定数量的要标注的图片
+     * 由于返回了固定数量的要标注的图片必须把返回的图片都标记成没有被标注过
      * 更新用户的最新做的固定张数图片
      * 更新用户的上一次的正确率
      */
@@ -167,24 +190,28 @@ public class WorkerCriterionService {
         List<Result> resultList = workerAndCriterion.getResults();
         List<Bare> latestBares = workerAndCriterion.getLatestBares();
         List<Double> accuracy = workerAndCriterion.getAccuracy();
-        //更新正确率
+        //更新正确率并把是否在当前测试中完成的字段设置为false以便下一次的重复调用
         if (latestBares.size() > 0) {
             int totalPassed = 0;
             for (Bare bare : latestBares) {
                 for (Result result : resultList) {
                     if (result.getBare().equals(bare)) {
                         totalPassed += result.isCorrect() ? 1 : 0;
+                        //修改是否在当前若干张测试中完成的状态
+                        result.setFinishedInCurrentTest(false);
+                        break;
                     }
-                    break;
                 }
             }
             accuracy.add((double) totalPassed / latestBares.size());
         }
-        //更新最后在做的固定张数的图片
+        //清除之前的图片，更新最后在做的固定张数的图片
+        latestBares = new ArrayList<>();
         latestBares.addAll(bareList);
         //设置回去
         workerAndCriterion.setLatestBares(latestBares);
         workerAndCriterion.setAccuracy(accuracy);
+        workerAndCriterionController.update(workerAndCriterion);
     }
 
     /**
@@ -221,9 +248,13 @@ public class WorkerCriterionService {
         List<Result> resultList = workerAndCriterion.getResults();
         for (Result result : resultList) {
             if (result.getBare().getId().equals(bareID)) {
+                //这个值只设置一次别的地方不会再改成false
                 result.setHasTested(true);
                 result.setCorrect(isCorrect);
                 result.setSubmitTime(Calendar.getInstance());
+                //这个值是用于判断在当前若干张里面是否完成，可能被设置成false和true
+                result.setFinishedInCurrentTest(true);
+                break;
             }
         }
         //更新
@@ -234,11 +265,23 @@ public class WorkerCriterionService {
         int aim = workerAndCriterion.getAim();
         boolean pass = judgePass(resultList, aim);
         if (pass) {
+            //标准集中加入通过标准的工人
             Criterion target = criterionController.findByID(criterionID);
             Set<String> workerPassed = target.getWorkerPassed();
             workerPassed.add(workerID);
             target.setWorkerPassed(workerPassed);
             criterionController.update(target);
+
+            //关系类中设置pass
+            workerAndCriterion.setPassed(true);
+            workerAndCriterionController.update(workerAndCriterion);
+
+            //工人自身字段里面添加通过的标准集
+            Worker temp = workerController.findByID(workerID);
+            List<Criterion> passedCriterion = temp.getDependencies();
+            passedCriterion.add(target);
+            temp.setDependencies(passedCriterion);
+            workerController.update(temp);
         }
 
         //无论正确与否都返回正确答案
@@ -304,8 +347,8 @@ public class WorkerCriterionService {
                 totalCorrect++;
             }
         }
-        if (totalCorrect > aim) {
-
+        if (totalCorrect >= aim) {
+            return true;
         }
         return false;
     }

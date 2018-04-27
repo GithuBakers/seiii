@@ -6,6 +6,7 @@ import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Image;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Tag;
 import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
+import cn.edu.nju.tagmakers.countsnju.exception.NotFoundException;
 import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.filter.CriterionFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +74,7 @@ public class InitiatorCriterionService {
         } else {
             Criterion criterion = criterionController.findByID(criterionID);
             if (criterion == null) {
-                throw new InvalidInputException("没有此标准集");
+                throw new NotFoundException("没有此标准集");
             }
             if (criterion.getInitiatorID() == null || !criterion.getInitiatorID().equals(initiatorID)) {
                 throw new PermissionDeniedException("这不是你发起的标准集");
@@ -93,7 +94,7 @@ public class InitiatorCriterionService {
         } else {
             Criterion criterion = criterionController.findByID(criterionID);
             if (criterion == null) {
-                throw new InvalidInputException("没有此标准集");
+                throw new NotFoundException("没有此标准集");
             }
 
             if (!criterion.getInitiatorID().equals(initiatorID)) {
@@ -107,6 +108,10 @@ public class InitiatorCriterionService {
 
                 answer.put(image.getBare().getId(), image.getTags());
                 criterion.setResult(answer);
+                if (answer.size() == criterion.getDataSet().size()) {
+                    //如果发起者已经完成了标准集中的所有图片
+                    criterion.setHasFinished(true);
+                }
                 criterionController.update(criterion);
             }
         }

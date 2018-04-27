@@ -12,6 +12,14 @@ import java.util.List;
 
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 
+
+/**
+ * Update:
+ * 增加了 添加标准集 的方法
+ *
+ * @author xxz
+ * Created on 04/27/2018
+ */
 @Component
 @Scope(
         value = SCOPE_PROTOTYPE,
@@ -33,6 +41,11 @@ public class CriterionService {
         return criterionController.findByID(criterionID);
     }
 
+    public boolean addCriterion(Criterion criterion) {
+        criterionController.add(criterion);
+        return true;
+    }
+
     /**
      * 用于判断某工人是否通过了某个标准集
      *
@@ -51,3 +64,5 @@ public class CriterionService {
     }
 
 }
+
+

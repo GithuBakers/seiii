@@ -9,6 +9,11 @@ public class Result {
     Calendar submitTime;
     boolean correct;
     boolean hasTested;
+    /**
+     * 增加一个在当前的要标注的若干张图片里面是否被标注过，和整个是否被标注过区分开
+     * 这个字段只用于判断当前若干张是否完成了标注，然后判断是否需要获取新的图片
+     */
+    boolean finishedInCurrentTest;
 
     Result(Bare bare) {
         this.bare = bare;
@@ -44,5 +49,13 @@ public class Result {
 
     public void setHasTested(boolean hasTested) {
         this.hasTested = hasTested;
+    }
+
+    public boolean isFinishedInCurrentTest() {
+        return finishedInCurrentTest;
+    }
+
+    public void setFinishedInCurrentTest(boolean finishedInCurrentTest) {
+        this.finishedInCurrentTest = finishedInCurrentTest;
     }
 }

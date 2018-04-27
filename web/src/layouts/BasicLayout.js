@@ -243,21 +243,21 @@ class BasicLayout extends React.PureComponent {
             <GlobalFooter
               links={[
                 {
-                  key: 'Pro 首页',
-                  title: 'Pro 首页',
-                  href: 'http://pro.ant.design',
+                  key: '首页',
+                  title: '首页',
+                  href: 'https://tagmaker.netlify.com/',
                   blankTarget: true,
                 },
                 {
-                  key: 'github',
-                  title: <Icon type="github" />,
-                  href: 'https://github.com/ant-design/ant-design-pro',
+                  key: 'gitlab',
+                  title: <Icon type="gitlab" />,
+                  href: 'http://114.215.188.21/groups/161250151_TagMakers',
                   blankTarget: true,
                 },
                 {
-                  key: 'Ant Design',
-                  title: 'Ant Design',
-                  href: 'http://ant.design',
+                  key: '文档',
+                  title: '文档',
+                  href: 'https://tagmaker.netlify.com/docs',
                   blankTarget: true,
                 },
               ]}

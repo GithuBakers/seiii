@@ -215,7 +215,7 @@ export default class SiderMenu extends PureComponent {
         <div className={styles.logo} key="logo">
           <Link to="/">
             <img src={logo} alt="logo" />
-            <h1>Our Counts Pro</h1>
+            <h1 style={{fontWeight:'normal',fontSize:'25px',fontFamily: 'Lobster, cursive'}} >Our Counts</h1>
           </Link>
         </div>
         <Menu

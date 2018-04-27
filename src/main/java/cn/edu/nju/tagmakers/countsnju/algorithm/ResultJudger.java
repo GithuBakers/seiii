@@ -43,7 +43,7 @@ public class ResultJudger {
                     .toArray(algoRectsB);
 
             //每个矩形至少与其它一个矩形靠近
-            double min = 0;
+            double min = 9e9;
             for (int i = 0; i < a.size(); i++) {
                 for (int j = 0; j < b.size(); j++) {
                     double tmp = algoRectsA[i].distance(algoRectsB[j]);
@@ -54,7 +54,7 @@ public class ResultJudger {
                     return false;
                 } else {
                     //符合要求，算下一轮
-                    min = 0;
+                    min = 9e9;
                 }
             }
             return true;
@@ -62,6 +62,34 @@ public class ResultJudger {
     }
 
     public static boolean judgeEdge(List<Edge> a, List<Edge> b) {
-        throw new UnsupportedOperationException();
+        double JUDGE_CRITERION = 10;
+
+        if (a.size() != b.size()) {
+            return false;
+        } else {
+            double min = 9e9;
+            for (Edge edge : a) {
+                for (Edge another : b) {
+                    double tmp = calDistance(edge, another);
+                    min = min < tmp ? min : tmp;
+                }
+                if (min > JUDGE_CRITERION) {
+                    return false;
+                } else {
+                    min = 9e9;
+                }
+            }
+            return true;
+        }
+
+    }
+
+    private static double calDistance(Edge a, Edge b) {
+        int aSize = a.getPoints().size();
+        int bSize = b.getPoints().size();
+        int min = aSize > bSize ? bSize : aSize;
+        AvxVector vectorA = new AlgoEdge(a, min).getAvxVector();
+        AvxVector vectorB = new AlgoEdge(b, min).getAvxVector();
+        return vectorA.distance(vectorB);
     }
 }
