@@ -3,6 +3,7 @@ package cn.edu.nju.tagmakers.countsnju.entity.Criterion;
 
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +19,9 @@ import java.util.Optional;
  * @author wym
  * Last modified on
  */
-public class WorkerAndCriterion {
+public class WorkerAndCriterion implements Serializable {
+    private static final long serialVersionUID = 400L;
+
     private String workerID;
     private String criterionID;
     private boolean passed;

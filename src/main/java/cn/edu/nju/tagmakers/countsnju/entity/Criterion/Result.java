@@ -2,9 +2,12 @@ package cn.edu.nju.tagmakers.countsnju.entity.Criterion;
 
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
-public class Result {
+public class Result implements Serializable {
+    private static final long serialVersionUID = 400L;
+
     Bare bare;
     Calendar submitTime;
     boolean correct;

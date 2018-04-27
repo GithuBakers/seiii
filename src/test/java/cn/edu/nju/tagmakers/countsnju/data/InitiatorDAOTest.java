@@ -3,6 +3,7 @@ package cn.edu.nju.tagmakers.countsnju.data;
 import cn.edu.nju.tagmakers.countsnju.data.dao.InitiatorDAO;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Role;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Initiator;
+import cn.edu.nju.tagmakers.countsnju.entity.user.Sex;
 import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
 import cn.edu.nju.tagmakers.countsnju.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,8 @@ public class InitiatorDAOTest extends AbstractTestNGSpringContextTests {
         initiator1.setRole(Role.WORKER);
         initiator1.setPassword("123456");
         initiator1.setNickName("hello initiator");
+        initiator1.setBirthdayString("1998-02-24");
+        initiator1.setSex(Sex.FEMALE);
     }
 
     @AfterSuite

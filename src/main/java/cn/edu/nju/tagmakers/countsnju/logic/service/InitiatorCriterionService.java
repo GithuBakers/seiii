@@ -41,6 +41,13 @@ public class InitiatorCriterionService {
         if (criterion == null) {
             throw new InvalidInputException("在 增加标准集 时参数为空");
         }
+        if (criterion.getCriterionID() == null) {
+            throw new InvalidInputException("标准集ID为null");
+        }
+        if (criterion.getDataSet().size() == 0) {
+            throw new InvalidInputException("数据集为空");
+        }
+
         criterionController.add(criterion);
         return true;
     }
