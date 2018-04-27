@@ -42,7 +42,7 @@ describe('Initiator', () => {
     await timeout(5000);
     await page.click('body > div:nth-child(3) > div > div.ant-modal-wrap > div > div.ant-modal-content > div > div > div > button');
     await timeout(4000);
-    await page.click('body > div:nth-child(4) > div > div > div > div.ant-popover-inner > div > div > div.ant-popover-buttons > button.ant-btn.ant-btn-primary.ant-btn-sm\n');
+    await page.click('body > div:nth-child(4) > div > div > div > div.ant-popover-inner > div > div > div.ant-popover-buttons > button.ant-btn.ant-btn-primary.ant-btn-sm');
     await timeout(3000);
     console.log("wow");
     const finalText = await page.$eval('.MyTask__headerInfo___1E0bG', el => el.textContent);
