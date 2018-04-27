@@ -1,7 +1,10 @@
 package cn.edu.nju.tagmakers.countsnju.logic;
 
 import cn.edu.nju.tagmakers.countsnju.CountsnjuApplication;
+import cn.edu.nju.tagmakers.countsnju.data.controller.WorkerAndCriterionController;
 import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Criterion;
+import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Result;
+import cn.edu.nju.tagmakers.countsnju.entity.Criterion.WorkerAndCriterion;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.*;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Initiator;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Role;
@@ -14,6 +17,7 @@ import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.logic.service.CriterionService;
 import cn.edu.nju.tagmakers.countsnju.logic.service.InitiatorCriterionService;
 import cn.edu.nju.tagmakers.countsnju.logic.service.WorkerCriterionService;
+import cn.edu.nju.tagmakers.countsnju.logic.service.WorkerService;
 import cn.edu.nju.tagmakers.countsnju.security.SecurityUserController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -39,10 +43,16 @@ public class CriterionServiceTest extends AbstractTestNGSpringContextTests {
     SecurityUserController securityUserController;
 
     @Autowired
+    WorkerService workerService;
+
+    @Autowired
     WorkerCriterionService workerCriterionService;
 
     @Autowired
     CriterionService criterionService;
+
+    @Autowired
+    WorkerAndCriterionController workerAndCriterionController;
 
     private Criterion testCriterion;
     private Initiator testInitiator;
@@ -175,7 +185,7 @@ public class CriterionServiceTest extends AbstractTestNGSpringContextTests {
     //发起者正常添加结果
     @Test
     public void submitAnswerTest1() {
-
+        //todo：字段加完自己写个小测试，不要用setUp里面的那个标准集，可以copy之后改一下数据
     }
 
     //发起者向已经提交的标准集添加结果
@@ -270,27 +280,197 @@ public class CriterionServiceTest extends AbstractTestNGSpringContextTests {
     //工人添加9个正确标注后获得图片依旧是上次的图片
     @Test(dependsOnMethods = "addCriterionTest1")
     public void workerSubmitTest1() {
+        List<Bare> bareListBeforeSubmit = workerCriterionService.getCriterionBares(testCriterion.getCriterionID(), testWorker.getPrimeKey());
         for (int i = 0; i < 9; i++) {
+            Image res = new Image();
 
+            //原图
+            Bare tempBare = bareListBeforeSubmit.get(i).copy();
+
+            //标注
+            Tag tempTag = new Tag();
+            tempTag.setBareID(tempBare.getId());
+            tempTag.setWorkerID(testWorker.getPrimeKey());
+            tempTag.setComment(new Comment("keyword" + i));
+            tempTag.setMark(new Description());
+            tempTag.setNumberID("numberID" + i);
+            tempTag.setTagID("tagID" + i);
+            List<Tag> listTag = new ArrayList<>();
+            listTag.add(tempTag);
+
+            //结果
+            res.setBare(tempBare);
+            res.setType(MarkType.DESC);
+            res.setTags(listTag);
+            workerCriterionService.submitCriterionResult(testCriterion.getCriterionID(), res, testWorker.getPrimeKey());
         }
+
+        //验证是否取出来一张
+        assertEquals(1, workerCriterionService.getCriterionBares(testCriterion.getCriterionID(), testWorker.getPrimeKey()).size());
+
+        //验证是否更新标注信息和正误信息
+        WorkerAndCriterion res = workerAndCriterionController.findByID(testWorker.getPrimeKey(), testCriterion.getCriterionID());
+        assertFalse(res.isPassed());
+        assertEquals(0, res.getAccuracy().size());
+        List<Bare> latestBares = res.getLatestBares();
+        List<Result> resultList = res.getResults();
+        for (Bare temp : latestBares) {
+            for (Result result : resultList) {
+                if (temp.getId().equals(result.getBare().getId())) {
+                    //要么做过的是正确的，要么没做过的是错的
+                    assertTrue(
+                            (result.isHasTested() && result.isCorrect()) ||
+                                    (!result.isHasTested() && !result.isCorrect()));
+                }
+            }
+        }
+
+
     }
 
     //工人再添加1个正确的图片之后查出来新的没有被标注过的十张图片并且正确率会更新为1.0
     @Test(dependsOnMethods = "workerSubmitTest1")
     public void workerSubmitTest2() {
+        List<Bare> bareListBeforeSubmit = workerCriterionService.getCriterionBares(testCriterion.getCriterionID(), testWorker.getPrimeKey());
+        Image resImage = new Image();
+        int i = 0;
 
+        //原图
+        Bare tempBare = bareListBeforeSubmit.get(i).copy();
+
+        //标注
+        Tag tempTag = new Tag();
+        tempTag.setBareID(tempBare.getId());
+        tempTag.setWorkerID(testWorker.getPrimeKey());
+        tempTag.setComment(new Comment("keyword" + i));
+        tempTag.setMark(new Description());
+        tempTag.setNumberID("numberID" + i);
+        tempTag.setTagID("tagID" + i);
+        List<Tag> listTag = new ArrayList<>();
+        listTag.add(tempTag);
+
+        //结果
+        resImage.setBare(tempBare);
+        resImage.setType(MarkType.DESC);
+        resImage.setTags(listTag);
+        workerCriterionService.submitCriterionResult(testCriterion.getCriterionID(), resImage, testWorker.getPrimeKey());
+
+        //又取出来了十张
+        List<Bare> bareListAfterSubmit = workerCriterionService.getCriterionBares(testCriterion.getCriterionID(), testWorker.getPrimeKey());
+        assertEquals(bareListAfterSubmit.size(), 10);
+
+        WorkerAndCriterion res = workerAndCriterionController.findByID(testWorker.getPrimeKey(), testCriterion.getCriterionID());
+        //验证是否通过
+        assertFalse(res.isPassed());
+
+        //验证正确率
+        assertEquals(1.0, res.getAccuracy().get(0));
+        List<Bare> latestBares = res.getLatestBares();
+        List<Result> resultList = res.getResults();
+        for (Bare temp : latestBares) {
+            for (Result result : resultList) {
+                if (temp.getId().equals(result.getBare().getId())) {
+                    //要么做过的是正确的，要么没做过的是错的
+                    assertTrue(
+                            (result.isHasTested() && result.isCorrect()) ||
+                                    (!result.isHasTested() && !result.isCorrect()));
+                }
+            }
+        }
     }
 
-    //工人再做1个正确的图片之后通过测试，这个时候还是只有一个正确率
+    //工人再做1个正确的图片之后通过测试
     @Test(dependsOnMethods = "workerSubmitTest2")
     public void workerSubmitTest3() {
+        List<Bare> bareListBeforeSubmit = workerCriterionService.getCriterionBares(testCriterion.getCriterionID(), testWorker.getPrimeKey());
+        Image resImage = new Image();
 
+        //原图
+        Bare tempBare = bareListBeforeSubmit.get(0).copy();
+
+        //标注
+        Tag tempTag = new Tag();
+        tempTag.setBareID(tempBare.getId());
+        tempTag.setWorkerID(testWorker.getPrimeKey());
+        tempTag.setComment(new Comment("keyword" + 10));
+        tempTag.setMark(new Description());
+        tempTag.setNumberID("numberID" + 10);
+        tempTag.setTagID("tagID" + 10);
+        List<Tag> listTag = new ArrayList<>();
+        listTag.add(tempTag);
+
+        //结果
+        resImage.setBare(tempBare);
+        resImage.setType(MarkType.DESC);
+        resImage.setTags(listTag);
+        workerCriterionService.submitCriterionResult(testCriterion.getCriterionID(), resImage, testWorker.getPrimeKey());
+        //判断工人已经通过了这个标准集
+        Criterion targetCriterion = criterionService.findByID(testCriterion.getCriterionID());
+        assertTrue(targetCriterion.getWorkerPassed().contains(testWorker.getPrimeKey()));
+
+        assertTrue(workerService.findWorkerByName(testWorker.getPrimeKey()).getDependencies().size() > 0);
     }
 
     //工人再做9张错误的图片之后请求新的图片之后正确率更新并且返回这9张错误的图片和1张正确的图片
+    //todo:翔哲写代码！
     @Test(dependsOnMethods = "workerSubmitTest3")
     public void workerSubmitTest4() {
+        List<Bare> bareListBeforeSubmit = workerCriterionService.getCriterionBares(testCriterion.getCriterionID(), testWorker.getPrimeKey());
+        for (int i = 11; i < 20; i++) {
+            Image res = new Image();
 
+            //原图
+            Bare tempBare = bareListBeforeSubmit.get(i - 11).copy();
+
+            //标注(这边是错误的标注)
+            Tag tempTag = new Tag();
+            tempTag.setBareID(tempBare.getId());
+            tempTag.setWorkerID(testWorker.getPrimeKey());
+            tempTag.setComment(new Comment("keyword" + "wrong" + i));
+            tempTag.setMark(new Description());
+            tempTag.setNumberID("numberID" + "wrong" + i);
+            tempTag.setTagID("tagID" + "wrong" + i);
+            List<Tag> listTag = new ArrayList<>();
+            listTag.add(tempTag);
+
+            //结果
+            res.setBare(tempBare);
+            res.setType(MarkType.DESC);
+            res.setTags(listTag);
+            workerCriterionService.submitCriterionResult(testCriterion.getCriterionID(), res, testWorker.getPrimeKey());
+        }
+
+        //验证正确率
+        WorkerAndCriterion res = workerAndCriterionController.findByID(testWorker.getPrimeKey(), testCriterion.getCriterionID());
+        List<Bare> bareListAfterSubmit = workerCriterionService.getCriterionBares(testCriterion.getCriterionID(), testWorker.getPrimeKey());
+        assertEquals(1.0, res.getAccuracy().get(0));
+        assertEquals(0.1, res.getAccuracy().get(1));
+        List<Bare> latestBares = res.getLatestBares();
+        List<Result> resultList = res.getResults();
+        for (Bare temp : latestBares) {
+            for (Result result : resultList) {
+                if (temp.getId().equals(result.getBare().getId())) {
+                    //要么做过的是正确的，要么没做过的是错的
+                    assertTrue(
+                            (result.isHasTested() && result.isCorrect()) ||
+                                    (!result.isHasTested() && !result.isCorrect()));
+                }
+            }
+        }
+
+        int totalWrong = 0;
+        int totalCorrect = 0;
+        for (Bare bare : bareListAfterSubmit) {
+            for (Result result : resultList) {
+                if (bare.getId().equals(result.getBare().getId())) {
+                    if (result.isCorrect()) totalCorrect++;
+                    else totalWrong++;
+                    break;
+                }
+            }
+        }
+        assertEquals(totalCorrect, 1);
+        assertEquals(totalWrong, 9);
     }
 
 

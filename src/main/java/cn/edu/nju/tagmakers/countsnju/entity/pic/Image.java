@@ -35,6 +35,16 @@ public class Image extends Entity<Image> implements Serializable {
     @JsonIgnore
     private MarkType type;
 
+    public Image() {
+
+    }
+
+    public Image(Image toCopy) {
+        this.bare = toCopy.bare;
+        this.tags = toCopy.tags;
+        this.type = toCopy.type;
+    }
+
     public Bare getBare() {
         return bare;
     }
@@ -77,6 +87,6 @@ public class Image extends Entity<Image> implements Serializable {
      */
     @Override
     public Image copy() {
-        return null;
+        return new Image(this);
     }
 }

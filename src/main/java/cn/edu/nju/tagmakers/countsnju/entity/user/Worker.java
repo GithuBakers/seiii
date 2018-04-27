@@ -59,6 +59,8 @@ public class Worker extends User implements Serializable {
         }
         this.credit = toCopy.credit;
         this.rank = toCopy.rank;
+        this.dependencies = toCopy.dependencies;
+        this.receivedTime = toCopy.receivedTime;
     }
 
     /**
