@@ -33,8 +33,9 @@ export default class WorkerProfile extends PureComponent {
 
   render() {
 
-    const { user_name, role, avatar, nick_name } = this.props.user.currentUser;
+    const { user_name, role, avatar, nick_name,sex,birthday } = this.props.user.currentUser;
 
+    
     const avatarContainer = (
       <div style={{
         marginTop: '-60px',
@@ -78,6 +79,8 @@ export default class WorkerProfile extends PureComponent {
           <DescriptionList size="large" title="账户信息">
             <Description term="昵称">{nick_name}</Description>
             <Description term="用户名">{user_name}</Description>
+            <Description term="性别">{sex}</Description>
+            <Description term="生日">{birthday}</Description>
           </DescriptionList>
           <Divider style={{ marginBottom: 32 }}/>
           <DescriptionList size="large" title="身份信息">
