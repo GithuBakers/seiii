@@ -156,6 +156,11 @@ public class Tag extends Entity<Tag> implements Serializable {
         this.submitTime = submitTime;
     }
 
+    @Override
+    public String toString() {
+        return bareID + "," + comment + "," + mark.toString();
+    }
+
     /**
      * 获取实体对象的主键
      *

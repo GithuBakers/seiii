@@ -89,4 +89,8 @@ public class Rect extends Mark implements Serializable {
         type = MarkType.RECT;
     }
 
+    @Override
+    public String toString() {
+        return x + " " + y + " " + height + " " + fill;
+    }
 }

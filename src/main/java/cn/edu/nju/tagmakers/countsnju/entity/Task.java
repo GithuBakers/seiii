@@ -111,6 +111,12 @@ public class Task extends Entity<Task> implements Serializable {
     private List<Criterion> dependencies;
 
     /**
+     * 是否已经计算完成结果集
+     */
+    @JsonProperty("has_result")
+    private Boolean hasResult;
+
+    /**
      * user和已经标注的数量
      */
     @JsonIgnore
