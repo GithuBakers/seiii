@@ -111,10 +111,12 @@ public class AvxVector {
         for (int i = 0; i < size; i++) {
             power[i] = diff[i] * diff[i];
         }
+        int sum = 0;
 
-        int sum = Arrays.stream(power).parallel()
-                .reduce((integer, integer2) -> integer + integer2)
-                .orElse(0);
+        for (int i = 0; i < size; i++) {
+            sum += power[i];
+        }
+
 
         return Math.sqrt(sum);
     }

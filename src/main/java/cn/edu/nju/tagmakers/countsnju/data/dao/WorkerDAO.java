@@ -60,6 +60,7 @@ public class WorkerDAO extends DAO<Worker,WorkerFilter>{
         if (cur.getTaskIDs().size() > 0) ori.setTaskIDs(new ArrayList<>(cur.getTaskIDs()));
         if(cur.getCredit() > 0)ori.setCredit(cur.getCredit());
         if(cur.getRank() > 0)ori.setRank(cur.getRank());
+        if (cur.getDependencies().size() > 0) ori.setDependencies(cur.getDependencies());
         return ori;
     }
 }

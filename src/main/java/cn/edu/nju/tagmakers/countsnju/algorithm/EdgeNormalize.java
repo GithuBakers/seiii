@@ -18,15 +18,14 @@ import java.util.stream.Collectors;
  */
 public class EdgeNormalize {
     public static List<AlgoEdge> normalize(List<Edge> src) {
-        List<Edge> sorted = src.stream().sorted(Comparator.comparingInt(edge -> edge.getPoints().size()))
+        List<Edge> sorted = src.stream().sorted(Comparator.comparingInt(edge -> ((Edge) edge).getPoints().size()).reversed())
                 .collect(Collectors.toList());
 
         int most = (int) (sorted.size() * 0.8);
-        int dimension = sorted.get(most).getPoints().size();
-        return sorted.stream()
+        int dimension = sorted.get(most).getPoints().size() / 2;
+        return sorted.subList(0, most - 1).stream()
                 .map(edge -> new AlgoEdge(edge, dimension))
-                .collect(Collectors.toList())
-                .subList(0, most);
+                .collect(Collectors.toList());
 
     }
 }

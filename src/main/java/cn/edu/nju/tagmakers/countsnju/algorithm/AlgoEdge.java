@@ -34,6 +34,9 @@ public class AlgoEdge {
         List<Integer> rawData = new ArrayList<>(edge.getPoints());
         if (rawData.size() < dimension) {
             throw new UnsupportedOperationException("不可以给Edge升维");
+        } else if (rawData.size() == dimension) {
+            data = new Integer[rawData.size()];
+            rawData.toArray(data);
         } else {
             int toDelete = rawData.size() - dimension;
             //平均每多少个要删除一个，这里始终向上舍入(即 导致更少的点被删除)，最终可能导致结尾的点不按密度被删除
