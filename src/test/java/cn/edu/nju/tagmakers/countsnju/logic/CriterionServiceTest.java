@@ -5,26 +5,32 @@ import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Criterion;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.*;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Initiator;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Role;
+import cn.edu.nju.tagmakers.countsnju.entity.user.Sex;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
+import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerCriterionVO;
 import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
+import cn.edu.nju.tagmakers.countsnju.exception.NotFoundException;
+import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.logic.service.CriterionService;
 import cn.edu.nju.tagmakers.countsnju.logic.service.InitiatorCriterionService;
-import cn.edu.nju.tagmakers.countsnju.logic.service.InitiatorService;
-import cn.edu.nju.tagmakers.countsnju.logic.service.WorkerService;
+import cn.edu.nju.tagmakers.countsnju.logic.service.WorkerCriterionService;
 import cn.edu.nju.tagmakers.countsnju.security.SecurityUserController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
-import org.testng.annotations.BeforeSuite;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+import static org.testng.AssertJUnit.assertFalse;
 
 @ContextConfiguration(classes = CountsnjuApplication.class)
 @SpringBootTest
-public class CriterionServiceTest {
+public class CriterionServiceTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
     InitiatorCriterionService initiatorCriterionService;
@@ -33,16 +39,16 @@ public class CriterionServiceTest {
     SecurityUserController securityUserController;
 
     @Autowired
-    private WorkerService workerService;
+    WorkerCriterionService workerCriterionService;
 
     @Autowired
-    private CriterionService criterionService;
+    CriterionService criterionService;
 
     private Criterion testCriterion;
     private Initiator testInitiator;
     private Worker testWorker;
 
-    @BeforeSuite
+    @BeforeClass
     public void setUp() {
         //发起者
         testInitiator = new Initiator();
@@ -50,11 +56,14 @@ public class CriterionServiceTest {
         String initiatorAvatar = "no avatar";
         String password = "123456";
         String nickName = "hey";
+        String birthdayStr = "1998-01-20";
         testInitiator.setRole(Role.INITIATOR);
         testInitiator.setUserID(initiatorID);
         testInitiator.setAvatar(initiatorAvatar);
         testInitiator.setPassword(password);
         testInitiator.setNickName(nickName);
+        testInitiator.setSex(Sex.MALE);
+        testInitiator.setBirthdayString(birthdayStr);
 
         //工人
         testWorker = new Worker();
@@ -65,6 +74,8 @@ public class CriterionServiceTest {
         testWorker.setRole(Role.WORKER);
         testWorker.setUserID(workerID);
         testWorker.setNickName(nickName);
+        testWorker.setSex(Sex.MALE);
+        testWorker.setBirthdayString(birthdayStr);
 
         //创建发起者和工人
         securityUserController.signUp(testInitiator);
@@ -73,7 +84,7 @@ public class CriterionServiceTest {
         //标准集
         testCriterion = new Criterion();
         testCriterion.setCover("no cover");
-        testCriterion.setAim(10);
+        testCriterion.setAim(11);
         testCriterion.setCriterionID("testCriterion");
         testCriterion.setCriterionName("逻辑层测试用标准集");
         testCriterion.setRequirement("用来做测试");
@@ -121,27 +132,166 @@ public class CriterionServiceTest {
 
     }
 
+    //正常
     @Test
     public void addCriterionTest1() {
         initiatorCriterionService.addCriterion(testCriterion);
     }
 
+    //缺少发起人
     @Test(expectedExceptions = InvalidInputException.class)
     public void addCriterionTest2() {
         Criterion temp = testCriterion.copy();
         temp.setInitiatorID(null);
     }
 
+    //缺少数据集
     @Test(expectedExceptions = InvalidInputException.class)
     public void addCriterionTest3() {
         Criterion temp = testCriterion.copy();
         temp.setDataSet(null);
     }
 
+    //缺少标准结果
     @Test(expectedExceptions = InvalidInputException.class)
     public void addCriterionTest4() {
         Criterion temp = testCriterion.copy();
         temp.setResult(null);
     }
+
+    //重复添加
+    @Test(dependsOnMethods = "addCriterionTest1", expectedExceptions = PermissionDeniedException.class)
+    public void addCriterionTest5() {
+        initiatorCriterionService.addCriterion(testCriterion);
+    }
+
+    //标准结果和数据集不是一一对应关系
+    @Test(expectedExceptions = InvalidInputException.class)
+    public void addCriterionTest6() {
+        Criterion temp = testCriterion.copy();
+        temp.setDataSet((List<Bare>) temp.getDataSet().remove(0));
+    }
+
+    //发起者正常添加结果
+    @Test
+    public void submitAnswerTest1() {
+
+    }
+
+    //发起者向已经提交的标准集添加结果
+    @Test(dependsOnMethods = "addCriterionTest1", expectedExceptions = PermissionDeniedException.class)
+    public void submitAnswerTest2() {
+        Image tempImage = new Image();
+        Bare tempBare = new Bare();
+        tempBare.setId("in submitAnswerTest2");
+        tempImage.setBare(tempBare);
+        initiatorCriterionService.submitImage(testCriterion.getCriterionID(), testInitiator.getUserID(), tempImage);
+    }
+
+    //发起者向不属于自己的添加结果
+    @Test(expectedExceptions = PermissionDeniedException.class)
+    public void submitAnswerTest3() {
+        Criterion temp = testCriterion.copy();
+        String tempInitiatorID = "another Initiator";
+        String tempCriterionID = "another Criterion";
+        temp.setInitiatorID(tempInitiatorID);
+        temp.setCriterionID(tempCriterionID);
+        initiatorCriterionService.addCriterion(temp);
+
+        Image tempImage = new Image();
+        Bare tempBare = new Bare();
+        tempBare.setId("in submitAnswerTest3");
+        tempImage.setBare(tempBare);
+        initiatorCriterionService.submitImage(tempCriterionID, testInitiator.getUserID(), tempImage);
+    }
+
+    //发起者向不存在的标准集添加结果
+    @Test(expectedExceptions = NotFoundException.class)
+    public void submitAnswerTest4() {
+        Image tempImage = new Image();
+        Bare tempBare = new Bare();
+        tempBare.setId("in submitAnswerTest4");
+        tempImage.setBare(tempBare);
+        initiatorCriterionService.submitImage(null, testInitiator.getUserID(), tempImage);
+    }
+
+    //发起者查看自己发起的任务
+    @Test(dependsOnMethods = "addCriterionTest1")
+    public void getCriterionTest1() {
+        List<Criterion> res = initiatorCriterionService.getMyCriterion(testInitiator.getUserID());
+        assertEquals(res.size(), 1);
+        assertEquals(testCriterion.getCriterionID(), res.get(0).getCriterionID());
+    }
+
+    //发起者查看所有任务
+    @Test(dependsOnMethods = {"addCriterionTest1", "submitAnswerTest3"})
+    public void getCriterionTest2() {
+        List<Criterion> res = initiatorCriterionService.getAllCriterion();
+        assertEquals(res.size(), 2);
+    }
+
+    //发起者获取图片
+    @Test(dependsOnMethods = "addCriterionTest1")
+    public void getBareTest1() {
+        initiatorCriterionService.getCriterionBare(testCriterion.getCriterionID(), testInitiator.getUserID());
+    }
+
+    //将工人添加到通过标准集的集合中
+    @Test(dependsOnMethods = "addCriterionTest1")
+    public void workerPassTest1() {
+        //本来不在里面
+        assertFalse(criterionService.isPassed(testCriterion.getCriterionID(), testWorker.getPrimeKey()));
+        //加入
+        Set<String> workerPassed = testCriterion.getWorkerPassed();
+        workerPassed.add(testWorker.getPrimeKey());
+        testCriterion.setWorkerPassed(workerPassed);
+        criterionService.update(testCriterion);
+
+        assertTrue(criterionService.isPassed(testCriterion.getCriterionID(), testWorker.getPrimeKey()));
+
+
+        //数据层的逻辑是size>0之后做更改所以这里不测移除
+    }
+
+    //工人查看所有标准集
+    @Test(dependsOnMethods = {"addCriterionTest1", "submitAnswerTest3"})
+    public void getCriterionTest3() {
+        List<WorkerCriterionVO> res = workerCriterionService.getAllCriterion(testWorker.getPrimeKey());
+        assertEquals(res.size(), 2);
+    }
+
+    //工人获得某标准集的图片（10张）
+    @Test(dependsOnMethods = "addCriterionTest1")
+    public void getBareTest2() {
+        List<Bare> list = workerCriterionService.getCriterionBares(testCriterion.getCriterionID(), testWorker.getPrimeKey());
+        assertTrue(list.size() == 10);
+    }
+
+    //工人添加9个正确标注后获得图片依旧是上次的图片
+    @Test(dependsOnMethods = "addCriterionTest1")
+    public void workerSubmitTest1() {
+        for (int i = 0; i < 9; i++) {
+
+        }
+    }
+
+    //工人再添加1个正确的图片之后查出来新的没有被标注过的十张图片并且正确率会更新为1.0
+    @Test(dependsOnMethods = "workerSubmitTest1")
+    public void workerSubmitTest2() {
+
+    }
+
+    //工人再做1个正确的图片之后通过测试，这个时候还是只有一个正确率
+    @Test(dependsOnMethods = "workerSubmitTest2")
+    public void workerSubmitTest3() {
+
+    }
+
+    //工人再做9张错误的图片之后请求新的图片之后正确率更新并且返回这9张错误的图片和1张正确的图片
+    @Test(dependsOnMethods = "workerSubmitTest3")
+    public void workerSubmitTest4() {
+
+    }
+
 
 }

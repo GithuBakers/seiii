@@ -1,12 +1,13 @@
 package cn.edu.nju.tagmakers.countsnju.entity.pic;
 
 import cn.edu.nju.tagmakers.countsnju.entity.Mark;
-import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 
@@ -44,5 +45,13 @@ public class Edge extends Mark implements Serializable {
     public Edge() {
         type = MarkType.EDGE;
 
+    }
+
+    public List<Integer> getPoints() {
+        return Optional.ofNullable(points).orElse(new ArrayList<>());
+    }
+
+    public void setPoints(List<Integer> points) {
+        this.points = points;
     }
 }

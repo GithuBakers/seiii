@@ -6,7 +6,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Description:
@@ -42,7 +44,7 @@ public class Image extends Entity<Image> implements Serializable {
     }
 
     public List<Tag> getTags() {
-        return tags;
+        return Optional.ofNullable(tags).orElse(new ArrayList<>());
     }
 
     public void setTags(List<Tag> tags) {

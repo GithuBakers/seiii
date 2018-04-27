@@ -35,4 +35,11 @@ public class WorkerAndCriterionController {
     public void add(String workerID, Criterion criterion) {
         workerAndCriterionDAO.add(workerID, criterion);
     }
+
+    /**
+     * 更新
+     */
+    public void update(WorkerAndCriterion workerAndCriterion) {
+        workerAndCriterionDAO.update(workerAndCriterion);
+    }
 }

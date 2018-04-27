@@ -5,6 +5,7 @@ import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Description:
@@ -13,7 +14,7 @@ import java.util.List;
  * @author wym
  * Created on
  * <p>
- * Update:
+ * Update:增加字段aim
  * @author wym
  * Last modified on
  */
@@ -23,6 +24,7 @@ public class WorkerAndCriterion {
     private boolean passed;
     private List<Result> results;
     private List<Bare> latestBares;
+    private int aim;
     /**
      * 每提交10张的正确率
      */
@@ -32,11 +34,13 @@ public class WorkerAndCriterion {
         this.workerID = workerID;
         criterionID = criterion.getCriterionID();
         List<Bare> dataSet = criterion.getDataSet();
+        results = new ArrayList<>();
         for (Bare temp : dataSet) {
             results.add(new Result(temp));
         }
         accuracy = new ArrayList<>();
         latestBares = new ArrayList<>();
+        aim = criterion.getAim();
     }
 
     public boolean isPassed() {
@@ -64,7 +68,7 @@ public class WorkerAndCriterion {
     }
 
     public List<Result> getResults() {
-        return results;
+        return Optional.ofNullable(results).orElse(new ArrayList<>());
     }
 
     public void setResults(List<Result> results) {
@@ -72,7 +76,7 @@ public class WorkerAndCriterion {
     }
 
     public List<Double> getAccuracy() {
-        return accuracy;
+        return Optional.ofNullable(accuracy).orElse(new ArrayList<>());
     }
 
     public void setAccuracy(List<Double> accuracy) {
@@ -80,10 +84,18 @@ public class WorkerAndCriterion {
     }
 
     public List<Bare> getLatestBares() {
-        return latestBares;
+        return Optional.ofNullable(latestBares).orElse(new ArrayList<>());
     }
 
     public void setLatestBares(List<Bare> latestBares) {
         this.latestBares = latestBares;
+    }
+
+    public int getAim() {
+        return aim;
+    }
+
+    public void setAim(int aim) {
+        this.aim = aim;
     }
 }

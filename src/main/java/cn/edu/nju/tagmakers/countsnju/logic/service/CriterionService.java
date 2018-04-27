@@ -42,8 +42,12 @@ public class CriterionService {
      */
     public boolean isPassed(String criterionID, String workerID) {
         Criterion criterion = findByID(criterionID);
-        return criterion.getWorkerPassed().contains(workerID);
+        boolean pass = criterion.getWorkerPassed().contains(workerID);
+        return pass;
     }
 
+    public void update(Criterion criterion) {
+        criterionController.update(criterion);
+    }
 
 }

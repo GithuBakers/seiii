@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Description:
@@ -38,7 +40,15 @@ public class CriterionDAO extends DAO<Criterion, CriterionFilter> {
      */
     @Override
     public List<Criterion> find(CriterionFilter filter) {
-        return null;
+        if (filter == null) {
+            return new ArrayList<>(map.values());
+        }
+
+        Stream<Criterion> criterionStream = map.values().stream();
+        if (filter.getInitiatorID() != null) {
+            criterionStream = criterionStream.filter(criterion -> criterion.getInitiatorID().equals(filter.getInitiatorID()));
+        }
+        return new ArrayList<>(criterionStream.collect(Collectors.toList()));
     }
 
     /**
