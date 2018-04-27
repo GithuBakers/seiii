@@ -12,6 +12,7 @@ import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.CriterionImageAnswerVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerCriterionVO;
 import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
+import cn.edu.nju.tagmakers.countsnju.filter.CriterionFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,6 +32,11 @@ import java.util.stream.Collectors;
  * Update:
  * @author wym
  * Last modified on
+ * <p>
+ * Update:
+ * 工人获取标准集的时候 应该只获取发起者做完的部分
+ * @author xxz
+ * Created on 04/27/2018
  */
 @Component
 public class WorkerCriterionService {
@@ -53,11 +59,15 @@ public class WorkerCriterionService {
 
     /**
      * 工人查看所有的标准集
+     * <p>
+     * 这些标准集只包括发起者提供完整答案的部分
      *
      * @return 所有的标准集
      */
     public List<WorkerCriterionVO> getAllCriterion(String workerID) {
-        List<Criterion> criterionList = criterionService.find(null);
+        CriterionFilter filter = new CriterionFilter();
+        filter.setFinished(true);
+        List<Criterion> criterionList = criterionService.find(filter);
         List<WorkerCriterionVO> ret = new ArrayList<>();
         for (Criterion temp : criterionList) {
             String criterionID = temp.getCriterionID();

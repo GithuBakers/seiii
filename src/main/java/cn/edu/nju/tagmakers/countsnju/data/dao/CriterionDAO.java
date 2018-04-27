@@ -23,8 +23,12 @@ import java.util.stream.Stream;
  * Update:增加workerPassed字段
  * @author wym
  * Last modified on 4/22
+ * <p>
+ * Update:
+ * 增加字段 发起者是否完成
+ * @author xxz
+ * Created on 04/27/2018
  */
-
 @Component
 public class CriterionDAO extends DAO<Criterion, CriterionFilter> {
     public CriterionDAO() {
@@ -32,6 +36,7 @@ public class CriterionDAO extends DAO<Criterion, CriterionFilter> {
         filePath = "data" + File.separator + "Criterion.txt";
         read();
     }
+
     /**
      * 复合查找符合条件的对象
      *
@@ -69,6 +74,7 @@ public class CriterionDAO extends DAO<Criterion, CriterionFilter> {
         if (cur.getKeywords().size() > 0) ori.setKeywords(new ArrayList<>(cur.getKeywords()));
         if (cur.getWorkerPassed().size() > 0) ori.setWorkerPassed(new HashSet<>(cur.getWorkerPassed()));
         if (cur.getInitiatorID() != null) ori.setInitiatorID(cur.getInitiatorID());
+        if (cur.isHasFinished() != null) ori.setHasFinished(cur.isHasFinished());
         return ori;
     }
 }

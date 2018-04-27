@@ -8,12 +8,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Update:
@@ -22,18 +18,20 @@ import java.util.*;
  *
  * @author xxz
  * Created on 04/22/2018
- */
-
-/**
+ * <p>
  * Description:
  * 标准集的实体对象
- *
  * @author wym
  * Created on
  * <p>
  * Update:增加workerPassed
  * @author wym
  * Last modified on 4/22
+ * <p>
+ * Update:
+ * 增加字段：发起者是否已经完成了此标准集
+ * @author xxz
+ * Created on 04/27/2018
  */
 public class Criterion extends Entity<Criterion> implements Serializable {
     private static final long serialVersionUID = 86L;
@@ -71,11 +69,20 @@ public class Criterion extends Entity<Criterion> implements Serializable {
     @JsonProperty(value = "keywords")
     private List<String> keywords;
 
+    /**
+     * 已通过工人名单（id）
+     */
     @JsonIgnore
     private Set<String> workerPassed;
 
     @JsonIgnore
     private String initiatorID;
+
+    /**
+     * 发起者是否已经完成了此标准集
+     */
+    @JsonIgnore
+    private Boolean hasFinished;
 
 
     public Criterion(Criterion toCopy) {
@@ -87,6 +94,7 @@ public class Criterion extends Entity<Criterion> implements Serializable {
         this.aim = toCopy.aim;
         this.requirement = toCopy.requirement;
         this.initiatorID = toCopy.initiatorID;
+        this.hasFinished = toCopy.hasFinished;
         if (toCopy.dataSet != null) {
             this.dataSet = new ArrayList<>(toCopy.dataSet);
         }
@@ -192,6 +200,14 @@ public class Criterion extends Entity<Criterion> implements Serializable {
         return Optional.ofNullable(result)
                 .map(ConcurrentHashMap::new)
                 .orElse(new ConcurrentHashMap<>());
+    }
+
+    public Boolean isHasFinished() {
+        return hasFinished;
+    }
+
+    public void setHasFinished(boolean hasFinished) {
+        this.hasFinished = hasFinished;
     }
 
     public void setResult(Map<String, List<Tag>> result) {
