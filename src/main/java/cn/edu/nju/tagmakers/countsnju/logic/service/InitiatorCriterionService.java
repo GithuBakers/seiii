@@ -108,6 +108,10 @@ public class InitiatorCriterionService {
 
                 answer.put(image.getBare().getId(), image.getTags());
                 criterion.setResult(answer);
+                if (answer.size() == criterion.getDataSet().size()) {
+                    //如果发起者已经完成了标准集中的所有图片
+                    criterion.setHasFinished(true);
+                }
                 criterionController.update(criterion);
             }
         }

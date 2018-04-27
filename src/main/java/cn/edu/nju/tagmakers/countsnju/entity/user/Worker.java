@@ -49,6 +49,8 @@ public class Worker extends User implements Serializable {
         this.password = toCopy.getPassword();
         this.nickName = toCopy.getNickName();
         this.role = toCopy.getRole();
+        this.sex = toCopy.sex;
+        this.birthdayString = toCopy.birthdayString;
 
         //工人字段
         if (toCopy.taskIDs != null) {
