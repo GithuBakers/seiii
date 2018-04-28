@@ -1,6 +1,7 @@
 package cn.edu.nju.tagmakers.countsnju.entity.user;
 
 import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Criterion;
+import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerTestHistoryVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.diagram.WorkerRecentTaskVO;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -64,6 +65,7 @@ public class Worker extends User implements Serializable {
         this.rank = toCopy.rank;
         this.dependencies = toCopy.dependencies;
         this.receivedTime = toCopy.receivedTime;
+        this.testHistory = toCopy.testHistory;
     }
 
     /**
@@ -99,6 +101,17 @@ public class Worker extends User implements Serializable {
      */
     @JsonIgnore
     private Map<String, Long> receivedTime;
+
+    @JsonIgnore
+    private List<WorkerTestHistoryVO> testHistory;
+
+    public List<WorkerTestHistoryVO> getTestHistory() {
+        return testHistory;
+    }
+
+    public void setTestHistory(List<WorkerTestHistoryVO> testHistory) {
+        this.testHistory = testHistory;
+    }
 
     public List<Criterion> getDependencies() {
         return Optional.ofNullable(dependencies).orElse(new LinkedList<>());
