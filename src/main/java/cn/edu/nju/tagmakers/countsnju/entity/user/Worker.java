@@ -2,10 +2,13 @@ package cn.edu.nju.tagmakers.countsnju.entity.user;
 
 import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Criterion;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerTestHistoryVO;
+import cn.edu.nju.tagmakers.countsnju.entity.vo.diagram.WorkerCapability;
+import cn.edu.nju.tagmakers.countsnju.entity.vo.diagram.WorkerRecentTags;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.diagram.WorkerRecentTaskVO;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 import java.io.Serializable;
 import java.util.*;
@@ -89,11 +92,6 @@ public class Worker extends User implements Serializable {
     @JsonProperty(value = "dependencies")
     private List<Criterion> dependencies;
 
-    /**
-     * 工人近期任务情况（不需要持久化，随用随算）
-     */
-    @JsonProperty("tasks")
-    private List<WorkerRecentTaskVO> tasks;
 
     /**
      * 工人接受任务的时间(保留最近30项）
@@ -104,6 +102,33 @@ public class Worker extends User implements Serializable {
 
     @JsonIgnore
     private List<WorkerTestHistoryVO> testHistory;
+    /* * * * * * * * * * * * * * * * * * * *
+     *
+     * 不需要持久化的字段们
+     *
+     ** * * * * * * * * * * * * * * * * * * *
+     */
+
+    /**
+     * 工人近期任务情况（不需要持久化，随用随算）
+     */
+    @JsonProperty("tasks")
+    private List<WorkerRecentTaskVO> tasks;
+
+    /**
+     * 工人近期任务的组成
+     */
+    @JsonProperty("tags")
+    @JsonUnwrapped
+    private WorkerRecentTags recentTags;
+
+    /**
+     * 工人能力/可信程度 的五个维度
+     */
+    @JsonProperty("capability")
+    @JsonUnwrapped
+    private WorkerCapability capability;
+
 
     public List<WorkerTestHistoryVO> getTestHistory() {
         return testHistory;
@@ -192,6 +217,22 @@ public class Worker extends User implements Serializable {
 
     public void setTasks(List<WorkerRecentTaskVO> tasks) {
         this.tasks = tasks;
+    }
+
+    public WorkerRecentTags getRecentTags() {
+        return recentTags;
+    }
+
+    public void setRecentTags(WorkerRecentTags recentTags) {
+        this.recentTags = recentTags;
+    }
+
+    public WorkerCapability getCapability() {
+        return capability;
+    }
+
+    public void setCapability(WorkerCapability capability) {
+        this.capability = capability;
     }
 
     @Override

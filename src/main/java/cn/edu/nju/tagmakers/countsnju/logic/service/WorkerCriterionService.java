@@ -2,7 +2,6 @@ package cn.edu.nju.tagmakers.countsnju.logic.service;
 
 import cn.edu.nju.tagmakers.countsnju.algorithm.ResultJudger;
 import cn.edu.nju.tagmakers.countsnju.algorithm.errorlearning.BasicAlgorithm;
-import cn.edu.nju.tagmakers.countsnju.algorithm.errorlearning.ErrorLearning;
 import cn.edu.nju.tagmakers.countsnju.data.controller.CriterionController;
 import cn.edu.nju.tagmakers.countsnju.data.controller.WorkerAndCriterionController;
 import cn.edu.nju.tagmakers.countsnju.data.controller.WorkerController;
@@ -19,7 +18,10 @@ import cn.edu.nju.tagmakers.countsnju.filter.CriterionFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -88,17 +90,13 @@ public class WorkerCriterionService {
     /**
      * 获取某工人的最后n张做过的测试
      */
-    public List<WorkerTestHistoryVO> getTestHistory(String workerID, int n) {
+    public List<WorkerTestHistoryVO> getTestHistory(String workerID, long time) {
         Worker worker = workerController.findByID(workerID);
-        List<WorkerTestHistoryVO> testHistory = worker.getTestHistory();
-        if (n >= testHistory.size()) {
-            return testHistory;
-        }
-        List<WorkerTestHistoryVO> ret = testHistory;
-        for (int i = testHistory.size() - n; i < testHistory.size(); i++) {
-            ret.add(testHistory.get(i));
-        }
-        return ret;
+        return worker.getTestHistory().stream()
+                .filter(workerTestHistoryVO -> {
+                    long submitTime = workerTestHistoryVO.getSubmitTime().getTimeInMillis();
+                    return submitTime < time;
+                }).collect(Collectors.toList());
     }
 
     /**
