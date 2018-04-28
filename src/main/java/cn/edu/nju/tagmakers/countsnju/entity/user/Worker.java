@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
+import javax.swing.text.html.Option;
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -137,7 +138,7 @@ public class Worker extends User implements Serializable {
 
 
     public List<WorkerTestHistoryVO> getTestHistory() {
-        return testHistory;
+        return Optional.ofNullable(testHistory).orElse(new ArrayList<>());
     }
 
     public void setTestHistory(List<WorkerTestHistoryVO> testHistory) {
@@ -242,7 +243,7 @@ public class Worker extends User implements Serializable {
     }
 
     public Integer getErrorLearningAbility() {
-        return errorLearningAbility;
+        return errorLearningAbility == null ? 0 : errorLearningAbility;
     }
 
     public void setErrorLearningAbility(int errorLearningAbility) {

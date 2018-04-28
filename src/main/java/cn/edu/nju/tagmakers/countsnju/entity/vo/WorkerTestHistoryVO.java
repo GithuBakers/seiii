@@ -3,29 +3,28 @@ package cn.edu.nju.tagmakers.countsnju.entity.vo;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
 
 import java.io.Serializable;
-import java.util.Calendar;
 
 public class WorkerTestHistoryVO implements Serializable {
     private static final long serialVersionUID = 888L;
 
-    private Calendar submitTime;
+    private long submitTime;
     private MarkType type;
 
     public WorkerTestHistoryVO() {
 
     }
 
-    public WorkerTestHistoryVO(MarkType type, Calendar submitTime) {
+    public WorkerTestHistoryVO(MarkType type, long submitTime) {
         this.type = type;
         this.submitTime = submitTime;
 
     }
 
-    public Calendar getSubmitTime() {
+    public long getSubmitTime() {
         return submitTime;
     }
 
-    public void setSubmitTime(Calendar submitTime) {
+    public void setSubmitTime(Long submitTime) {
         this.submitTime = submitTime;
     }
 

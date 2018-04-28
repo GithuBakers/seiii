@@ -181,10 +181,10 @@ public class Task extends Entity<Task> implements Serializable {
             this.dependencies = new ArrayList<>(toCopy.dependencies);
         }
         this.hasResult = toCopy.hasResult;
-        if (toCopy.getBareAndClusters() != null) {
+        if (toCopy.bareAndClusters != null) {
             this.bareAndClusters = new ArrayList<>(toCopy.bareAndClusters);
         }
-        if (toCopy.getUserDistribution() != null) {
+        if (toCopy.userDistribution != null) {
             this.userDistribution = new ArrayList<>(toCopy.userDistribution);
         }
     }

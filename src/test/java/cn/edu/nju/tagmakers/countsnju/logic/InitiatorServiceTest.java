@@ -50,7 +50,7 @@ public class InitiatorServiceTest extends AbstractTestNGSpringContextTests {
         testInitiator.setPassword("123");
         testInitiator.setAvatar("没有头像");
         testInitiator.setRole(Role.INITIATOR);
-        testInitiator.setSex(Sex.NA);
+        testInitiator.setSex(Sex.OTHERS);
         testInitiator.setBirthdayString("1998-02-27");
 
         Bare bare1 = new Bare();

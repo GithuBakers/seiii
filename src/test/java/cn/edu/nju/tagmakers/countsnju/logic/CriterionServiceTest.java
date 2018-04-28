@@ -12,7 +12,6 @@ import cn.edu.nju.tagmakers.countsnju.entity.user.Sex;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerCriterionVO;
 import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
-import cn.edu.nju.tagmakers.countsnju.exception.NotFoundException;
 import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.logic.service.CriterionService;
 import cn.edu.nju.tagmakers.countsnju.logic.service.InitiatorCriterionService;
@@ -257,7 +256,7 @@ public class CriterionServiceTest extends AbstractTestNGSpringContextTests {
     @Test(dependsOnMethods = {"addCriterionTest1", "submitAnswerTest3"})
     public void getCriterionTest2() {
         List<Criterion> res = initiatorCriterionService.getAllCriterion();
-        assertEquals(res.size(), 2);
+        assertTrue(res.size() >= 2);
     }
 
     //发起者获取图片
@@ -287,7 +286,7 @@ public class CriterionServiceTest extends AbstractTestNGSpringContextTests {
     @Test(dependsOnMethods = {"addCriterionTest1", "submitAnswerTest3"})
     public void getCriterionTest3() {
         List<WorkerCriterionVO> res = workerCriterionService.getAllCriterion(testWorker.getPrimeKey());
-        assertEquals(res.size(), 2);
+        assertTrue(res.size() >= 2);
     }
 
     //工人获得某标准集的图片（10张）
@@ -429,6 +428,8 @@ public class CriterionServiceTest extends AbstractTestNGSpringContextTests {
         assertTrue(targetCriterion.getWorkerPassed().contains(testWorker.getPrimeKey()));
 
         assertTrue(workerService.findWorkerByName(testWorker.getPrimeKey()).getDependencies().size() > 0);
+        assertEquals(workerService.findWorkerByName(testWorker.getPrimeKey()).getErrorLearningAbility().intValue(), 50);
+
     }
 
     /**

@@ -19,10 +19,7 @@ import cn.edu.nju.tagmakers.countsnju.filter.CriterionFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -96,7 +93,7 @@ public class WorkerCriterionService {
         Worker worker = workerController.findByID(workerID);
         return worker.getTestHistory().stream()
                 .filter(workerTestHistoryVO -> {
-                    long submitTime = workerTestHistoryVO.getSubmitTime().getTimeInMillis();
+                    long submitTime = workerTestHistoryVO.getSubmitTime();
                     return submitTime < time;
                 }).collect(Collectors.toList());
     }
@@ -270,7 +267,7 @@ public class WorkerCriterionService {
         String bareID = image.getBare().getId();
         WorkerAndCriterion workerAndCriterion = workerAndCriterionController.findByID(workerID, criterionID);
         List<Result> resultList = workerAndCriterion.getResults();
-        Calendar submitTime = Calendar.getInstance();
+        long submitTime = new Date().getTime();
         for (Result result : resultList) {
             if (result.getBare().getId().equals(bareID)) {
                 //这个值只设置一次别的地方不会再改成false
@@ -413,7 +410,7 @@ public class WorkerCriterionService {
     /**
      * 更新工人测试历史
      */
-    private void updateTestHistory(String workerID, MarkType type, Calendar submitTime) {
+    private void updateTestHistory(String workerID, MarkType type, long submitTime) {
         Worker worker = workerController.findByID(workerID);
         List<WorkerTestHistoryVO> testHistory = worker.getTestHistory();
         WorkerTestHistoryVO vo = new WorkerTestHistoryVO(type, submitTime);
