@@ -24,12 +24,10 @@
 
 .list{
   padding: 40px;
-  height: 80vh;
-  max-height: 80vh;
 }
 
 .list-section{
-  max-height: 80vh;
+  height: 80vh;
 }
 
 

@@ -63,10 +63,8 @@ const CustomTab = ({ data: { task_id, task_name, completeness }, currentTabKey: 
     </Col>
   </Row>
 );
-@connect(({ chart,user, loading }) => ({
-  chart,
+@connect(({ user, loading }) => ({
   user,
-  // loading: loading.effects['chart/fetch'],
   loading: loading.models.user,
 }))
 export default class Analysis extends Component {
@@ -76,18 +74,6 @@ export default class Analysis extends Component {
     rangePickerValue: getTimeDistance('year'),
   };
 
-  componentDidMount() {
-    this.props.dispatch({
-      type: 'chart/fetch',
-    });
-  }
-
-  componentWillUnmount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'chart/clear',
-    });
-  }
 
   handleTabChange = key => {
     this.setState({
@@ -97,13 +83,6 @@ export default class Analysis extends Component {
 
 
   render() {
-    // const { currentTabKey } = this.state;
-    const { chart } = this.props;
-    const {
-      offlineData,
-      offlineChartData,
-    } = chart;
-    // const activeKey = currentTabKey || (offlineData[0] && offlineData[0].name);
     const {currentUser,currentAuthority}=this.props.user;
     const loading = this.props.loading;
     const tasks=currentUser.tasks?currentUser.tasks:[];

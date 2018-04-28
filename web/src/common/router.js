@@ -119,7 +119,7 @@ export const getRouterData = app => {
       component:dynamicWrapper(app,['initiatorCriterion'],()=>import('../routes/Initiator/MyCriterion')),
     },
     '/dashboard/analysis': {
-      component: dynamicWrapper(app, ['user','chart'], () => import('../routes/Dashboard/Analysis')),
+      component: dynamicWrapper(app, ['user'], () => import('../routes/Dashboard/Analysis')),
     },
     // '/dashboard/monitor': {
     //   component: dynamicWrapper(app, ['monitor'], () => import('../routes/Dashboard/Monitor')),

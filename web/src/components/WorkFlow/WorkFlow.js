@@ -35,7 +35,7 @@ class WorkFlow extends React.Component {
     //     // switch (type) {
     //     // DESC EDGE RECT
 
-    switch ("EDGE") {
+    switch (type) {
       case MarkType.DESC:
         return <DescStage isLabeled={isLabeled} imageList={imageList} taskName={taskName} taskId={taskId} keywords={keywords} markRequestType={markRequestType} request={request}/>;
       case MarkType.EDGE:

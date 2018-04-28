@@ -22,8 +22,8 @@ export default class ColoredRect extends React.Component {
           y={this.props.y}
           width={this.props.width}
           height={this.props.height}
-          fill='#ffffff24'
-          stroke="white"
+          fill={this.props.color?this.props.color.fill:'#ffffff24'}
+          stroke={this.props.color?this.props.color.stroke:"white"}
           onMouseLeave={(e)=>this.props.onMouseLeave(e)}
           onMouseEnter={(e)=>this.props.onMouseEnter(e)}
           onDragStart={(e)=>this.props.onDragStart(e)}

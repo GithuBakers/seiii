@@ -1,5 +1,5 @@
 import React from 'react'
-import {Row, Col,Input,List,notification, AutoComplete} from 'antd';
+import {Row, Col,Input,List,notification, AutoComplete,Icon} from 'antd';
 import {connect} from "dva";
 import QueueAnim from 'rc-queue-anim';
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -17,6 +17,18 @@ import {contributeWorkerCriterion} from "../../../services/apiList"
 
 
 const {TextArea} = Input;
+
+
+const normalRectColor={
+  fill: '#ffffff24',
+  stroke: "white",
+};
+
+const selectRectColor={
+  fill: '#8fd16f24',
+  stroke: "#8fd16f",
+};
+
 
 @connect()
 class RectStage extends React.Component {
@@ -47,7 +59,7 @@ class RectStage extends React.Component {
        id: this.state.currentImage.id,
        tags,
      };
-    const back=await this.props.require(this.props.taskId, result, result.id);
+    const back=await this.props.request(this.props.taskId, result, result.id);
     return back;
    };
   nextButtonEvent = async () => {
@@ -72,8 +84,7 @@ class RectStage extends React.Component {
     this.setState({delayTime: 0,loading:false})
   };
   checkButtonEvent =async () =>{
-    this.setState({hasCheckAnswer:true})
-    this.setState({goNext:true});
+    this.setState({checking:true});
     const uploadShapesList = this.state.shapes.slice();
     const tags = uploadShapesList.map(rect => ({
       id: rect.id,
@@ -94,13 +105,18 @@ class RectStage extends React.Component {
       tags,
     };
 
-    const back=await this.props.request(this.props.taskId, result, result.id);
+    const back=await this.props.request(this.props.taskId, result, result.id)||{};
     console.log(back.correct);
-    this.setState({checkAnswer:back.correct})
-    this.setState({shapes:[]});
+    this.setState({
+      checkAnswer:back.correct,
+      shapes:[],
+      hasCheckAnswer:true,
+      goNext:true,
+      checking:false,
+    });
     console.log(Object.values(back.tags));
-    let tempList =Object.values(back.tags);
-    let tempFinalList=tempList.map(tag=>({
+    const tempList =Object.values(back.tags);
+    const tempFinalList=tempList.map(tag=>({
       x: tag.mark.x,
       y: tag.mark.y,
       width: tag.mark.width,
@@ -158,10 +174,10 @@ class RectStage extends React.Component {
   finishCriterionEvent =async() =>{
     this.setState({loading:true});
     await this.uploadMark();
-    //TODO need to be checked
-    await this.props.dispatch({type:'need to be checked',payload:{isOpen:false}});
+    // TODO need to be checked
+    await this.props.dispatch({type:'editWorkModel/setOpenState',payload:{isOpen:false}});
     notification.success({
-      message:'您已完成标准集'
+      message:'您已完成标准集',
     })
   }
 
@@ -233,7 +249,8 @@ class RectStage extends React.Component {
       loading:false,
       goNext:false,
       checkAnswer:false,
-      hasCheckAnswer:false
+      hasCheckAnswer:false,
+      checking:false,
     };
 
 
@@ -261,7 +278,7 @@ class RectStage extends React.Component {
   render() {
 
     const isChected = this.props.markRequestType=="WORKER_CRITERION"&&!this.state.goNext;
-    const isFinalChecked =this.state.finalPage &&this.state.goNext;
+    const isFinalChecked =(this.props.markRequestType!=="WORKER_CRITERION"&&this.state.finalPage)||(this.props.markRequestType==="WORKER_CRITERION"&&this.state.finalPage &&this.state.goNext);
 
     return (
       <div style={{color: "white"}}>
@@ -311,6 +328,7 @@ class RectStage extends React.Component {
                         });
                       this.setState({shapes: newShapesList})
                     }}
+                    color={this.state.hasCheckAnswer?selectRectColor:normalRectColor}
                   />
                 );
               })}
@@ -325,20 +343,27 @@ class RectStage extends React.Component {
                     type={['right', 'left']}
                     ease={['easeOutQuart', 'easeInOutQuart']}
                   >
-                    {
-                      this.state.hasCheckAnswer == false ? (
-                        <h1 key="b">框选</h1>
-                      ) : (
-                        this.state.checkAnswer == true ? (
-                          <h1 key="b">正确</h1>
-                        ) : ( <h1 key="b">错误</h1>)
-                      )
-                    }
+                    <h1 key="b">框选</h1>
 
                     <div
                       key="c"
                       className={Styles['list-section']}
-                      >
+                    >
+                      {this.state.hasCheckAnswer?<div>
+                        <div style={{
+                          color:'white',
+                          maxWidth:'100px',
+                          margin:'0 auto 0',
+                          padding:'4px',
+                          textAlign:'center',
+                          fontFamily: 'Lobster, cursive',
+                          fontSize:'30px',
+                          borderRadius:'10px',
+
+                          backgroundColor:this.state.checkAnswer == true?'#8fd16f':'#ff404a',
+                          boxShadow:'rgba(0, 0, 0, 0.26) 0px 10px 40px',
+                        }}>{this.state.checkAnswer == true ? "Pass":"Fail"}</div>
+                      </div>:[]}
                       <PerfectScrollbar>
                         <List
                           className={Styles.list}
@@ -355,7 +380,7 @@ class RectStage extends React.Component {
                               this.setState({shapes: newShapesList})
                             }}
                               >delete
-                              </a>]}
+                                        </a>]}
                             >
                               <AutoComplete
                                 className="desc-input"
@@ -377,14 +402,14 @@ class RectStage extends React.Component {
                             (item => (
                               <List.Item
                                 key={item.id}
-                                editable ={false}
+                                editable={false}
                                 onClick={() => this.setState({selectedId: item.id})}
                                 style={this.state.selectedId === item.id ? {boxShadow: "#1890ff45 0px 10px 50px"} : {}}
                               >
                                 <AutoComplete
                                   className="desc-input"
                                   key='c'
-                                  disable={"false"}
+                                  disable="false"
                                   onClick={() => this.setState({selectedId: item.id})}
                                   value={item.comment}
                                   filterOption={(inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
@@ -395,8 +420,8 @@ class RectStage extends React.Component {
                         />
                       </PerfectScrollbar>
                     </div>
-                    {isFinalChecked?<div key="d" className={Styles["next-button"]} onClick={this.props.markRequestType=="WORKER_CRITERION"?this.finishCriterionEvent:this.finishButtonEvent}>FINISH</div>:<div/>}
-                    { (isChected)?<div key="e" className={Styles["next-button"]} onClick={this.checkButtonEvent}>Check</div>:<div key="e" className={Styles["next-button"]} onClick={this.nextButtonEvent}>NEXT</div>
+                    {isFinalChecked?<div key="d" className={Styles["next-button"]} onClick={this.props.markRequestType=="WORKER_CRITERION"?this.finishCriterionEvent:this.finishButtonEvent}>FINISH</div>:<div />}
+                    { (isChected)?<div key="e" className={Styles["next-button"]} onClick={this.state.checking?null:this.checkButtonEvent}>{this.state.checking?<Icon style={{marginRight:'10px'}} type="loading" />:[]}CHECK</div>:<div key="e" className={Styles["next-button"]} onClick={this.nextButtonEvent}>NEXT</div>
                 }
                   </QueueAnim>
                 </div>
