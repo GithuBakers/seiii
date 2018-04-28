@@ -38,4 +38,9 @@ public class Comment implements Serializable {
     public void setCmt(String cmt) {
         this.cmt = cmt;
     }
+
+    @Override
+    public String toString() {
+        return cmt;
+    }
 }

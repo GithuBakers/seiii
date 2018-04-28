@@ -54,7 +54,13 @@ public class CriterionDAO extends DAO<Criterion, CriterionFilter> {
             criterionStream = criterionStream.filter(criterion -> criterion.getInitiatorID().equals(filter.getInitiatorID()));
         }
         if (filter.getFinished() != null) {
-            criterionStream = criterionStream.filter(criterion -> criterion.isHasFinished().equals(filter.getFinished()));
+            criterionStream = criterionStream.filter(criterion -> {
+                Boolean hasFinished = criterion.isHasFinished();
+                if (hasFinished == null) {
+                    return false;
+                }
+                return hasFinished.equals(filter.getFinished());
+            });
         }
         return criterionStream.collect(Collectors.toList());
     }
@@ -78,6 +84,7 @@ public class CriterionDAO extends DAO<Criterion, CriterionFilter> {
         if (cur.getWorkerPassed().size() > 0) ori.setWorkerPassed(new HashSet<>(cur.getWorkerPassed()));
         if (cur.getInitiatorID() != null) ori.setInitiatorID(cur.getInitiatorID());
         if (cur.isHasFinished() != null) ori.setHasFinished(cur.isHasFinished());
+        if (cur.getResult() != null) ori.setResult(cur.getResult());
         return ori;
     }
 }
