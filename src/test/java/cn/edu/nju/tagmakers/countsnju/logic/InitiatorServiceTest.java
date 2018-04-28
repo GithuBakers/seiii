@@ -25,6 +25,7 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import static org.testng.Assert.*;
 
@@ -161,5 +162,11 @@ public class InitiatorServiceTest extends AbstractTestNGSpringContextTests {
     //正确的发起者结束任务
     public void ownerTest2() {
         initiatorService.finishTask(testTask.getPrimeKey(), testInitiator.getPrimeKey());
+        try {
+            TimeUnit.SECONDS.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        initiatorService.getTaskResult(testTask.getTaskID(), testInitiator.getPrimeKey());
     }
 }

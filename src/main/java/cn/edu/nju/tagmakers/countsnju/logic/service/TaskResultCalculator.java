@@ -61,7 +61,7 @@ public class TaskResultCalculator implements Runnable {
             analysisDistribution();
             File file = writeFile();
             task.setResult(OSSWriter.upload(file));
-            task.setFinished(true);
+            task.setHasResult(true);
             taskController.update(task);
         }
     }

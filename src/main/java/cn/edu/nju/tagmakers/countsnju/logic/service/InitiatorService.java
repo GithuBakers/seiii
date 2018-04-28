@@ -111,7 +111,7 @@ public class InitiatorService {
             throw new PermissionDeniedException("这不是你的任务!");
         } else {
             Task task = taskService.findByID(taskID);
-            if (!task.getHasResult()) {
+            if (task.getHasResult() == null || !task.getHasResult()) {
                 throw new InvalidInputException("此任务还没有计算出结果");
             } else {
                 return task;
