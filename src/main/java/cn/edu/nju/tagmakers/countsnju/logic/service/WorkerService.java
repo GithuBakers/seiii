@@ -55,9 +55,9 @@ public class WorkerService {
      */
     public Worker findWorkerByName(String workerName) {
         Worker worker = workerController.findByID(workerName);
-        diagramService.getWorkerRecentActivity(worker);
-        diagramService.getWorkerCapability(worker);
-        diagramService.getWorkerRecentTags(worker);
+//        diagramService.getWorkerRecentActivity(worker);
+//        diagramService.getWorkerCapability(worker);
+//        diagramService.getWorkerRecentTags(worker);
         return worker;
     }
 

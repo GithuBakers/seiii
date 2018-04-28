@@ -15,7 +15,7 @@ import static org.testng.Assert.assertEquals;
  * Created on 04/22/2018
  */
 public class AvxVectorTest extends TestNG {
-    private static final int N = 10000000;
+    private static final int N = 1000;
 
     private static Integer[] a;
 

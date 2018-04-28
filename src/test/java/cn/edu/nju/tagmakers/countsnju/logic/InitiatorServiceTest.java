@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -50,7 +49,7 @@ public class InitiatorServiceTest extends AbstractTestNGSpringContextTests {
         testInitiator.setPassword("123");
         testInitiator.setAvatar("没有头像");
         testInitiator.setRole(Role.INITIATOR);
-        testInitiator.setSex(Sex.OTHERS);
+        testInitiator.setSex(Sex.NA);
         testInitiator.setBirthdayString("1998-02-27");
 
         Bare bare1 = new Bare();

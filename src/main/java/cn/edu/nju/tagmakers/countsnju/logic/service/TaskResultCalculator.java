@@ -118,7 +118,7 @@ public class TaskResultCalculator implements Runnable {
         SexAndAge male = getSexDistribution(workers, sex);
         sex = Sex.FEMALE;
         SexAndAge female = getSexDistribution(workers, sex);
-        sex = Sex.OTHERS;
+        sex = Sex.NA;
         SexAndAge others = getSexDistribution(workers, sex);
         List<SexAndAge> list = task.getUserDistribution();
         list.addAll(Arrays.asList(male, female, others));

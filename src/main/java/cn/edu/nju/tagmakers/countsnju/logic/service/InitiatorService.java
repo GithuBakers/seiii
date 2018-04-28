@@ -43,7 +43,7 @@ public class InitiatorService {
      */
     public Initiator findInitiatorByName(String initiatorName) {
         Initiator initiator = initiatorController.findByID(initiatorName);
-        initiator.setRecentTasks(diagramService.getInitiatorRecentActivity(initiator));
+//        initiator.setRecentTasks(diagramService.getInitiatorRecentActivity(initiator));
         return initiator;
     }
 

@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
-import javax.swing.text.html.Option;
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -46,6 +45,8 @@ public class Worker extends User implements Serializable {
         this.password = user.getPassword();
         this.nickName = user.getNickName();
         this.role = user.getRole();
+        this.sex = user.sex;
+        this.birthdayString = user.birthdayString;
     }
 
     private Worker(Worker toCopy) {
