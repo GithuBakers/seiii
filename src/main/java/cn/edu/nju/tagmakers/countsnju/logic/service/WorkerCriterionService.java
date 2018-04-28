@@ -58,6 +58,13 @@ public class WorkerCriterionService {
     }
 
     /**
+     * 获得错误学习能力值
+     */
+    public int getErrorLearningAbility(String workerID) {
+        return 0;
+    }
+
+    /**
      * 工人查看所有的标准集
      * <p>
      * 这些标准集只包括发起者提供完整答案的部分
