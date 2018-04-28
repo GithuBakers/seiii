@@ -2,7 +2,6 @@ package cn.edu.nju.tagmakers.countsnju.logic.service;
 
 import cn.edu.nju.tagmakers.countsnju.data.controller.TaskController;
 import cn.edu.nju.tagmakers.countsnju.data.controller.WorkerController;
-import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Criterion;
 import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
@@ -72,9 +71,9 @@ public class TaskService {
         for (Bare bare : task.getDataSet()) {
             bareService.addBare(bare);
         }
-        for (Criterion criterion : task.getDependencies()) {
-            criterionService.addCriterion(criterion);
-        }
+//        for (Criterion criterion : task.getDependencies()) {
+//            criterionService.addCriterion(criterion);
+//        }
 
 
     }

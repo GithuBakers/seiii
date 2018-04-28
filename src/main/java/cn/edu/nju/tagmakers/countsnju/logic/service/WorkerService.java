@@ -208,6 +208,7 @@ public class WorkerService {
         List<Tag> tagList = image.getTags();
         tagList.parallelStream().forEach(tag -> tag.setWorkerID(workerName));
         tagList.parallelStream().forEach(tag -> tag.setBareID(image.getBare().getId()));
+        tagList.parallelStream().forEach(tag -> tag.setSubmitTime(new Date().getTime()));
         tagList.parallelStream().forEach(tagService::addTag);
         return true;
     }
