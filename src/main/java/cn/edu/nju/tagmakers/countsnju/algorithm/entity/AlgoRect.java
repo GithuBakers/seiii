@@ -1,5 +1,6 @@
-package cn.edu.nju.tagmakers.countsnju.algorithm;
+package cn.edu.nju.tagmakers.countsnju.algorithm.entity;
 
+import cn.edu.nju.tagmakers.countsnju.algorithm.AvxVector;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Rect;
 
 /**

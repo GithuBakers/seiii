@@ -1,11 +1,15 @@
 package cn.edu.nju.tagmakers.countsnju.logic.service;
 
 import cn.edu.nju.tagmakers.countsnju.algorithm.Cluster;
+import cn.edu.nju.tagmakers.countsnju.algorithm.entity.EdgeClusterMeasurement;
+import cn.edu.nju.tagmakers.countsnju.algorithm.entity.RectClusterMeasurement;
 import cn.edu.nju.tagmakers.countsnju.data.controller.TaskController;
 import cn.edu.nju.tagmakers.countsnju.entity.Task;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Edge;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Rect;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Tag;
+import cn.edu.nju.tagmakers.countsnju.entity.vo.diagram.BareAndCluster;
 import cn.edu.nju.tagmakers.countsnju.exception.FileIOException;
 import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
 import util.FileCreator;
@@ -89,36 +93,69 @@ public class TaskResultCalculator implements Runnable {
     }
 
     private void writeClusterRect(BufferedWriter writer, Cluster cluster) throws IOException {
-        List<Rect> rects = cluster.clusterRect(tags.stream()
-                .map(tag -> ((Rect) tag.getMark()))
-                .collect(Collectors.toList()));
         writer.write("The machine's result:");
-        writer.newLine();
-        rects.forEach(rect -> {
-            try {
-                writer.write(rect.toString());
-            } catch (IOException e) {
-                throw new FileIOException("创建结果集时发生文件异常");
-            }
+//        writer.newLine();
+        //获取所有图片ID，对每一张图片进行聚类操作
+        List<String> bareIDs = task.getDataSet().stream().map(Bare::getId).collect(Collectors.toList());
+        List<BareAndCluster> list = task.getBareAndClusters();
+        for (String bareID : bareIDs) {
+            //找到所有属于本图片的标注
+            List<Rect> validTags = tags.stream()
+                    .filter(tag -> tag.getBareID().equals(bareID))
+                    .map(tag -> ((Rect) tag.getMark()))
+                    .collect(Collectors.toList());
+            RectClusterMeasurement measurement = cluster.rectClusterMeasurement(
+                    validTags);
+            List<Rect> rects = measurement.getClusters();
+            //写文件
+            rects.forEach(rect -> {
+                try {
+                    writer.newLine();
+                    writer.write(bareID + ",");
+                    writer.write(rect.toString());
+                } catch (IOException e) {
+                    throw new FileIOException("创建结果集时发生文件异常");
+                }
 
-        });
+            });
+            BareAndCluster bareAndCluster = new BareAndCluster();
+            //为了将格式转换成double
+            bareAndCluster.setNumber(1.0 * validTags.size());
+            bareAndCluster.setKurtosis(measurement.getKurtosis());
+            list.add(bareAndCluster);
+        }
         writer.write("The user's result:");
         writer.newLine();
     }
 
     private void writeClusterEdge(BufferedWriter writer, Cluster cluster) throws IOException {
-        List<Edge> edges = cluster.clusterEdge(tags.stream()
-                .map(tag -> (Edge) tag.getMark())
-                .collect(Collectors.toList()));
         writer.write("The machine's result:");
-        writer.newLine();
-        edges.forEach(edge -> {
-            try {
-                writer.write(edge.toString());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
+        List<BareAndCluster> list = task.getBareAndClusters();
+//        writer.newLine();
+        List<String> bareIDs = task.getDataSet().stream().map(Bare::getId).collect(Collectors.toList());
+        for (String bareID : bareIDs) {
+            List<Edge> validTags = tags.stream()
+                    .filter(tag -> tag.getBareID().equals(bareID))
+                    .map(tag -> (Edge) tag.getMark())
+                    .collect(Collectors.toList());
+            EdgeClusterMeasurement measurement = cluster.edgeClusterMeasurement(validTags);
+            List<Edge> edges = measurement.getClusters();
+
+            edges.forEach(edge -> {
+                try {
+                    writer.newLine();
+                    writer.write(bareID + ",");
+                    writer.write(edge.toString());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            BareAndCluster bareAndCluster = new BareAndCluster();
+            //为了将格式转换成double
+            bareAndCluster.setNumber(1.0 * validTags.size());
+            bareAndCluster.setKurtosis(measurement.getKurtosis());
+            list.add(bareAndCluster);
+        }
         writer.write("The worker's result:");
         writer.newLine();
     }
@@ -133,17 +170,6 @@ public class TaskResultCalculator implements Runnable {
         });
     }
 
-    private String makeResult(Task task) {
-        String filePath = "ret" + File.separator + "task_result_" + task.getTaskName();
-        FileCreator.createFile(filePath);
-        File file = new File(filePath);
-
-        //生成结果的逻辑
-
-
-        //上传到OSS
-        return OSSWriter.upload(file);
-    }
 
     public Task getTask() {
         return task;
