@@ -283,8 +283,9 @@ public class WorkerCriterionService {
         workerAndCriterion.setResults(resultList);
         workerAndCriterionController.update(workerAndCriterion);
 
+        Criterion criterion = criterionController.findByID(criterionID);
         //更新工人测试历史
-        updateTestHistory(workerID, image.getType(), submitTime);
+        updateTestHistory(workerID, criterion.getType(), submitTime);
 
         //判断是否通过
         int aim = workerAndCriterion.getAim();
