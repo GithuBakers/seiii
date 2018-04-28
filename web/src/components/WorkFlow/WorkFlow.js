@@ -27,7 +27,6 @@ class WorkFlow extends React.Component {
       return <div />
     }
 
-    //TODO: API  request={} **每张图片上传后需要调用的函数** markRequestType={} **返回值类型**
     const {isLabeled,imageList, taskName, keywords,taskId,markRequestType,request}= this.props;
     const type = this.props.type;
     console.log("type",type);

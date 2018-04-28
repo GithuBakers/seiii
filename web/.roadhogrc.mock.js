@@ -129,8 +129,8 @@ const proxy = {
     'total_reward|2000-30000': 1,
     completeness: () => mockjs.Random.integer(0, 100), //达标比例
     result: () => mockjs.mock('@url'), //结果所在地
-    finished: true, //状态
-    "has_result":true,
+    finished: false, //状态
+    "has_result":false,
     "keywords|5-10":[ ()=>mockjs.Random.name()],
     "dependencies": rawCriterionList
   }),

@@ -28,7 +28,7 @@ class DescStage extends React.Component {
         },
       ],
     };
-const back = await contributeWorkerTask(this.props.taskId,result, result.id);
+const back = await this.props.request(this.props.taskId,result, result.id);
     return back;
   };
   checkButtonEvent = async () =>{
