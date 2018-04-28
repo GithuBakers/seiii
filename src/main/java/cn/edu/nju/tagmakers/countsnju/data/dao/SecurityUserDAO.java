@@ -1,5 +1,7 @@
 package cn.edu.nju.tagmakers.countsnju.data.dao;
 
+import cn.edu.nju.tagmakers.countsnju.entity.user.Role;
+import cn.edu.nju.tagmakers.countsnju.entity.user.User;
 import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
 import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.filter.SecurityUserFilter;
@@ -23,6 +25,14 @@ public class SecurityUserDAO extends DAO<SecurityUser,SecurityUserFilter>{
         map = new ConcurrentHashMap<>();
         filePath = "data" + File.separator + "SecurityUser.txt";
         read();
+        //添加管理员
+        User admin = new User();
+        admin.setUserID("admin");
+        admin.setPassword("admin");
+        admin.setRole(Role.ADMIN);
+        SecurityUser admin2 = new SecurityUser(admin);
+        add(admin2);
+
     }
 
     @Override
