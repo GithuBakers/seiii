@@ -31,7 +31,11 @@ public class SecurityUserDAO extends DAO<SecurityUser,SecurityUserFilter>{
         admin.setPassword("admin");
         admin.setRole(Role.ADMIN);
         SecurityUser admin2 = new SecurityUser(admin);
-        add(admin2);
+        try {
+            add(admin2);
+        } catch (InvalidInputException ignore) {
+            //第二次运行属于重复添加
+        }
 
     }
 

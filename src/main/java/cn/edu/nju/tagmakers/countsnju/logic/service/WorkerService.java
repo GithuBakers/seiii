@@ -128,7 +128,7 @@ public class WorkerService {
             //将任务加入工人的任务列表, 并记录下其添加时间
             Worker receiver = workerController.findByID(workerName);
             if (receiver == null) {
-                throw new NotFoundException("没有此任务");
+                throw new NotFoundException("没有此工人");
             }
             List<String> taskList = receiver.getTaskIDs();
             if (!taskList.contains(taskID)) {
