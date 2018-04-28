@@ -4,6 +4,7 @@ import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Criterion;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.diagram.BareAndCluster;
+import cn.edu.nju.tagmakers.countsnju.entity.vo.diagram.SexAndAge;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -39,6 +40,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * Update:
  * 增加字段 结果集是否计算完成(has result)
  * 用户标注数量和用户标注聚集程度(bare and cluster)
+ * @author xxz
+ * Created on 04/28/2018
+ * <p>
+ * Update:
+ * 增加字段：标记工人的性别/年龄分布
  * @author xxz
  * Created on 04/28/2018
  */
@@ -135,6 +141,11 @@ public class Task extends Entity<Task> implements Serializable {
     private Map<String, Integer> bareMarked; //<BARE_ID, MARKED_NUMBER>
 
     /**
+     * 用户的 性别-年龄 分布
+     */
+    @JsonProperty("sex_age")
+    private List<SexAndAge> userDistribution;
+    /**
      * 用户标注数量-用户标注聚集程度
      */
     @JsonProperty("hive")
@@ -171,7 +182,10 @@ public class Task extends Entity<Task> implements Serializable {
         }
         this.hasResult = toCopy.hasResult;
         if (toCopy.getBareAndClusters() != null) {
-            this.bareAndClusters = toCopy.bareAndClusters;
+            this.bareAndClusters = new ArrayList<>(toCopy.bareAndClusters);
+        }
+        if (toCopy.getUserDistribution() != null) {
+            this.userDistribution = new ArrayList<>(toCopy.userDistribution);
         }
     }
 
@@ -322,6 +336,14 @@ public class Task extends Entity<Task> implements Serializable {
 
     public void setHasResult(Boolean hasResult) {
         this.hasResult = hasResult;
+    }
+
+    public List<SexAndAge> getUserDistribution() {
+        return Optional.ofNullable(userDistribution).orElse(new LinkedList<>());
+    }
+
+    public void setUserDistribution(List<SexAndAge> userDistribution) {
+        this.userDistribution = userDistribution;
     }
 
     /**

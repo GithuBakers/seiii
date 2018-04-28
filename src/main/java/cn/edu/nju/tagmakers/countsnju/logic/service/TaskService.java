@@ -161,6 +161,8 @@ public class TaskService {
         }
         TaskResultCalculator calculator = new TaskResultCalculator();
         calculator.setTask(task);
+        calculator.setTaskController(taskController);
+        calculator.setWorkerController(workerController);
         calculator.setTags(task.getDataSet().stream().map(Bare::getId)
                 .flatMap(id -> {
                     TagFilter filter = new TagFilter();

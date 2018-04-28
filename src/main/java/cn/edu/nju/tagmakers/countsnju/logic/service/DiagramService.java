@@ -11,6 +11,7 @@ import cn.edu.nju.tagmakers.countsnju.filter.TagFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -55,25 +56,27 @@ public class DiagramService {
                         task.getDataSet().stream().map(Bare::getId).collect(Collectors.toList())
                                 .contains(tag.getBareID()))
                 .collect(Collectors.toList());
+        //增加随机访问性能
+        tags = new ArrayList<>(tags);
+
         //下次就不用再算一次这些了
         allTags.removeAll(tags);
         WorkerRecentTaskVO workerRecentTaskVO = new WorkerRecentTaskVO();
         workerRecentTaskVO.setTaskID(task.getTaskID());
         workerRecentTaskVO.setTaskName(task.getTaskName());
         //工人完成情况
-        int compelete;
+        int complete;
         if (task.getUserMarked() == null || task.getUserMarked().get(worker.getPrimeKey()) == null) {
-            compelete = 0;
+            complete = 0;
         } else {
-            compelete = task.getUserMarked().get(worker.getPrimeKey()) * 100 / task.getLimit();
+            complete = task.getUserMarked().get(worker.getPrimeKey()) * 100 / task.getLimit();
         }
-        workerRecentTaskVO.setCompeleteness(compelete);
+        workerRecentTaskVO.setCompeleteness(complete);
 
         //一天的毫秒数
         long oneDay = 24 * 3600 * 1000;
 
 
-        //增加随机访问性能
         if (tags.size() == 0) {
             workerRecentTaskVO.setRecent(new LinkedList<>());
         } else {

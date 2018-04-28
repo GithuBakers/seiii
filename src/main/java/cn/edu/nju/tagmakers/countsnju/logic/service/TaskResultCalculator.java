@@ -4,18 +4,24 @@ import cn.edu.nju.tagmakers.countsnju.algorithm.Cluster;
 import cn.edu.nju.tagmakers.countsnju.algorithm.entity.EdgeClusterMeasurement;
 import cn.edu.nju.tagmakers.countsnju.algorithm.entity.RectClusterMeasurement;
 import cn.edu.nju.tagmakers.countsnju.data.controller.TaskController;
+import cn.edu.nju.tagmakers.countsnju.data.controller.WorkerController;
 import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Edge;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Rect;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Tag;
+import cn.edu.nju.tagmakers.countsnju.entity.user.Sex;
+import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.diagram.BareAndCluster;
+import cn.edu.nju.tagmakers.countsnju.entity.vo.diagram.SexAndAge;
 import cn.edu.nju.tagmakers.countsnju.exception.FileIOException;
 import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
 import util.FileCreator;
 import util.OSSWriter;
 
 import java.io.*;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,6 +40,8 @@ public class TaskResultCalculator implements Runnable {
 
     private TaskController taskController;
 
+    private WorkerController workerController;
+
     /**
      * When an object implementing interface <code>Runnable</code> is used
      * to create a thread, starting the thread causes the object's
@@ -47,49 +55,93 @@ public class TaskResultCalculator implements Runnable {
      */
     @Override
     public void run() {
-        if (task == null || tags == null || taskController == null) {
-            throw new InvalidInputException("计算任务结果时 任务或tag为空");
+        if (checkFailure()) {
+            throw new InvalidInputException("任务结果计算器暂时无法工作，因为未满足条件");
         } else {
-            String filePath = "ret" + File.separator + "task_result_" + task.getTaskName();
-            FileCreator.createFile(filePath);
-            File file = new File(filePath);
-            try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)))) {
-                writer.write("this is the result set of task" + file.getName());
-                writer.newLine();
+            analysisDistribution();
+            File file = writeFile();
+            task.setResult(OSSWriter.upload(file));
+            task.setFinished(true);
+            taskController.update(task);
+        }
+    }
+
+    private File writeFile() {
+        String filePath = "ret" + File.separator + "task_result_" + task.getTaskName();
+        FileCreator.createFile(filePath);
+        File file = new File(filePath);
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)))) {
+            writer.write("this is the result set of task" + file.getName());
+            writer.newLine();
 //                writer.write("请联系支付宝：18251830730 以查看所有数据");
 //                writer.newLine();
 //                writer.write("皮这一下非常开心");
 //                writer.newLine();
 //                writer.write(new Date(System.currentTimeMillis()).toString());
-                Cluster cluster = new Cluster();
-                switch (task.getType()) {
-                    case DESC: {
-                        writeTags(writer);
-                        break;
-                    }
-
-                    case EDGE: {
-                        writeClusterEdge(writer, cluster);
-                        writeTags(writer);
-                        break;
-                    }
-
-                    case RECT: {
-                        writeClusterRect(writer, cluster);
-                        writeTags(writer);
-                        break;
-                    }
-                    case DEFAULT:
+            Cluster cluster = new Cluster();
+            switch (task.getType()) {
+                case DESC: {
+                    writeTags(writer);
+                    break;
                 }
-                task.setFinished(true);
-                task.setResult(OSSWriter.upload(file));
-                taskController.update(task);
-            } catch (FileNotFoundException e) {
-                throw new FileIOException("创建结果集时发生文件异常");
-            } catch (IOException e) {
-                throw new FileIOException("File IO ERROR in task Service, when try to generate result set");
+
+                case EDGE: {
+                    writeClusterEdge(writer, cluster);
+                    writeTags(writer);
+                    break;
+                }
+
+                case RECT: {
+                    writeClusterRect(writer, cluster);
+                    writeTags(writer);
+                    break;
+                }
+                case DEFAULT:
             }
+        } catch (FileNotFoundException e) {
+            throw new FileIOException("创建结果集时发生文件异常");
+        } catch (IOException e) {
+            throw new FileIOException("File IO ERROR in task Service, when try to generate result set");
         }
+        return file;
+    }
+
+    private boolean checkFailure() {
+        return task == null || tags == null || taskController == null || workerController == null;
+    }
+
+    private void analysisDistribution() {
+        List<Worker> workers = task.getUserMarked().keySet().parallelStream()
+                .map(workerController::findByID)
+                .collect(Collectors.toList());
+        Sex sex = Sex.MALE;
+        SexAndAge male = getSexDistribution(workers, sex);
+        sex = Sex.FEMALE;
+        SexAndAge female = getSexDistribution(workers, sex);
+        sex = Sex.OTHERS;
+        SexAndAge others = getSexDistribution(workers, sex);
+        List<SexAndAge> list = task.getUserDistribution();
+        list.addAll(Arrays.asList(male, female, others));
+        task.setUserDistribution(list);
+    }
+
+    private SexAndAge getSexDistribution(List<Worker> workers, Sex sex) {
+        long TWENTY = 20 * 365 * 3600 * 1000L;
+        long THIRTY = 30 * 365 * 3600 * 1000L;
+        long FORTY = 2 * TWENTY;
+        long NOW = new Date().getTime();
+        List<Worker> maleWorkers = workers.stream().filter(worker -> worker.getSex() == sex).collect(Collectors.toList());
+        List<Long> ages = maleWorkers.stream().map(worker -> NOW - worker.getBirthday()).collect(Collectors.toList());
+        SexAndAge male = new SexAndAge();
+        int under20 = (int) ages.stream().filter(age -> age < TWENTY).count();
+        int under30 = (int) ages.stream().filter(age -> age < THIRTY).count() - under20;
+        int under40 = (int) ages.stream().filter(age -> age <= FORTY).count() - under30;
+        int above = (int) ages.stream().filter(age -> age > FORTY).count();
+        male.setUnder20(under20);
+        male.setBetween20And30(under30);
+        male.setBetween30And40(under40);
+        male.setAbove(above);
+        return male;
     }
 
     private void writeClusterRect(BufferedWriter writer, Cluster cluster) throws IOException {
@@ -161,13 +213,25 @@ public class TaskResultCalculator implements Runnable {
     }
 
     private void writeTags(BufferedWriter writer) {
-        tags.forEach(tag -> {
-            try {
-                writer.write(tag.toString());
-            } catch (IOException e) {
-                throw new FileIOException("创建结果集时发生文件异常");
-            }
-        });
+        List<BareAndCluster> list = task.getBareAndClusters();
+        List<String> bareIDs = task.getDataSet().stream().map(Bare::getId).collect(Collectors.toList());
+        for (String bareID : bareIDs) {
+            List<Tag> validTags = tags.stream()
+                    .filter(tag -> tag.getBareID().equals(bareID))
+                    .collect(Collectors.toList());
+            validTags.forEach(tag -> {
+                try {
+                    writer.write(tag.toString());
+                } catch (IOException e) {
+                    throw new FileIOException("创建结果集时发生文件异常");
+                }
+            });
+            BareAndCluster bareAndCluster = new BareAndCluster();
+            bareAndCluster.setNumber((double) validTags.size());
+            bareAndCluster.setKurtosis(1000.0);
+            list.add(bareAndCluster);
+        }
+        task.setBareAndClusters(list);
     }
 
 
@@ -193,5 +257,13 @@ public class TaskResultCalculator implements Runnable {
 
     public void setTaskController(TaskController taskController) {
         this.taskController = taskController;
+    }
+
+    public WorkerController getWorkerController() {
+        return workerController;
+    }
+
+    public void setWorkerController(WorkerController workerController) {
+        this.workerController = workerController;
     }
 }
