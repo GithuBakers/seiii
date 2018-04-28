@@ -63,6 +63,7 @@ public class WorkerDAO extends DAO<Worker,WorkerFilter>{
         if (cur.getDependencies().size() > 0) ori.setDependencies(cur.getDependencies());
         if (cur.getTestHistory().size() > 0) ori.setTestHistory(cur.getTestHistory());
         if (cur.getSex() != null) ori.setSex(cur.getSex());
+        if (cur.getErrorLearningAbility() != null) ori.setErrorLearningAbility(cur.getErrorLearningAbility());
         return ori;
     }
 }

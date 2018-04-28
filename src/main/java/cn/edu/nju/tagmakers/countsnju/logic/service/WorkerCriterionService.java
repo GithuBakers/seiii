@@ -2,6 +2,7 @@ package cn.edu.nju.tagmakers.countsnju.logic.service;
 
 import cn.edu.nju.tagmakers.countsnju.algorithm.ResultJudger;
 import cn.edu.nju.tagmakers.countsnju.algorithm.errorlearning.BasicAlgorithm;
+import cn.edu.nju.tagmakers.countsnju.algorithm.errorlearning.ErrorLearning;
 import cn.edu.nju.tagmakers.countsnju.data.controller.CriterionController;
 import cn.edu.nju.tagmakers.countsnju.data.controller.WorkerAndCriterionController;
 import cn.edu.nju.tagmakers.countsnju.data.controller.WorkerController;
@@ -63,7 +64,8 @@ public class WorkerCriterionService {
      * 获得错误学习能力值
      */
     public int getErrorLearningAbility(String workerID) {
-        return 0;
+        Worker worker = workerController.findByID(workerID);
+        return worker.getErrorLearningAbility();
     }
 
     /**
@@ -388,11 +390,23 @@ public class WorkerCriterionService {
      */
     private void updateErrorLearningAbility(Set<String> workerPassed, String criterionID) {
         List<Double> accuracyOfAllWorkers = new ArrayList<>();
+        //先得到所有的工人的正确率期望列表
         for (String workerID : workerPassed) {
             WorkerAndCriterion temp = workerAndCriterionController.findByID(workerID, criterionID);
             List<Double> accuracyListOfSingleWorker = temp.getAccuracy();
             double accuracyEx = BasicAlgorithm.countEx(accuracyListOfSingleWorker);
             accuracyOfAllWorkers.add(accuracyEx);
+        }
+        //然后遍历所有完成了该标准集的工人更新他们的学习能力
+        for (String workId : workerPassed) {
+            Worker singleWorker = workerController.findByID(workId);
+            WorkerAndCriterion temp = workerAndCriterionController.findByID(workId, criterionID);
+            List<Double> accuracyListOfSingleWorker = temp.getAccuracy();
+            double accuracyEx = BasicAlgorithm.countEx(accuracyListOfSingleWorker);
+            double value = ErrorLearning.countValue(accuracyOfAllWorkers, accuracyEx);
+            int errorLearningAbility = ErrorLearning.countErrorLearningAbility(value, accuracyListOfSingleWorker);
+            singleWorker.setErrorLearningAbility(errorLearningAbility);
+            workerController.update(singleWorker);
         }
     }
 

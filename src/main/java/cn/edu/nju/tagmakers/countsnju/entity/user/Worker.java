@@ -69,6 +69,7 @@ public class Worker extends User implements Serializable {
         this.dependencies = toCopy.dependencies;
         this.receivedTime = toCopy.receivedTime;
         this.testHistory = toCopy.testHistory;
+        this.errorLearningAbility = toCopy.errorLearningAbility;
     }
 
     /**
@@ -92,6 +93,11 @@ public class Worker extends User implements Serializable {
     @JsonProperty(value = "dependencies")
     private List<Criterion> dependencies;
 
+    /**
+     * 错误学习能力值
+     */
+    @JsonIgnore
+    private Integer errorLearningAbility;
 
     /**
      * 工人接受任务的时间(保留最近30项）
@@ -233,6 +239,14 @@ public class Worker extends User implements Serializable {
 
     public void setCapability(WorkerCapability capability) {
         this.capability = capability;
+    }
+
+    public Integer getErrorLearningAbility() {
+        return errorLearningAbility;
+    }
+
+    public void setErrorLearningAbility(int errorLearningAbility) {
+        this.errorLearningAbility = errorLearningAbility;
     }
 
     @Override
