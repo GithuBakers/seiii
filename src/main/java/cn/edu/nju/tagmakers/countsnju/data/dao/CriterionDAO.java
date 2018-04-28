@@ -44,7 +44,7 @@ public class CriterionDAO extends DAO<Criterion, CriterionFilter> {
      * @return 查询结果
      */
     @Override
-    public List<Criterion> find(CriterionFilter filter) {//todo
+    public List<Criterion> find(CriterionFilter filter) {
         if (filter == null) {
             return new ArrayList<>(map.values());
         }
@@ -53,7 +53,10 @@ public class CriterionDAO extends DAO<Criterion, CriterionFilter> {
         if (filter.getInitiatorID() != null) {
             criterionStream = criterionStream.filter(criterion -> criterion.getInitiatorID().equals(filter.getInitiatorID()));
         }
-        return new ArrayList<>(criterionStream.collect(Collectors.toList()));
+        if (filter.getFinished() != null) {
+            criterionStream = criterionStream.filter(criterion -> criterion.isHasFinished().equals(filter.getFinished()));
+        }
+        return criterionStream.collect(Collectors.toList());
     }
 
     /**

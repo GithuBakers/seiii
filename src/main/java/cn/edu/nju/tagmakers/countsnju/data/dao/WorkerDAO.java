@@ -36,7 +36,6 @@ public class WorkerDAO extends DAO<Worker,WorkerFilter>{
      */
     @Override
     public List<Worker> find(WorkerFilter filter) {
-        //todo:
         List<Worker> workerList;
         if(filter == null){
             workerList = new ArrayList<>(map.values());

@@ -9,7 +9,6 @@ package cn.edu.nju.tagmakers.countsnju.filter;
  * <p>
  * Update:
  * 增加筛选条件 发起者是否已经完成
- * //TODO:DAO
  * @author xxz
  * Created on 04/27/2018
  */
