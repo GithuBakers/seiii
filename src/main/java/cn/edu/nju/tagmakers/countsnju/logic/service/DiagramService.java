@@ -199,26 +199,28 @@ public class DiagramService {
         //先取出对于这个任务所有的
         LinkedList<TimeAndValue> list = new LinkedList<>();
         tags.sort((tag1, tag2) -> (int) (tag1.getSubmitTime() - tag2.getSubmitTime()) % 2);
-        long min = tags.get(0).getSubmitTime();
-        long max = new Date().getTime();
-        int index = 0;
-        //一天的毫秒数
-        long oneDay = 24 * 3600 * 1000;
-        for (long i = min; i < max; i += oneDay) {
-            TimeAndValue timeUnit = new TimeAndValue();
-            timeUnit.setTime(i);
-            int cnt = 0;
-            for (; ; index++) {
-                Long submitTime = tags.get(index).getSubmitTime();
-                if (submitTime >= i && submitTime < i + oneDay) {
-                    cnt++;
-                } else {
-                    break;
+        if (tags.size() != 0) {
+            long min = tags.get(0).getSubmitTime();
+            long max = new Date().getTime();
+            int index = 0;
+            //一天的毫秒数
+            long oneDay = 24 * 3600 * 1000;
+            for (long i = min; i < max; i += oneDay) {
+                TimeAndValue timeUnit = new TimeAndValue();
+                timeUnit.setTime(i);
+                int cnt = 0;
+                for (; ; index++) {
+                    Long submitTime = tags.get(index).getSubmitTime();
+                    if (submitTime >= i && submitTime < i + oneDay) {
+                        cnt++;
+                    } else {
+                        break;
+                    }
                 }
-            }
-            timeUnit.setWorkload(cnt);
-            list.add(timeUnit);
-        }//end of time loop
+                timeUnit.setWorkload(cnt);
+                list.add(timeUnit);
+            }//end of time loop
+        }
         return list;
     }
 }

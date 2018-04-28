@@ -38,6 +38,7 @@ public class CriterionDAOTest extends AbstractTestNGSpringContextTests {
         criterion1.setCriterionName("测试用标准集");
         criterion1.setRequirement("用来做测试");
         criterion1.setType(MarkType.DESC);
+        criterion1.setInitiatorID("hey");
 
         Bare bare1 = new Bare();
         Bare bare2 = new Bare();

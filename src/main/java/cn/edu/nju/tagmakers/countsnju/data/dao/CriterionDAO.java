@@ -44,7 +44,7 @@ public class CriterionDAO extends DAO<Criterion, CriterionFilter> {
      * @return 查询结果
      */
     @Override
-    public List<Criterion> find(CriterionFilter filter) {
+    public List<Criterion> find(CriterionFilter filter) {//todo
         if (filter == null) {
             return new ArrayList<>(map.values());
         }
