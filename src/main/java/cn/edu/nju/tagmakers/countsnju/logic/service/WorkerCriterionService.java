@@ -324,7 +324,8 @@ public class WorkerCriterionService {
     private boolean judgeCorrect(String criterionID, Image image) {
         Criterion criterion = criterionService.findByID(criterionID);
         String bareID = image.getBare().getId();
-        MarkType type = image.getType();
+//        MarkType type = image.getType();
+        MarkType type = criterionController.findByID(criterionID).getType();
         List<Tag> resultOfWorker = image.getTags();
         List<Tag> answers = criterion.getResult().get(bareID);
         switch (type) {
