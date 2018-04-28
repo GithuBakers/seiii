@@ -40,17 +40,17 @@ public class DiagramService {
         this.workerCriterionService = workerCriterionService;
     }
 
-    public List<WorkerRecentTaskVO> getWorkerRecentActivity(Worker worker) {
+    public void getWorkerRecentActivity(Worker worker) {
         if (worker == null) {
             throw new InvalidInputException("在 图表生成逻辑模块 出现 工人为null");
         }
         TagFilter tagFilter = new TagFilter();
         tagFilter.setWorkerID(worker.getPrimeKey());
         List<Tag> tags = tagService.findTag(tagFilter);
-        return worker.getReceivedTime().keySet().stream()
+        worker.setTasks(worker.getReceivedTime().keySet().stream()
                 .map(taskService::findByID)
                 .map(task -> generateWorkerRecentTask(worker, task, tags))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     public List<InitiatorRecentTaskVO> getInitiatorRecentActivity(Initiator initiator) {
@@ -101,7 +101,7 @@ public class DiagramService {
         worker.setCapability(new WorkerCapability(items));
     }
 
-    private void getWorkerRecentTags(Worker worker) {
+    public void getWorkerRecentTags(Worker worker) {
         //RECENT = 30天前
         long RECENT = new Date().getTime() - 30 * 3600 * 1000L;
         List<WorkerTestHistoryVO> workerTestHistory = workerCriterionService.getTestHistory(worker.getPrimeKey(), RECENT);
