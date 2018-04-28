@@ -3,11 +3,14 @@ package cn.edu.nju.tagmakers.countsnju.logic.service;
 import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Tag;
+import cn.edu.nju.tagmakers.countsnju.entity.user.Initiator;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
+import cn.edu.nju.tagmakers.countsnju.entity.vo.diagram.InitiatorRecentTaskVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.diagram.TimeAndValue;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.diagram.WorkerRecentTaskVO;
 import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
 import cn.edu.nju.tagmakers.countsnju.filter.TagFilter;
+import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -49,6 +52,40 @@ public class DiagramService {
                 .collect(Collectors.toList());
     }
 
+    public List<InitiatorRecentTaskVO> getInitiatorRecentActivity(Initiator initiator) {
+        if (initiator == null) {
+            throw new InvalidInputException("在 图表生成逻辑模块 出现 发起者为null");
+        }
+        TaskFilter taskFilter = new TaskFilter();
+        taskFilter.setFinished(false);
+        taskFilter.setInitiatorName(initiator.getPrimeKey());
+        List<Task> tasks = taskService.findTask(taskFilter);
+        return tasks.stream()
+                .map(this::generateInitiatorRecentTask)
+                .collect(Collectors.toList());
+
+    }
+
+    private InitiatorRecentTaskVO generateInitiatorRecentTask(Task task) {
+        List<Tag> tags = new LinkedList<>();
+        List<String> bareIDs = task.getDataSet().stream().map(Bare::getId).collect(Collectors.toList());
+        int finish = 0;
+        for (String bareID : bareIDs) {
+            TagFilter tagFilter = new TagFilter();
+            tagFilter.setBareID(bareID);
+            List<Tag> tag = tagService.findTag(tagFilter);
+            tags.addAll(tag);
+            if (tag.size() > task.getAim()) {
+                finish++;
+            }
+        }
+        InitiatorRecentTaskVO recentTaskVO = new InitiatorRecentTaskVO();
+        recentTaskVO.setCompleteness(finish * 100 / task.getDataSet().size());
+        recentTaskVO.setRecent(getTimeAndValues(tags));
+        recentTaskVO.setTaskID(task.getTaskID());
+        recentTaskVO.setTaskName(task.getTaskName());
+        return recentTaskVO;
+    }
 
     private WorkerRecentTaskVO generateWorkerRecentTask(Worker worker, Task task, List<Tag> allTags) {
         List<Tag> tags = allTags.stream()
@@ -71,39 +108,44 @@ public class DiagramService {
         } else {
             complete = task.getUserMarked().get(worker.getPrimeKey()) * 100 / task.getLimit();
         }
-        workerRecentTaskVO.setCompeleteness(complete);
-
-        //一天的毫秒数
-        long oneDay = 24 * 3600 * 1000;
+        workerRecentTaskVO.setCompleteness(complete);
 
 
         if (tags.size() == 0) {
             workerRecentTaskVO.setRecent(new LinkedList<>());
         } else {
-            //先取出对于这个任务所有的
-            LinkedList<TimeAndValue> list = new LinkedList<>();
-            tags.sort((tag1, tag2) -> (int) (tag1.getSubmitTime() - tag2.getSubmitTime()) % 2);
-            long min = tags.get(0).getSubmitTime();
-            long max = new Date().getTime();
-            int index = 0;
-            for (long i = min; i < max; i += oneDay) {
-                TimeAndValue timeUnit = new TimeAndValue();
-                timeUnit.setTime(i);
-                int cnt = 0;
-                for (; ; index++) {
-                    Long submitTime = tags.get(index).getSubmitTime();
-                    if (submitTime >= i && submitTime < i + oneDay) {
-                        cnt++;
-                    } else {
-                        break;
-                    }
-                }
-                timeUnit.setWorkload(cnt);
-                list.add(timeUnit);
-            }//end of time loop
+            LinkedList<TimeAndValue> list = getTimeAndValues(tags);
+
             workerRecentTaskVO.setRecent(list);
         }//end of tag-size else
 
         return workerRecentTaskVO;
+    }
+
+    private LinkedList<TimeAndValue> getTimeAndValues(List<Tag> tags) {
+        //先取出对于这个任务所有的
+        LinkedList<TimeAndValue> list = new LinkedList<>();
+        tags.sort((tag1, tag2) -> (int) (tag1.getSubmitTime() - tag2.getSubmitTime()) % 2);
+        long min = tags.get(0).getSubmitTime();
+        long max = new Date().getTime();
+        int index = 0;
+        //一天的毫秒数
+        long oneDay = 24 * 3600 * 1000;
+        for (long i = min; i < max; i += oneDay) {
+            TimeAndValue timeUnit = new TimeAndValue();
+            timeUnit.setTime(i);
+            int cnt = 0;
+            for (; ; index++) {
+                Long submitTime = tags.get(index).getSubmitTime();
+                if (submitTime >= i && submitTime < i + oneDay) {
+                    cnt++;
+                } else {
+                    break;
+                }
+            }
+            timeUnit.setWorkload(cnt);
+            list.add(timeUnit);
+        }//end of time loop
+        return list;
     }
 }

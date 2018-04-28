@@ -7,13 +7,13 @@ import java.util.List;
 
 /**
  * Description:
- * 反应工人近期 某一任务 标注增加数量/完成情况 的VO
+ * 发起者任务近期情况
  *
  * @author xxz
- * Created on 04/27/2018
+ * Created on 04/28/2018
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public class WorkerRecentTaskVO {
+public class InitiatorRecentTaskVO {
     /**
      * 任务名
      */
