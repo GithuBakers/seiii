@@ -326,7 +326,7 @@ const proxy = {
     };
     res.send(JSON.stringify(mockjs.mock(list).list));
   },
-  'POST /api/v2/worker/criterion/img':{...FakeEdgeTags,correct:false},
+  'POST /api/v2/worker/criterion/img':{...FakeRectTags,correct:false},
 
   'GET /api/currentUser': {
     $desc: '获取当前用户接口',
@@ -455,7 +455,7 @@ const proxy = {
   },
 };
 
-export default (delay(proxy, 1000));
-// export default {};
+// export default (delay(proxy, 1000));
+export default {};
 // export default {
 // };

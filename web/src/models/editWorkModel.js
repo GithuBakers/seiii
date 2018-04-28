@@ -67,22 +67,22 @@ export default {
       yield put({type: 'setState', payload});
       const requestType = yield select(state => state.editWorkModel.markRequestType);
       if(payload.isOpen===false){
-        yield put({type:'workerTask/fetchAllList'});
+        switch (requestType){
+          case WORKER_NORMAL:
+            yield put({type:'workerTask/fetchAllList'});
+            break;
+          case WORKER_CRITERION:
+            yield put({type:'workerCriterion/fetchAllCriterion'});
+            break;
+          case INITIATOR_CRITERION:
+            yield put({type:'initiatorCriterion/fetchMyCriterion'});
+            break;
+          default:
+            break;
+        }
       }
 
-      switch (requestType){
-        case WORKER_NORMAL:
-          yield put({type:'workerTask/fetchAllList'});
-          break;
-        case WORKER_CRITERION:
-          yield put({type:'workerTask/fetchAllList'});
-          break;
-        case INITIATOR_CRITERION:
-          yield put({type:'workerTask/fetchAllList'});
-          break;
-        default:
-          break;
-      }
+
     },
   },
 };
