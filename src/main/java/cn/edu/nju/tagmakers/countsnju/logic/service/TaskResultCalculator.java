@@ -61,13 +61,13 @@ public class TaskResultCalculator implements Runnable {
             analysisDistribution();
             File file = writeFile();
             task.setResult(OSSWriter.upload(file));
-            task.setFinished(true);
+            task.setHasResult(true);
             taskController.update(task);
         }
     }
 
     private File writeFile() {
-        String filePath = "ret" + File.separator + "task_result_" + task.getTaskName();
+        String filePath = "ret" + File.separator + "task_result_" + task.getTaskID();
         FileCreator.createFile(filePath);
         File file = new File(filePath);
         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)))) {
@@ -118,7 +118,7 @@ public class TaskResultCalculator implements Runnable {
         SexAndAge male = getSexDistribution(workers, sex);
         sex = Sex.FEMALE;
         SexAndAge female = getSexDistribution(workers, sex);
-        sex = Sex.OTHERS;
+        sex = Sex.NA;
         SexAndAge others = getSexDistribution(workers, sex);
         List<SexAndAge> list = task.getUserDistribution();
         list.addAll(Arrays.asList(male, female, others));
@@ -221,6 +221,7 @@ public class TaskResultCalculator implements Runnable {
                     .collect(Collectors.toList());
             validTags.forEach(tag -> {
                 try {
+                    writer.newLine();
                     writer.write(tag.toString());
                 } catch (IOException e) {
                     throw new FileIOException("创建结果集时发生文件异常");

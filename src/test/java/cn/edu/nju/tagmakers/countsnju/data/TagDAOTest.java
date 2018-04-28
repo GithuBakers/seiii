@@ -38,10 +38,16 @@ public class TagDAOTest extends AbstractTestNGSpringContextTests {
         comment2 = new Comment("更新后的评论");
         tag1 = new Tag();
         tag1.setTagID("tag1");
+        tag1.setWorkerID("拔丝地瓜");
         tag1.setComment(comment1);
         tag2 = new Tag();
     }
 
+    @AfterSuite
+    public void delete() {
+        dao.delete(tag1.getTagID());
+        dao.delete(tag2.getTagID());
+    }
     @Test
     //正常添加
     public void addTest1(){

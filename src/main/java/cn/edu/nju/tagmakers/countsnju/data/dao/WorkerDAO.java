@@ -21,8 +21,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * Last modified on
  */
 @Component
-public class WorkerDAO extends DAO<Worker,WorkerFilter>{
-    public WorkerDAO(){
+public class WorkerDAO extends DAO<Worker, WorkerFilter> {
+    public WorkerDAO() {
         map = new ConcurrentHashMap<>();
         filePath = "data" + File.separator + "Worker.txt";
         read();
@@ -36,9 +36,8 @@ public class WorkerDAO extends DAO<Worker,WorkerFilter>{
      */
     @Override
     public List<Worker> find(WorkerFilter filter) {
-        //todo:
         List<Worker> workerList;
-        if(filter == null){
+        if (filter == null) {
             workerList = new ArrayList<>(map.values());
             return workerList;
         }
@@ -53,14 +52,18 @@ public class WorkerDAO extends DAO<Worker,WorkerFilter>{
      */
     @Override
     protected Worker setChanges(Worker ori, Worker cur) {
-        if(cur.getAvatar() != null)ori.setAvatar(cur.getAvatar());
-        if(cur.getNickName() != null)ori.setNickName(cur.getNickName());
-        if(cur.getPassword() != null)ori.setPassword(cur.getPassword());
+        if (cur.getAvatar() != null) ori.setAvatar(cur.getAvatar());
+        if (cur.getNickName() != null) ori.setNickName(cur.getNickName());
+        if (cur.getPassword() != null) ori.setPassword(cur.getPassword());
         if (cur.getBareIDs().size() > 0) ori.setBareIDs(new ArrayList<>(cur.getBareIDs()));
         if (cur.getTaskIDs().size() > 0) ori.setTaskIDs(new ArrayList<>(cur.getTaskIDs()));
-        if(cur.getCredit() > 0)ori.setCredit(cur.getCredit());
-        if(cur.getRank() > 0)ori.setRank(cur.getRank());
+        if (cur.getCredit() > 0) ori.setCredit(cur.getCredit());
+        if (cur.getRank() > 0) ori.setRank(cur.getRank());
         if (cur.getDependencies().size() > 0) ori.setDependencies(cur.getDependencies());
+        if (cur.getTestHistory().size() > 0) ori.setTestHistory(cur.getTestHistory());
+        if (cur.getSex() != null) ori.setSex(cur.getSex());
+        if (cur.getErrorLearningAbility() != null) ori.setErrorLearningAbility(cur.getErrorLearningAbility());
+        if (cur.getReceivedTime() != null) ori.setReceivedTime(cur.getReceivedTime());
         return ori;
     }
 }

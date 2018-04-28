@@ -3,13 +3,12 @@ package cn.edu.nju.tagmakers.countsnju.entity.Criterion;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 
 import java.io.Serializable;
-import java.util.Calendar;
 
 public class Result implements Serializable {
     private static final long serialVersionUID = 400L;
 
     Bare bare;
-    Calendar submitTime;
+    long submitTime;
     boolean correct;
     boolean hasTested;
     /**
@@ -30,11 +29,11 @@ public class Result implements Serializable {
         this.bare = bare;
     }
 
-    public Calendar getSubmitTime() {
+    public long getSubmitTime() {
         return submitTime;
     }
 
-    public void setSubmitTime(Calendar submitTime) {
+    public void setSubmitTime(long submitTime) {
         this.submitTime = submitTime;
     }
 

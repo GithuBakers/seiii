@@ -4,6 +4,8 @@ import cn.edu.nju.tagmakers.countsnju.entity.user.Sex;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
+
 /**
  * Description:
  * 对于某一任务
@@ -13,7 +15,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Created on 04/28/2018
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public class SexAndAge {
+public class SexAndAge implements Serializable {
+    private static final long serialVersionUID = 71L;
+
     @JsonProperty("name")
     private Sex sex;
     @JsonProperty("under20")

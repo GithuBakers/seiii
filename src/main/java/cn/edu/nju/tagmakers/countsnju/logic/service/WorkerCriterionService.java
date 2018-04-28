@@ -1,6 +1,8 @@
 package cn.edu.nju.tagmakers.countsnju.logic.service;
 
 import cn.edu.nju.tagmakers.countsnju.algorithm.ResultJudger;
+import cn.edu.nju.tagmakers.countsnju.algorithm.errorlearning.BasicAlgorithm;
+import cn.edu.nju.tagmakers.countsnju.algorithm.errorlearning.ErrorLearning;
 import cn.edu.nju.tagmakers.countsnju.data.controller.CriterionController;
 import cn.edu.nju.tagmakers.countsnju.data.controller.WorkerAndCriterionController;
 import cn.edu.nju.tagmakers.countsnju.data.controller.WorkerController;
@@ -11,15 +13,13 @@ import cn.edu.nju.tagmakers.countsnju.entity.pic.*;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.CriterionImageAnswerVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerCriterionVO;
+import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerTestHistoryVO;
 import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
 import cn.edu.nju.tagmakers.countsnju.filter.CriterionFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -58,6 +58,14 @@ public class WorkerCriterionService {
     }
 
     /**
+     * 获得错误学习能力值
+     */
+    public int getErrorLearningAbility(String workerID) {
+        Worker worker = workerController.findByID(workerID);
+        return worker.getErrorLearningAbility();
+    }
+
+    /**
      * 工人查看所有的标准集
      * <p>
      * 这些标准集只包括发起者提供完整答案的部分
@@ -76,6 +84,18 @@ public class WorkerCriterionService {
             ret.add(vo);
         }
         return ret;
+    }
+
+    /**
+     * 获取某工人的最后n张做过的测试
+     */
+    public List<WorkerTestHistoryVO> getTestHistory(String workerID, long time) {
+        Worker worker = workerController.findByID(workerID);
+        return worker.getTestHistory().stream()
+                .filter(workerTestHistoryVO -> {
+                    long submitTime = workerTestHistoryVO.getSubmitTime();
+                    return submitTime < time;
+                }).collect(Collectors.toList());
     }
 
     /**
@@ -240,18 +260,20 @@ public class WorkerCriterionService {
 
     /**
      * 修改对应图片的correct和hasTested，设置提交时间
+     * 判断是否通过
      */
     public CriterionImageAnswerVO submitCriterionResult(String criterionID, Image image, String workerID) {
         boolean isCorrect = judgeCorrect(criterionID, image);
         String bareID = image.getBare().getId();
         WorkerAndCriterion workerAndCriterion = workerAndCriterionController.findByID(workerID, criterionID);
         List<Result> resultList = workerAndCriterion.getResults();
+        long submitTime = new Date().getTime();
         for (Result result : resultList) {
             if (result.getBare().getId().equals(bareID)) {
                 //这个值只设置一次别的地方不会再改成false
                 result.setHasTested(true);
                 result.setCorrect(isCorrect);
-                result.setSubmitTime(Calendar.getInstance());
+                result.setSubmitTime(submitTime);
                 //这个值是用于判断在当前若干张里面是否完成，可能被设置成false和true
                 result.setFinishedInCurrentTest(true);
                 break;
@@ -260,6 +282,9 @@ public class WorkerCriterionService {
         //更新
         workerAndCriterion.setResults(resultList);
         workerAndCriterionController.update(workerAndCriterion);
+
+        //更新工人测试历史
+        updateTestHistory(workerID, image.getType(), submitTime);
 
         //判断是否通过
         int aim = workerAndCriterion.getAim();
@@ -282,6 +307,10 @@ public class WorkerCriterionService {
             passedCriterion.add(target);
             temp.setDependencies(passedCriterion);
             workerController.update(temp);
+
+            //更新所有工人的错误学习能力
+            updateErrorLearningAbility(workerPassed, criterionID);
+
         }
 
         //无论正确与否都返回正确答案
@@ -295,7 +324,8 @@ public class WorkerCriterionService {
     private boolean judgeCorrect(String criterionID, Image image) {
         Criterion criterion = criterionService.findByID(criterionID);
         String bareID = image.getBare().getId();
-        MarkType type = image.getType();
+//        MarkType type = image.getType();
+        MarkType type = criterionController.findByID(criterionID).getType();
         List<Tag> resultOfWorker = image.getTags();
         List<Tag> answers = criterion.getResult().get(bareID);
         switch (type) {
@@ -351,5 +381,42 @@ public class WorkerCriterionService {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 更新所有工人的学习能力水平
+     */
+    private void updateErrorLearningAbility(Set<String> workerPassed, String criterionID) {
+        List<Double> accuracyOfAllWorkers = new ArrayList<>();
+        //先得到所有的工人的正确率期望列表
+        for (String workerID : workerPassed) {
+            WorkerAndCriterion temp = workerAndCriterionController.findByID(workerID, criterionID);
+            List<Double> accuracyListOfSingleWorker = temp.getAccuracy();
+            double accuracyEx = BasicAlgorithm.countEx(accuracyListOfSingleWorker);
+            accuracyOfAllWorkers.add(accuracyEx);
+        }
+        //然后遍历所有完成了该标准集的工人更新他们的学习能力
+        for (String workId : workerPassed) {
+            Worker singleWorker = workerController.findByID(workId);
+            WorkerAndCriterion temp = workerAndCriterionController.findByID(workId, criterionID);
+            List<Double> accuracyListOfSingleWorker = temp.getAccuracy();
+            double accuracyEx = BasicAlgorithm.countEx(accuracyListOfSingleWorker);
+            double value = ErrorLearning.countValue(accuracyOfAllWorkers, accuracyEx);
+            int errorLearningAbility = ErrorLearning.countErrorLearningAbility(value, accuracyListOfSingleWorker);
+            singleWorker.setErrorLearningAbility(errorLearningAbility);
+            workerController.update(singleWorker);
+        }
+    }
+
+    /**
+     * 更新工人测试历史
+     */
+    private void updateTestHistory(String workerID, MarkType type, long submitTime) {
+        Worker worker = workerController.findByID(workerID);
+        List<WorkerTestHistoryVO> testHistory = worker.getTestHistory();
+        WorkerTestHistoryVO vo = new WorkerTestHistoryVO(type, submitTime);
+        testHistory.add(vo);
+        worker.setTestHistory(testHistory);
+        workerController.update(worker);
     }
 }

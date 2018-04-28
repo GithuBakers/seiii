@@ -3,6 +3,8 @@ package cn.edu.nju.tagmakers.countsnju.entity.vo.diagram;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
+
 /**
  * Description:
  * 单张图片用户标记数量和标记的聚集程度
@@ -11,7 +13,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Created on 04/28/2018
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public class BareAndCluster {
+public class BareAndCluster implements Serializable {
+    private static final long serialVersionUID = 71L;
+
     /**
      * 标注人数
      */

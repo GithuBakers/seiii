@@ -95,12 +95,6 @@ public class WorkerServiceTest extends AbstractTestNGSpringContextTests {
         assertEquals(temp.getNickName(), "拔丝地瓜");
     }
 
-    @Test(expectedExceptions = InvalidInputException.class)
-    //查找不存在的工人
-    public void findTest2() {
-        workerService.findWorkerByName("不存在");
-    }
-
     @Test(dependsOnMethods = "receiveTaskTest1")
     //根据任务查
     public void findTest3() {

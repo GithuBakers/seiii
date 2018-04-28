@@ -43,7 +43,7 @@ public class InitiatorService {
      */
     public Initiator findInitiatorByName(String initiatorName) {
         Initiator initiator = initiatorController.findByID(initiatorName);
-        initiator.setRecentTasks(diagramService.getInitiatorRecentActivity(initiator));
+//        initiator.setRecentTasks(diagramService.getInitiatorRecentActivity(initiator));
         return initiator;
     }
 
@@ -111,7 +111,7 @@ public class InitiatorService {
             throw new PermissionDeniedException("这不是你的任务!");
         } else {
             Task task = taskService.findByID(taskID);
-            if (!task.getHasResult()) {
+            if (task.getHasResult() == null || !task.getHasResult()) {
                 throw new InvalidInputException("此任务还没有计算出结果");
             } else {
                 return task;

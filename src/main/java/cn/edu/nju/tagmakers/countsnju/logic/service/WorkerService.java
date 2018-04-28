@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  *
  * @author xxz
  * Created on 04/06/2018
- * @update wym
+ * update wym
  * 增加WorkerAndCriterionController和标准集的相关方法
  * Updated on 4/22
  */
@@ -55,7 +55,9 @@ public class WorkerService {
      */
     public Worker findWorkerByName(String workerName) {
         Worker worker = workerController.findByID(workerName);
-        worker.setTasks(diagramService.getWorkerRecentActivity(worker));
+        diagramService.getWorkerRecentActivity(worker);
+        diagramService.getWorkerCapability(worker);
+        diagramService.getWorkerRecentTags(worker);
         return worker;
     }
 
@@ -92,6 +94,9 @@ public class WorkerService {
      */
     public WorkerTaskDetailVO getTaskDetail(String taskID, String workerName) {
         Task detail = taskService.findByID(taskID);
+        if (detail == null) {
+            throw new NotFoundException("任务不存在");
+        }
         //检查是否可接受此任务
         if (check(workerName, detail)) {
             return new WorkerTaskDetailVO(detail, workerName);
@@ -123,7 +128,7 @@ public class WorkerService {
             //将任务加入工人的任务列表, 并记录下其添加时间
             Worker receiver = workerController.findByID(workerName);
             if (receiver == null) {
-                throw new NotFoundException("没有此任务");
+                throw new NotFoundException("没有此工人");
             }
             List<String> taskList = receiver.getTaskIDs();
             if (!taskList.contains(taskID)) {
@@ -202,6 +207,7 @@ public class WorkerService {
 
         List<Tag> tagList = image.getTags();
         tagList.parallelStream().forEach(tag -> tag.setWorkerID(workerName));
+        tagList.parallelStream().forEach(tag -> tag.setBareID(image.getBare().getId()));
         tagList.parallelStream().forEach(tagService::addTag);
         return true;
     }

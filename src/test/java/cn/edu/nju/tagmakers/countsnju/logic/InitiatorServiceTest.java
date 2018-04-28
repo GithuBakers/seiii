@@ -7,7 +7,9 @@ import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Initiator;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Role;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Sex;
+import cn.edu.nju.tagmakers.countsnju.entity.vo.InitiatorTaskDetailVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.InitiatorTaskVO;
+import cn.edu.nju.tagmakers.countsnju.exception.NotFoundException;
 import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
 import cn.edu.nju.tagmakers.countsnju.logic.service.InitiatorService;
@@ -17,13 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import static org.testng.Assert.*;
 
@@ -159,12 +161,12 @@ public class InitiatorServiceTest extends AbstractTestNGSpringContextTests {
     @Test(dependsOnMethods = "createTaskTest1")
     //正确的发起者结束任务
     public void ownerTest2() {
-//        initiatorService.finishTask(testTask.getPrimeKey(), testInitiator.getPrimeKey());
-//        Task res = initiatorService.findTaskByName(testTask.getPrimeKey(), testInitiator.getPrimeKey());
-//        if (res == null) {
-//            throw new NotFoundException("在结束任务的测试中没有能找到任务");
-//        } else {
-//            assertEquals(res.getFinished(), Boolean.TRUE);
-//        }
+        initiatorService.finishTask(testTask.getPrimeKey(), testInitiator.getPrimeKey());
+        try {
+            TimeUnit.SECONDS.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        initiatorService.getTaskResult(testTask.getTaskID(), testInitiator.getPrimeKey());
     }
 }

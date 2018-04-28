@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Description:
@@ -43,15 +44,19 @@ public class TagDAO extends DAO<Tag, TagFilter> {
      */
     @Override
     public List<Tag> find(TagFilter filter) {
-        List<Tag> tagList = new ArrayList<>();
+        List<Tag> tagList;
         if (filter == null) {
-            tagList.addAll(map.values());
+            tagList = new ArrayList<>(map.values());
             return tagList;
         }
-        tagList = map.values().stream()
-                .filter(tag -> tag.getBareID().equals(filter.getBareID()))
-                .collect(Collectors.toList());
-        return tagList;
+        Stream<Tag> tagStream = map.values().stream();
+        if (filter.getBareID() != null) {
+            tagStream = tagStream.filter(tag -> tag.getBareID().equals(filter.getBareID()));
+        }
+        if (filter.getWorkerID() != null) {
+            tagStream = tagStream.filter(tag -> tag.getWorkerID().equals(filter.getWorkerID()));
+        }
+        return tagStream.collect(Collectors.toList());
     }
 
     /**
