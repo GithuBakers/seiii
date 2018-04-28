@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  *
  * @author xxz
  * Created on 04/06/2018
- * @update wym
+ * update wym
  * 增加WorkerAndCriterionController和标准集的相关方法
  * Updated on 4/22
  */
@@ -55,7 +55,9 @@ public class WorkerService {
      */
     public Worker findWorkerByName(String workerName) {
         Worker worker = workerController.findByID(workerName);
-        worker.setTasks(diagramService.getWorkerRecentActivity(worker));
+        diagramService.getWorkerRecentActivity(worker);
+        diagramService.getWorkerCapability(worker);
+        diagramService.getWorkerRecentTags(worker);
         return worker;
     }
 
