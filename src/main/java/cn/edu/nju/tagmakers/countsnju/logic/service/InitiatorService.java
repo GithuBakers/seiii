@@ -5,6 +5,7 @@ import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Initiator;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.InitiatorTaskDetailVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.InitiatorTaskVO;
+import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
 import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +28,13 @@ public class InitiatorService {
 
     private InitiatorController initiatorController;
 
+    private DiagramService diagramService;
+
     @Autowired
-    public InitiatorService(TaskService taskService, InitiatorController initiatorController) {
+    public InitiatorService(TaskService taskService, InitiatorController initiatorController, DiagramService diagramService) {
         this.taskService = taskService;
         this.initiatorController = initiatorController;
+        this.diagramService = diagramService;
     }
 
 
@@ -38,7 +42,9 @@ public class InitiatorService {
      * 按ID查找发起人
      */
     public Initiator findInitiatorByName(String initiatorName) {
-        return initiatorController.findByID(initiatorName);
+        Initiator initiator = initiatorController.findByID(initiatorName);
+        initiator.setRecentTasks(diagramService.getInitiatorRecentActivity(initiator));
+        return initiator;
     }
 
     /**
@@ -100,6 +106,19 @@ public class InitiatorService {
         return new InitiatorTaskDetailVO(taskService.findByID(taskID));
     }
 
+    public Task getTaskResult(String taskID, String initiatorName) {
+        if (!isOwner(taskID, initiatorName)) {
+            throw new PermissionDeniedException("这不是你的任务!");
+        } else {
+            Task task = taskService.findByID(taskID);
+            if (!task.getHasResult()) {
+                throw new InvalidInputException("此任务还没有计算出结果");
+            } else {
+                return task;
+            }
+        }
+    }
+
     private boolean isOwner(String taskID, String initiatorName) {
         Task toLookUp = taskService.findByID(taskID);
         if (toLookUp == null) {
@@ -111,5 +130,6 @@ public class InitiatorService {
         }
         return taskInitiatorName.equals(initiatorName);
     }
+
 
 }

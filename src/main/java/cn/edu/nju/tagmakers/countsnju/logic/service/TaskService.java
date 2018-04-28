@@ -6,17 +6,14 @@ import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Criterion;
 import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
-import cn.edu.nju.tagmakers.countsnju.exception.FileIOException;
 import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
+import cn.edu.nju.tagmakers.countsnju.filter.TagFilter;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import util.FileCreator;
-import util.OSSWriter;
 
-import java.io.*;
-import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Description:
@@ -29,6 +26,11 @@ import java.util.List;
  * 增加了发放奖励的逻辑
  * @author xxz
  * Created on 04/07/2018
+ * <p>
+ * Update:
+ * 将生成结果集的方法改为异步方法
+ * @author xxz
+ * Created on 04/28/2018
  */
 
 @Component
@@ -42,12 +44,15 @@ public class TaskService {
 
     private CriterionService criterionService;
 
+    private TagService tagService;
+
     @Autowired
-    public TaskService(TaskController taskController, WorkerController workerController, BareService bareService, CriterionService criterionService) {
+    public TaskService(TaskController taskController, WorkerController workerController, BareService bareService, CriterionService criterionService, TagService tagService) {
         this.taskController = taskController;
         this.workerController = workerController;
         this.bareService = bareService;
         this.criterionService = criterionService;
+        this.tagService = tagService;
     }
 
     /**
@@ -123,7 +128,9 @@ public class TaskService {
         //发放奖励
         reward(toFinish);
         //制作结果集
-        toFinish.setResult(makeResult(toFinish));
+        //编程异步方法
+        makeResult(toFinish);
+//        toFinish.setResult(makeResult(toFinish));
         //在数据层更新任务信息
         updateTask(toFinish);
         return toFinish;
@@ -147,32 +154,21 @@ public class TaskService {
      * 为某个已结束任务创建结果
      *
      * @param task 已结束任务
-     * @return 结果所在的URL
      */
-    private String makeResult(Task task) {
+    private void makeResult(Task task) {
         if (!task.getFinished()) {
             throw new InvalidInputException("任务尚未结束，请结束任务之后再查看任务结果");
         }
-        String filePath = "ret" + File.separator + "task_result_" + task.getTaskName();
-        FileCreator.createFile(filePath);
-        File file = new File(filePath);
-
-        //生成结果的逻辑
-        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)))) {
-            writer.write("this is the result set of task" + file.getName());
-            writer.newLine();
-            writer.write("请联系支付宝：18251830730 以查看所有数据");
-            writer.newLine();
-            writer.write("皮这一下非常开心");
-            writer.newLine();
-            writer.write(new Date(System.currentTimeMillis()).toString());
-        } catch (FileNotFoundException e) {
-            throw new FileIOException("创建结果集时发生文件异常");
-        } catch (IOException e) {
-            throw new FileIOException("File IO ERROR in task Service, when try to generate result set");
-        }
-
-        //上传到OSS
-        return OSSWriter.upload(file);
+        TaskResultCalculator calculator = new TaskResultCalculator();
+        calculator.setTask(task);
+        calculator.setTaskController(taskController);
+        calculator.setWorkerController(workerController);
+        calculator.setTags(task.getDataSet().stream().map(Bare::getId)
+                .flatMap(id -> {
+                    TagFilter filter = new TagFilter();
+                    filter.setBareID(id);
+                    return tagService.findTag(filter).stream();
+                }).collect(Collectors.toList()));
+        new Thread(calculator).run();
     }
 }

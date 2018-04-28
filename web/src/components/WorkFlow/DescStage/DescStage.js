@@ -28,7 +28,7 @@ class DescStage extends React.Component {
         },
       ],
     };
-const back = await contributeWorkerTask(this.props.taskId,result, result.id);
+const back = await this.props.request(this.props.taskId,result, result.id);
     return back;
   };
   checkButtonEvent = async () =>{
@@ -167,11 +167,10 @@ const back = await contributeWorkerTask(this.props.taskId,result, result.id);
                       className={Styles['list-section']}
                     >
                     {this.state.hasCheckAnswer?
-                      (<TextArea
-                        className={Styles["desc-input"]}
-                        value={this.state.rightAnswer}
-
-                      />)
+                      (<div
+                        key='c'
+                        className="desc-input"
+                      >{this.state.rightAnswer}</div>)
                       :
                       (<TextArea
                       className={Styles["desc-input"]}

@@ -34,13 +34,17 @@ import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
  * 增加了userID这个字段
  * @author xxz
  * Created on 04/07/2018
+ * <p>
+ * Update:
+ * 增加字段：提交时间
+ * @author xxz
+ * Created on 04/27/2018
  */
 @JsonAutoDetect(fieldVisibility = ANY)
 public class Tag extends Entity<Tag> implements Serializable {
     private static final long serialVersionUID = 7L;
     /**
      * 全部tag的唯一性标识
-     *
      */
     @JsonProperty("id")
     private String tagID;
@@ -67,6 +71,12 @@ public class Tag extends Entity<Tag> implements Serializable {
     @JsonIgnore
     private String workerID;
 
+    /**
+     * 提交时间
+     */
+    @JsonIgnore
+    private Long submitTime;
+
     public Tag() {
 
     }
@@ -83,6 +93,7 @@ public class Tag extends Entity<Tag> implements Serializable {
         this.workerID = toCopy.workerID;
         this.bareID = toCopy.bareID;
         this.tagID = toCopy.tagID;
+        this.submitTime = toCopy.submitTime;
     }
 
     public String getTagID() {
@@ -135,6 +146,19 @@ public class Tag extends Entity<Tag> implements Serializable {
 
     public void setWorkerID(String workerID) {
         this.workerID = workerID;
+    }
+
+    public Long getSubmitTime() {
+        return submitTime;
+    }
+
+    public void setSubmitTime(Long submitTime) {
+        this.submitTime = submitTime;
+    }
+
+    @Override
+    public String toString() {
+        return bareID + "," + comment + "," + mark.toString();
     }
 
     /**

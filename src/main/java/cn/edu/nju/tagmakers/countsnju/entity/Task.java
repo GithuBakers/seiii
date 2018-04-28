@@ -3,6 +3,8 @@ package cn.edu.nju.tagmakers.countsnju.entity;
 import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Criterion;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
+import cn.edu.nju.tagmakers.countsnju.entity.vo.diagram.BareAndCluster;
+import cn.edu.nju.tagmakers.countsnju.entity.vo.diagram.SexAndAge;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -34,6 +36,17 @@ import java.util.concurrent.ConcurrentHashMap;
  * 增加keywords关键字
  * @author xxz
  * Created on 04/14/2018
+ * <p>
+ * Update:
+ * 增加字段 结果集是否计算完成(has result)
+ * 用户标注数量和用户标注聚集程度(bare and cluster)
+ * @author xxz
+ * Created on 04/28/2018
+ * <p>
+ * Update:
+ * 增加字段：标记工人的性别/年龄分布
+ * @author xxz
+ * Created on 04/28/2018
  */
 
 public class Task extends Entity<Task> implements Serializable {
@@ -111,6 +124,12 @@ public class Task extends Entity<Task> implements Serializable {
     private List<Criterion> dependencies;
 
     /**
+     * 是否已经计算完成结果集
+     */
+    @JsonProperty("has_result")
+    private Boolean hasResult;
+
+    /**
      * user和已经标注的数量
      */
     @JsonIgnore
@@ -120,6 +139,17 @@ public class Task extends Entity<Task> implements Serializable {
      */
     @JsonIgnore
     private Map<String, Integer> bareMarked; //<BARE_ID, MARKED_NUMBER>
+
+    /**
+     * 用户的 性别-年龄 分布
+     */
+    @JsonProperty("sex_age")
+    private List<SexAndAge> userDistribution;
+    /**
+     * 用户标注数量-用户标注聚集程度
+     */
+    @JsonProperty("hive")
+    private List<BareAndCluster> bareAndClusters;
 
     public Task() {
 
@@ -149,6 +179,13 @@ public class Task extends Entity<Task> implements Serializable {
         }
         if (toCopy.dependencies != null) {
             this.dependencies = new ArrayList<>(toCopy.dependencies);
+        }
+        this.hasResult = toCopy.hasResult;
+        if (toCopy.getBareAndClusters() != null) {
+            this.bareAndClusters = new ArrayList<>(toCopy.bareAndClusters);
+        }
+        if (toCopy.getUserDistribution() != null) {
+            this.userDistribution = new ArrayList<>(toCopy.userDistribution);
         }
     }
 
@@ -283,6 +320,30 @@ public class Task extends Entity<Task> implements Serializable {
 
     public void setDependencies(List<Criterion> dependencies) {
         this.dependencies = dependencies;
+    }
+
+    public List<BareAndCluster> getBareAndClusters() {
+        return Optional.ofNullable(bareAndClusters).orElse(new LinkedList<>());
+    }
+
+    public void setBareAndClusters(List<BareAndCluster> bareAndClusters) {
+        this.bareAndClusters = bareAndClusters;
+    }
+
+    public Boolean getHasResult() {
+        return hasResult;
+    }
+
+    public void setHasResult(Boolean hasResult) {
+        this.hasResult = hasResult;
+    }
+
+    public List<SexAndAge> getUserDistribution() {
+        return Optional.ofNullable(userDistribution).orElse(new LinkedList<>());
+    }
+
+    public void setUserDistribution(List<SexAndAge> userDistribution) {
+        this.userDistribution = userDistribution;
     }
 
     /**

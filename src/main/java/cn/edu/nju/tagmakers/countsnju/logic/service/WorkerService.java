@@ -1,23 +1,21 @@
 package cn.edu.nju.tagmakers.countsnju.logic.service;
 
-import cn.edu.nju.tagmakers.countsnju.algorithm.ResultJudger;
-import cn.edu.nju.tagmakers.countsnju.data.controller.WorkerAndCriterionController;
 import cn.edu.nju.tagmakers.countsnju.data.controller.WorkerController;
-import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Criterion;
-import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Result;
-import cn.edu.nju.tagmakers.countsnju.entity.Criterion.WorkerAndCriterion;
 import cn.edu.nju.tagmakers.countsnju.entity.Task;
-import cn.edu.nju.tagmakers.countsnju.entity.pic.*;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.Bare;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.Image;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.MarkType;
+import cn.edu.nju.tagmakers.countsnju.entity.pic.Tag;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
-import cn.edu.nju.tagmakers.countsnju.entity.vo.*;
-import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
+import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerReceivedTaskDetailVO;
+import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerReceivedTaskVO;
+import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerTaskDetailVO;
+import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerTaskVO;
 import cn.edu.nju.tagmakers.countsnju.exception.NotFoundException;
 import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import util.SecurityUtility;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -28,7 +26,6 @@ import java.util.stream.Collectors;
  *
  * @author xxz
  * Created on 04/06/2018
- *
  * @update wym
  * 增加WorkerAndCriterionController和标准集的相关方法
  * Updated on 4/22
@@ -42,12 +39,14 @@ public class WorkerService {
 
     private TagService tagService;
 
+    private DiagramService diagramService;
 
     @Autowired
-    public WorkerService(TaskService taskService, WorkerController workerController, TagService tagService) {
+    public WorkerService(TaskService taskService, WorkerController workerController, TagService tagService, DiagramService diagramService) {
         this.taskService = taskService;
         this.workerController = workerController;
         this.tagService = tagService;
+        this.diagramService = diagramService;
     }
 
 
@@ -55,7 +54,9 @@ public class WorkerService {
      * 按ID查找个人信息
      */
     public Worker findWorkerByName(String workerName) {
-        return workerController.findByID(workerName);
+        Worker worker = workerController.findByID(workerName);
+        worker.setTasks(diagramService.getWorkerRecentActivity(worker));
+        return worker;
     }
 
     /**
@@ -93,7 +94,7 @@ public class WorkerService {
         Task detail = taskService.findByID(taskID);
         //检查是否可接受此任务
         if (check(workerName, detail)) {
-            return new WorkerTaskDetailVO(detail,workerName);
+            return new WorkerTaskDetailVO(detail, workerName);
         } else {
             throw new PermissionDeniedException("你暂时无法接受此任务");
         }

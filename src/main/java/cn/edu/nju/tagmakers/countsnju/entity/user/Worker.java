@@ -1,6 +1,7 @@
 package cn.edu.nju.tagmakers.countsnju.entity.user;
 
 import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Criterion;
+import cn.edu.nju.tagmakers.countsnju.entity.vo.diagram.WorkerRecentTaskVO;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -87,6 +88,12 @@ public class Worker extends User implements Serializable {
     private List<Criterion> dependencies;
 
     /**
+     * 工人近期任务情况（不需要持久化，随用随算）
+     */
+    @JsonProperty("tasks")
+    private List<WorkerRecentTaskVO> tasks;
+
+    /**
      * 工人接受任务的时间(保留最近30项）
      * Map ( taskID, receiveTime )
      */
@@ -102,7 +109,7 @@ public class Worker extends User implements Serializable {
     }
 
     public Map<String, Long> getReceivedTime() {
-        return Optional.of(receivedTime).orElse(new TreeMap<>());
+        return Optional.ofNullable(receivedTime).orElse(new TreeMap<>());
     }
 
     public void setReceivedTime(Map<String, Long> receivedTime) {
@@ -164,6 +171,14 @@ public class Worker extends User implements Serializable {
 
     public void setRank(int rank) {
         this.rank = rank;
+    }
+
+    public List<WorkerRecentTaskVO> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<WorkerRecentTaskVO> tasks) {
+        this.tasks = tasks;
     }
 
     @Override

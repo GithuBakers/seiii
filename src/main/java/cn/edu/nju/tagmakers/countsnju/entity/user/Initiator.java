@@ -1,6 +1,8 @@
 package cn.edu.nju.tagmakers.countsnju.entity.user;
 
+import cn.edu.nju.tagmakers.countsnju.entity.vo.diagram.InitiatorRecentTaskVO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -62,12 +64,27 @@ public class Initiator extends User implements Serializable {
     @JsonIgnore
     private List<String> taskNames;
 
+    /**
+     * 近期任务完成情况
+     * 不需要持久化
+     */
+    @JsonProperty("tasks")
+    private List<InitiatorRecentTaskVO> recentTasks;
+
     public List<String> getTaskNames() {
         return Optional.ofNullable(taskNames).orElse(new ArrayList<>());
     }
 
     public void setTaskNames(List<String> taskNames) {
         this.taskNames = taskNames;
+    }
+
+    public List<InitiatorRecentTaskVO> getRecentTasks() {
+        return recentTasks;
+    }
+
+    public void setRecentTasks(List<InitiatorRecentTaskVO> recentTasks) {
+        this.recentTasks = recentTasks;
     }
 
     /**

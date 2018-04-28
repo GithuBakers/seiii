@@ -1,5 +1,6 @@
 package cn.edu.nju.tagmakers.countsnju.algorithm;
 
+import cn.edu.nju.tagmakers.countsnju.algorithm.entity.AlgoEdge;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Edge;
 
 import java.util.Comparator;

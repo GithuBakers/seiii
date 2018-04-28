@@ -64,6 +64,7 @@ public class InitiatorRestController {
         toUpdate.setNickName(initiator.getNickName());
         return initiatorService.update(toUpdate);
     }
+
     /**
      * 新增（新开始一个任务)
      *
@@ -110,5 +111,14 @@ public class InitiatorRestController {
         return initiatorService.finishTask(task.getTaskID(), initiatorName);
     }
 
+    /**
+     * 发起者查看自己任务的结果
+     */
+    @RequestMapping(value = "/task/task_result", method = RequestMethod.GET)
+    public Task getTaskResult(@RequestParam("taskID") String taskID) {
+        String initiatorName = SecurityUtility.getUserName(SecurityContextHolder.getContext());
+
+        return initiatorService.getTaskResult(taskID, initiatorName);
+    }
 
 }

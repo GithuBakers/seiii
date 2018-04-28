@@ -31,6 +31,12 @@ import java.util.stream.Stream;
  * 增加了filter中的"类型"关键字
  * @author xxz
  * Created on 04/15/2018
+ * <p>
+ * Update:
+ * 增加了 bareAndCluster, has_result字段
+ * 增加了 userDistribution
+ * @author xxz
+ * Created on 04/28/2018
  */
 @Component
 public class TaskDAO extends DAO<Task, TaskFilter> {
@@ -92,6 +98,9 @@ public class TaskDAO extends DAO<Task, TaskFilter> {
         if (cur.getDependencies() != null && cur.getDependencies().size() > 0)
             ori.setDependencies(new ArrayList<>(cur.getDependencies()));
         if (cur.getKeywords().size() > 0) ori.setKeywords(new ArrayList<>(cur.getKeywords()));
+        if (cur.getHasResult() != null) ori.setHasResult(cur.getHasResult());
+        if (cur.getBareAndClusters() != null) ori.setBareAndClusters(cur.getBareAndClusters());
+        if (cur.getUserDistribution() != null) ori.setUserDistribution(cur.getUserDistribution());
         return ori;
     }
 }

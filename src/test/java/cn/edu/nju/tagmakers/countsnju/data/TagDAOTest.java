@@ -42,11 +42,6 @@ public class TagDAOTest extends AbstractTestNGSpringContextTests {
         tag2 = new Tag();
     }
 
-    @AfterSuite
-    public void End(){
-        System.out.println(dao.find(null));
-    }
-
     @Test
     //正常添加
     public void addTest1(){

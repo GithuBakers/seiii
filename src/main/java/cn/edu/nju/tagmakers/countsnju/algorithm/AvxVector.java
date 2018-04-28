@@ -134,4 +134,17 @@ public class AvxVector {
         }
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof AvxVector)) {
+            return super.equals(obj);
+        } else {
+            AvxVector another = (AvxVector) obj;
+            if (another.size != this.size) {
+                return false;
+            } else {
+                return distance(another) <= 0.000001;
+            }
+        }
+    }
 }
