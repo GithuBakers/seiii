@@ -52,11 +52,11 @@ const proxy = {
     birthday: '@date',
     dependencies:rawCriterionList,
     "capability":[
-      {"item":"完成标准集", "a":90},
-      {"item":"错误学习能力", "a":80},
-      {"item":"完成任务量", "a":60},
-      {"item":"标注准确度", "a":70},//任务
-      {"item":"近期情况", "a":60}
+      {"item":"完成标准集", "number":90},
+      {"item":"错误学习能力", "number":80},
+      {"item":"完成任务量", "number":60},
+      {"item":"标注准确度", "number":70},//任务
+      {"item":"近期情况", "number":60}
     ],
     "recent":getFakeChartData.offlineChartData,
     //饼图，用户近期各种标注的占比
