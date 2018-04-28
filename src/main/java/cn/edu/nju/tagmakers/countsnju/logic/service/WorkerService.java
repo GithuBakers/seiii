@@ -94,6 +94,9 @@ public class WorkerService {
      */
     public WorkerTaskDetailVO getTaskDetail(String taskID, String workerName) {
         Task detail = taskService.findByID(taskID);
+        if (detail == null) {
+            throw new NotFoundException("任务不存在");
+        }
         //检查是否可接受此任务
         if (check(workerName, detail)) {
             return new WorkerTaskDetailVO(detail, workerName);
@@ -204,6 +207,7 @@ public class WorkerService {
 
         List<Tag> tagList = image.getTags();
         tagList.parallelStream().forEach(tag -> tag.setWorkerID(workerName));
+        tagList.parallelStream().forEach(tag -> tag.setBareID(image.getBare().getId()));
         tagList.parallelStream().forEach(tagService::addTag);
         return true;
     }
