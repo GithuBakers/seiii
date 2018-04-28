@@ -111,7 +111,7 @@ export default class Analysis extends Component {
     const { DataView } = DataSet;
     const capability = currentUser.capability ? new DataView().source(currentUser.capability).transform({
       type: 'fold',
-      fields: ['a'], // 展开字段集
+      fields: ['number'], // 展开字段集
       key: 'user', // key字段
       value: 'score', // value字段
     }) : [];
@@ -206,6 +206,7 @@ export default class Analysis extends Component {
                 style={{ marginBottom: '24px',height:'500px'  }}
               >
                 <Pie
+                  style={{marginTop:'30px'}}
                   hasLegend
                   title="任务数"
                   subTitle="任务数"
@@ -218,7 +219,7 @@ export default class Analysis extends Component {
                 )}
                   data={tagsData}
                   valueFormat={val => <span dangerouslySetInnerHTML={{ __html: `${val}个` }} />}
-                  height={350}
+                  height={300}
                 />,
               </Card>
 ):[]}
@@ -238,7 +239,7 @@ export default class Analysis extends Component {
                   <TimelineChart
                     height={500}
                     data={item.recent}
-                    titleMap={{ y1: '时间段内新增完成度', y2: '支付笔数' }}
+                    titleMap={{ y1: '时间段内新增完成度' }}
                   />
 
                 </div>
@@ -250,7 +251,7 @@ export default class Analysis extends Component {
               <TimelineChart
                 height={500}
                 data={currentUser.recent}
-                titleMap={{ y1: '时间段内新增完成度', y2: '支付笔数' }}
+                titleMap={{ y1: '时间段完成的任务量', y2: '时间段内获取的积分量' }}
               />
             </div>
             ) :[]}

@@ -52,11 +52,11 @@ const proxy = {
     birthday: '@date',
     dependencies:rawCriterionList,
     "capability":[
-      {"item":"完成标准集", "a":90},
-      {"item":"错误学习能力", "a":80},
-      {"item":"完成任务量", "a":60},
-      {"item":"标注准确度", "a":70},//任务
-      {"item":"近期情况", "a":60}
+      {"item":"完成标准集", "number":90},
+      {"item":"错误学习能力", "number":80},
+      {"item":"完成任务量", "number":60},
+      {"item":"标注准确度", "number":70},//任务
+      {"item":"近期情况", "number":60}
     ],
     "recent":getFakeChartData.offlineChartData,
     //饼图，用户近期各种标注的占比
@@ -129,8 +129,8 @@ const proxy = {
     'total_reward|2000-30000': 1,
     completeness: () => mockjs.Random.integer(0, 100), //达标比例
     result: () => mockjs.mock('@url'), //结果所在地
-    finished: true, //状态
-    "has_result":true,
+    finished: false, //状态
+    "has_result":false,
     "keywords|5-10":[ ()=>mockjs.Random.name()],
     "dependencies": rawCriterionList
   }),
