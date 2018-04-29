@@ -17,7 +17,10 @@ import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -294,15 +297,19 @@ public class WorkerService {
      */
     private List<Bare> calculateBares(Task task, Worker worker, int number) {
         List<Bare> ret = new LinkedList<>();
-        //"随机算法"
-        for (int i = 0; i < number; i++) {
-            int random = Math.abs(new Random(System.currentTimeMillis()).nextInt());
-            random += i;
-            random = random % task.getDataSet().size();
-            Bare bare = task.getDataSet().get(random);
+
+        for (int i = 0; i < task.getDataSet().size(); i++) {
+//            int random = Math.abs(new Random(System.currentTimeMillis()).nextInt());
+//            random += i;
+//            random = random % task.getDataSet().size();
+            Bare bare = task.getDataSet().get(i);
             if (!ret.contains(bare) && !worker.getBareIDs().contains(bare.getId())) {
                 ret.add(bare);
+                if (ret.size() >= number) {
+                    break;
+                }
             }
+
         }
         return ret;
     }
