@@ -2,12 +2,9 @@ package cn.edu.nju.tagmakers.countsnju.entity.vo;
 
 import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Criterion;
 import cn.edu.nju.tagmakers.countsnju.entity.Task;
-import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import org.springframework.security.core.context.SecurityContextHolder;
-import util.SecurityUtility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +49,7 @@ public class WorkerTaskDetailVO {
 
         dependencies = new ArrayList<>();
         for (Criterion temp : task.getDependencies()) {
+
             dependencies.add(new CriterionCompletenessVO(temp, workerName));
         }
     }

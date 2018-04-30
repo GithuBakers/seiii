@@ -24,4 +24,7 @@ public class DiagramItem {
         this.itemName = itemName;
         this.number = number;
     }
+
+    public DiagramItem() {
+    }
 }

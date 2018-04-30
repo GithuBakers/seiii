@@ -20,4 +20,7 @@ public class WorkerRecentTags {
     public WorkerRecentTags(List<DiagramItem> list) {
         this.list = list;
     }
+
+    public WorkerRecentTags() {
+    }
 }
