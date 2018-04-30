@@ -40,6 +40,11 @@ import java.util.stream.Collectors;
  * 工人获取标准集的时候 应该只获取发起者做完的部分
  * @author xxz
  * Created on 04/27/2018
+ * <p>
+ * Update:
+ * 修复 重复通过某一标准集
+ * @author xxz
+ * Created on 05/01/2018
  */
 @Component
 public class WorkerCriterionService {
@@ -294,9 +299,11 @@ public class WorkerCriterionService {
         //判断是否通过
         int aim = workerAndCriterion.getAim();
         boolean pass = judgePass(resultList, aim);
-        if (pass) {
+        Worker temp = workerController.findByID(workerID);
+        Criterion target = criterionController.findByID(criterionID);
+        //确保是首次通过
+        if (pass && !temp.getDependencies().contains(target)) {
             //标准集中加入通过标准的工人
-            Criterion target = criterionController.findByID(criterionID);
             Set<String> workerPassed = target.getWorkerPassed();
             workerPassed.add(workerID);
             target.setWorkerPassed(workerPassed);
@@ -307,7 +314,6 @@ public class WorkerCriterionService {
             workerAndCriterionController.update(workerAndCriterion);
 
             //工人自身字段里面添加通过的标准集
-            Worker temp = workerController.findByID(workerID);
             List<Criterion> passedCriterion = temp.getDependencies();
             passedCriterion.add(target);
             temp.setDependencies(passedCriterion);

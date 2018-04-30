@@ -224,6 +224,15 @@ public class Criterion extends Entity<Criterion> implements Serializable {
         return criterionID;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Criterion)) {
+            return super.equals(obj);
+        } else {
+            return ((Criterion) obj).getPrimeKey().equals(this.getPrimeKey());
+        }
+    }
+
     /**
      * 为了不与clone冲突产生这个方法，调用构造器实现
      *
