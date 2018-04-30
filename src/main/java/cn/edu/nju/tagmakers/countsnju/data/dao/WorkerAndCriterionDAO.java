@@ -70,7 +70,8 @@ public class WorkerAndCriterionDAO {
      * 更新关系对象
      */
     public void update(WorkerAndCriterion workerAndCriterion) {
-        for (WorkerAndCriterion temp : set) {
+        Set<WorkerAndCriterion> tempSet = new HashSet<>(set);
+        for (WorkerAndCriterion temp : tempSet) {
             if (workerAndCriterion.getWorkerID().equals(temp.getWorkerID()) && workerAndCriterion.getCriterionID().equals(temp.getCriterionID())) {
                 set.remove(temp);
                 set.add(workerAndCriterion);
