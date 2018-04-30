@@ -27,7 +27,7 @@ public class ResultJudger {
 
 
     public static boolean judgeRect(List<Rect> a, List<Rect> b) {
-        double JUDGE_CRITERION = 10;
+        double JUDGE_CRITERION = 100;
         if (a == null || b == null || a.size() != b.size()) {
             return false;
         } else {
@@ -64,7 +64,7 @@ public class ResultJudger {
     }
 
     public static boolean judgeEdge(List<Edge> a, List<Edge> b) {
-        double JUDGE_CRITERION = 10;
+        double JUDGE_CRITERION = 1000;
 
         if (a.size() != b.size()) {
             return false;

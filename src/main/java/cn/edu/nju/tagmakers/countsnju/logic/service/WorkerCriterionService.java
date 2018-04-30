@@ -19,7 +19,10 @@ import cn.edu.nju.tagmakers.countsnju.filter.CriterionFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -94,7 +97,8 @@ public class WorkerCriterionService {
         return worker.getTestHistory().stream()
                 .filter(workerTestHistoryVO -> {
                     long submitTime = workerTestHistoryVO.getSubmitTime();
-                    return submitTime < time;
+                    boolean mid = submitTime > time;
+                    return mid;
                 }).collect(Collectors.toList());
     }
 

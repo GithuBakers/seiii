@@ -28,7 +28,7 @@ public class SecurityUserDAO extends DAO<SecurityUser,SecurityUserFilter>{
         //添加管理员
         User admin = new User();
         admin.setUserID("admin");
-        admin.setPassword("admin");
+        admin.setPassword("{noop}admin");
         admin.setRole(Role.ADMIN);
         SecurityUser admin2 = new SecurityUser(admin);
         try {

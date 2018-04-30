@@ -35,7 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/new_user").permitAll()
                 .antMatchers("/initiator/**").hasRole("INITIATOR")
                 .antMatchers("/worker/**").hasRole("WORKER")
-                .anyRequest().fullyAuthenticated()
+                .anyRequest().permitAll()
                 .and()
                 .addFilter(new JWTLoginFilter(authenticationManager()))
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(), securityUserController));

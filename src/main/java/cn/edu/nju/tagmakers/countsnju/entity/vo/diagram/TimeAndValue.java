@@ -26,6 +26,9 @@ public class TimeAndValue {
     @JsonProperty("y1")
     private long workload;
 
+    @JsonProperty("y2")
+    private long credits;
+
     public long getTime() {
         return time;
     }
@@ -40,5 +43,13 @@ public class TimeAndValue {
 
     public void setWorkload(long workload) {
         this.workload = workload;
+    }
+
+    public long getCredits() {
+        return credits;
+    }
+
+    public void setCredits(long credits) {
+        this.credits = credits;
     }
 }
