@@ -1,12 +1,15 @@
 package cn.edu.nju.tagmakers.countsnju.data.controller;
 
+import cn.edu.nju.tagmakers.countsnju.data.dao.CriterionDAO;
 import cn.edu.nju.tagmakers.countsnju.data.dao.TaskDAO;
+import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Criterion;
 import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Description:
@@ -18,10 +21,13 @@ import java.util.List;
 @Component
 public class TaskController implements DataController<Task, TaskFilter> {
     private final TaskDAO taskDAO;
+    //TODO:这是一个临时解决方案
+    private final CriterionDAO criterionDAO;
 
     @Autowired
-    public TaskController(TaskDAO taskDAO) {
+    public TaskController(TaskDAO taskDAO, CriterionDAO criterionDAO) {
         this.taskDAO = taskDAO;
+        this.criterionDAO = criterionDAO;
     }
 
 
@@ -74,10 +80,22 @@ public class TaskController implements DataController<Task, TaskFilter> {
      */
     @Override
     public Task findByID(String id) {
-        return taskDAO.findByID(id);
+        return refreshTask(taskDAO.findByID(id));
     }
 
     public int count() {
         return taskDAO.count();
+    }
+
+
+    //TODO:临时解决方案
+    private Task refreshTask(Task task) {
+        task.setDependencies(
+                task.getDependencies().stream().map(Criterion::getPrimeKey)
+                        .map(criterionDAO::findByID)
+                        .collect(Collectors.toList())
+        );
+        update(task);
+        return task;
     }
 }

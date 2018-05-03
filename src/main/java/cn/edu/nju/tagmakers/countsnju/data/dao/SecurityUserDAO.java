@@ -2,7 +2,6 @@ package cn.edu.nju.tagmakers.countsnju.data.dao;
 
 import cn.edu.nju.tagmakers.countsnju.entity.user.Role;
 import cn.edu.nju.tagmakers.countsnju.entity.user.User;
-import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
 import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.filter.SecurityUserFilter;
 import cn.edu.nju.tagmakers.countsnju.security.SecurityUser;
@@ -28,12 +27,12 @@ public class SecurityUserDAO extends DAO<SecurityUser,SecurityUserFilter>{
         //添加管理员
         User admin = new User();
         admin.setUserID("admin");
-        admin.setPassword("admin");
+        admin.setPassword("{noop}admin");
         admin.setRole(Role.ADMIN);
         SecurityUser admin2 = new SecurityUser(admin);
         try {
             add(admin2);
-        } catch (InvalidInputException ignore) {
+        } catch (Exception ignore) {
             //第二次运行属于重复添加
         }
 
@@ -42,7 +41,8 @@ public class SecurityUserDAO extends DAO<SecurityUser,SecurityUserFilter>{
     @Override
     public synchronized SecurityUser add(SecurityUser obj) {
         if (findByID(obj.getPrimeKey()) != null) {
-            throw new InvalidInputException("对不起，该用户已注册");
+            //为了和前端403报错语义对应
+            throw new PermissionDeniedException("对不起，该用户已注册");
         }
         return super.add(obj);
     }

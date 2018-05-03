@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Description:
@@ -43,9 +44,10 @@ public class WorkerReceivedTaskVO {
         basicInformation = new TaskVOBasicInformation(task);
 
         Map<String, Integer> userMarked = task.getUserMarked();
-        for (int num : userMarked.values()) {
-            markNumber += num;
-        }
+//        for (int num : userMarked.values()) {
+//            markNumber += num;
+//        }
+        markNumber = Optional.ofNullable(userMarked.get(worker.getPrimeKey())).orElse(0);
 
         totalReward = markNumber / 10 * task.getReward();
 

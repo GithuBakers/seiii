@@ -20,4 +20,7 @@ public class WorkerCapability {
     public WorkerCapability(List<DiagramItem> capability) {
         this.capability = capability;
     }
+
+    public WorkerCapability() {
+    }
 }

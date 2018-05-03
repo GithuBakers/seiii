@@ -188,7 +188,7 @@ public class DiagramService {
             LinkedList<TimeAndValue> list = getTimeAndValues(tags);
             //从任务完成量换算成积分获取量
             list.forEach(timeAndValue ->
-                    timeAndValue.setWorkload((long) (timeAndValue.getWorkload() * 0.4 * task.getReward())));
+                    timeAndValue.setCredits((long) (timeAndValue.getWorkload() * 0.4 * task.getReward())));
             workerRecentTaskVO.setRecent(list);
         }//end of tag-size else
 
@@ -209,7 +209,7 @@ public class DiagramService {
                 TimeAndValue timeUnit = new TimeAndValue();
                 timeUnit.setTime(i);
                 int cnt = 0;
-                for (; ; index++) {
+                for (; index < tags.size(); index++) {
                     Long submitTime = tags.get(index).getSubmitTime();
                     if (submitTime >= i && submitTime < i + oneDay) {
                         cnt++;

@@ -18,6 +18,9 @@ import java.util.stream.Collectors;
  */
 
 public class ResultJudger {
+
+    private static double JUDGE_EDGE;
+
     /**
      * 在未来或添加 基本的语义分析机制
      */
@@ -27,7 +30,7 @@ public class ResultJudger {
 
 
     public static boolean judgeRect(List<Rect> a, List<Rect> b) {
-        double JUDGE_CRITERION = 10;
+        double JUDGE_CRITERION = 100;
         if (a == null || b == null || a.size() != b.size()) {
             return false;
         } else {
@@ -64,7 +67,6 @@ public class ResultJudger {
     }
 
     public static boolean judgeEdge(List<Edge> a, List<Edge> b) {
-        double JUDGE_CRITERION = 10;
 
         if (a.size() != b.size()) {
             return false;
@@ -75,7 +77,7 @@ public class ResultJudger {
                     double tmp = calDistance(edge, another);
                     min = min < tmp ? min : tmp;
                 }
-                if (min > JUDGE_CRITERION) {
+                if (min > JUDGE_EDGE) {
                     return false;
                 } else {
                     min = 9e9;
@@ -90,6 +92,8 @@ public class ResultJudger {
         int aSize = a.getPoints().size();
         int bSize = b.getPoints().size();
         int min = aSize > bSize ? bSize : aSize;
+        min >>= 1;
+        JUDGE_EDGE = min * 50;
         AvxVector vectorA = new AlgoEdge(a, min).getAvxVector();
         AvxVector vectorB = new AlgoEdge(b, min).getAvxVector();
         return vectorA.distance(vectorB);

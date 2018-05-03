@@ -1,10 +1,12 @@
 package cn.edu.nju.tagmakers.countsnju.logic.service;
 
 import cn.edu.nju.tagmakers.countsnju.data.controller.InitiatorController;
+import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Criterion;
 import cn.edu.nju.tagmakers.countsnju.entity.Task;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Initiator;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.InitiatorTaskDetailVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.InitiatorTaskVO;
+import cn.edu.nju.tagmakers.countsnju.entity.vo.TaskVO;
 import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
 import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
@@ -28,12 +30,15 @@ public class InitiatorService {
 
     private InitiatorController initiatorController;
 
+    private CriterionService criterionService;
+
     private DiagramService diagramService;
 
     @Autowired
-    public InitiatorService(TaskService taskService, InitiatorController initiatorController, DiagramService diagramService) {
+    public InitiatorService(TaskService taskService, InitiatorController initiatorController, CriterionService criterionService, DiagramService diagramService) {
         this.taskService = taskService;
         this.initiatorController = initiatorController;
+        this.criterionService = criterionService;
         this.diagramService = diagramService;
     }
 
@@ -60,7 +65,9 @@ public class InitiatorService {
      *
      * @param task 需要添加的任务
      */
-    public boolean createTask(Task task) {
+    public boolean createTask(TaskVO task) {
+        List<Criterion> criteria = task.getStringList().stream().map(s -> criterionService.findByID(s)).collect(Collectors.toList());
+        task.setDependencies(criteria);
         taskService.addTask(task);
         return true;
     }
