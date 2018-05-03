@@ -10,7 +10,6 @@ import cn.edu.nju.tagmakers.countsnju.entity.user.Role;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Worker;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerReceivedTaskDetailVO;
 import cn.edu.nju.tagmakers.countsnju.entity.vo.WorkerReceivedTaskVO;
-import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
 import cn.edu.nju.tagmakers.countsnju.exception.NotFoundException;
 import cn.edu.nju.tagmakers.countsnju.exception.PermissionDeniedException;
 import cn.edu.nju.tagmakers.countsnju.filter.TaskFilter;
@@ -19,18 +18,17 @@ import cn.edu.nju.tagmakers.countsnju.logic.service.WorkerService;
 import cn.edu.nju.tagmakers.countsnju.security.SecurityUserController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import util.SecurityUtility;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 @ContextConfiguration(classes = CountsnjuApplication.class)
 @SpringBootTest

@@ -1,8 +1,8 @@
 package cn.edu.nju.tagmakers.countsnju.data;
 
 import cn.edu.nju.tagmakers.countsnju.data.dao.InitiatorDAO;
-import cn.edu.nju.tagmakers.countsnju.entity.user.Role;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Initiator;
+import cn.edu.nju.tagmakers.countsnju.entity.user.Role;
 import cn.edu.nju.tagmakers.countsnju.entity.user.Sex;
 import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
 import cn.edu.nju.tagmakers.countsnju.exception.NotFoundException;

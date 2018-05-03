@@ -6,9 +6,8 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
-import java.util.Map;
-
 import java.util.List;
+import java.util.Map;
 
 /**
  * Description:

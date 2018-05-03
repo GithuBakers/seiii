@@ -3,7 +3,6 @@ package cn.edu.nju.tagmakers.countsnju.data.dao;
 import cn.edu.nju.tagmakers.countsnju.entity.Criterion.Criterion;
 import cn.edu.nju.tagmakers.countsnju.entity.Criterion.WorkerAndCriterion;
 import cn.edu.nju.tagmakers.countsnju.exception.InvalidInputException;
-import cn.edu.nju.tagmakers.countsnju.filter.WorkerAndCriterionFilter;
 import org.springframework.stereotype.Component;
 import util.FileCreator;
 import util.Log;
@@ -12,7 +11,6 @@ import util.LogPriority;
 import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Description:
