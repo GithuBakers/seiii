@@ -18,6 +18,7 @@ export default {
   html: {
     template: './src/index.ejs',
   },
+  extraBabelIncludes:['/node_modules/ali-oss'],
   disableDynamicImport: true,
   publicPath: '/',
   hash: true,
