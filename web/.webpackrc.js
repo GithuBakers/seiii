@@ -18,18 +18,17 @@ export default {
   html: {
     template: './src/index.ejs',
   },
-  extraBabelIncludes:['/node_modules/ali-oss'],
   disableDynamicImport: true,
   publicPath: '/',
   hash: true,
   proxy: {
     "/api": {
-      "target": "http://192.168.1.101:8888/",
+      "target": "http://192.168.2.105:8888/",
         "changeOrigin": true,
     }
   }
 };
 
-
+// extraBabelIncludes:['/node_modules/ali-oss'],
 
 
