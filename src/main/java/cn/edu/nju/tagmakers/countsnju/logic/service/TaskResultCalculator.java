@@ -137,6 +137,7 @@ public class TaskResultCalculator implements Runnable {
         int under30 = (int) ages.stream().filter(age -> age < THIRTY).count() - under20;
         int under40 = (int) ages.stream().filter(age -> age <= FORTY).count() - under30;
         int above = (int) ages.stream().filter(age -> age > FORTY).count();
+        male.setSex(sex);
         male.setUnder20(under20);
         male.setBetween20And30(under30);
         male.setBetween30And40(under40);

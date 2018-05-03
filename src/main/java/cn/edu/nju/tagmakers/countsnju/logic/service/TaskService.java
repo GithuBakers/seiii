@@ -126,12 +126,13 @@ public class TaskService {
         toFinish.setFinished(true);
         //发放奖励
         reward(toFinish);
+        //在数据层更新任务信息
+        updateTask(toFinish);
+
         //制作结果集
         //编程异步方法
         makeResult(toFinish);
 //        toFinish.setResult(makeResult(toFinish));
-        //在数据层更新任务信息
-        updateTask(toFinish);
         return toFinish;
     }
 
@@ -168,6 +169,6 @@ public class TaskService {
                     filter.setBareID(id);
                     return tagService.findTag(filter).stream();
                 }).collect(Collectors.toList()));
-        new Thread(calculator).run();
+        new Thread(calculator).start();
     }
 }

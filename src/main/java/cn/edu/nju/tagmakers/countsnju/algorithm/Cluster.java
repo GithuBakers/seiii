@@ -131,7 +131,7 @@ public class Cluster {
     private double calKurtosis(List<AvxVector> src) {
         double MAX = 9.9;
         //将向量按距离规格化
-        if (src.size() == 1) {
+        if (src.size() <= 1) {
             return MAX;
         }
         AvxVector base = src.get(0);

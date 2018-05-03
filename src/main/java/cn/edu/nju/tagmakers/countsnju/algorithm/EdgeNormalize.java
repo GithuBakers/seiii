@@ -4,6 +4,7 @@ import cn.edu.nju.tagmakers.countsnju.algorithm.entity.AlgoEdge;
 import cn.edu.nju.tagmakers.countsnju.entity.pic.Edge;
 
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,10 +24,14 @@ public class EdgeNormalize {
                 .collect(Collectors.toList());
 
         int most = (int) (sorted.size() * 0.8);
-        int dimension = sorted.get(most).getPoints().size() / 2;
-        return sorted.subList(0, most - 1).stream()
-                .map(edge -> new AlgoEdge(edge, dimension))
-                .collect(Collectors.toList());
+        if(most!=0) {
+            int dimension = sorted.get(most).getPoints().size() / 2;
+            return sorted.subList(0, most - 1).stream()
+                    .map(edge -> new AlgoEdge(edge, dimension))
+                    .collect(Collectors.toList());
+        }else {
+            return new LinkedList<>();
+        }
 
     }
 }

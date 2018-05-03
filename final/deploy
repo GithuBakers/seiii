@@ -1,0 +1,3 @@
+!/bin/bash
+cp counts.jar $COUNT_HOME
+$COUNT_HOME/run

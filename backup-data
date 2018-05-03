@@ -1,0 +1,4 @@
+#!/bin/bash
+cd "/Users/xuxiangzhe/Library/Mobile Documents/com~apple~CloudDocs/Learning/Software Engineering/SE3/COUNTSnju_Phase_II"
+cp -r data/ ../项目外git部分/
+../项目外git部分/upload
