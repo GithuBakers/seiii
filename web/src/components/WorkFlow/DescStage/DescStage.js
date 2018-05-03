@@ -9,6 +9,7 @@ import Image from '../components/Image';
 import { contributeWorkerTask,contributeWorkerCriterion,contributeInitiatorCriterion } from '../../../services/apiList';
 import Loading from '../../Loading';
 import {randomString} from '../../../utils/random'
+import {WORKER_NORMAL,WORKER_CRITERION,INITIATOR_CRITERION} from '../../../data/markRequestType'
 
 const { TextArea } = Input;
 
@@ -95,10 +96,13 @@ class DescStage extends React.Component {
     this.setState({ loading: true });
     await this.uploadMark();
     await this.props.dispatch({ type: 'editWorkModel/setOpenState', payload: { isOpen: false } });
+
+    const type=this.props.markRequestType;
     notification.success({
       message: '感谢您的付出',
-      description: '您已成功完成了一系列描述任务，并获得了一定的奖励，剩余奖励将在本任务结束后根据您的正确率发放',
-    });
+      description: type===WORKER_NORMAL?'您已成功完成了一系列描述任务，并获得了一定的奖励，剩余奖励将在本任务结束后根据您的正确率发放'
+        :type===WORKER_CRITERION?'您已经完成一系列标准集任务，我们会根据您的正确率解锁相应任务哟'
+          :type===INITIATOR_CRITERION?'您已经完成一系列标准集数据填充':''   });
   };
   finishCriterionEvent = async () => {
     this.setState({ loading: true });

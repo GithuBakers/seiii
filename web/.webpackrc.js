@@ -23,7 +23,7 @@ export default {
   hash: true,
   proxy: {
     "/api": {
-      "target": "http://192.168.1.103:8888/",
+      "target": "http://192.168.1.101:8888/",
         "changeOrigin": true,
     }
   }

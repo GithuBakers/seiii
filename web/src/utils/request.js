@@ -87,7 +87,7 @@ export default async function request(url, options) {
       ||url.includes('/user/new_user')
       ||url.includes('/worker/recommend_task')
     ) {
-      if (response.status === 403) {
+      if (response.status === 403||response.status === 404) {
         newStatus = 'error';
       } else {
         newStatus = 'ok';

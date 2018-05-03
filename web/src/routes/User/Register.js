@@ -54,10 +54,7 @@ export default class Register extends Component {
         },
       });
     } else if (nextProps.register.status === 'error') {
-      notification.warning({
-        message: '用户名已被注册',
-        description: '请再尝试使用一个新的用户名进行注册.',
-      });
+
     }
   }
 

@@ -11,6 +11,7 @@ import Image from "../components/Image";
 import Loading from "../../Loading"
 import edgeIDUtils from "../../../utils/edgeIDUtils"
 import {contributeWorkerTask} from "../../../services/apiList";
+import {WORKER_NORMAL,WORKER_CRITERION,INITIATOR_CRITERION} from '../../../data/markRequestType'
 
 
 const {TextArea} = Input;
@@ -82,6 +83,7 @@ class EdgeStage extends React.Component {
       shapes:tempFinalList,
       checking:false,
       hasCheckAnswer:true,
+      checkAnswer:back.correct,
       goNext:true});
     console.log(this.state.shapes);
     return back;
@@ -112,10 +114,13 @@ class EdgeStage extends React.Component {
     this.setState({loading:true});
     await this.uploadMark();
     await this.props.dispatch({type: 'editWorkModel/setOpenState', payload: {isOpen: false}});
+
+    const type=this.props.markRequestType;
     notification.success({
       message: '感谢您的付出',
-      description: '您已成功完成了一系列框选任务，并获得了一定的奖励，剩余奖励将在本任务结束后根据您的正确率发放',
-    });
+      description: type===WORKER_NORMAL?'您已成功完成了一系列描边任务，并获得了一定的奖励，剩余奖励将在本任务结束后根据您的正确率发放'
+        :type===WORKER_CRITERION?'您已经完成一系列标准集任务，我们会根据您的正确率解锁相应任务哟'
+          :type===INITIATOR_CRITERION?'您已经完成一系列标准集数据填充':'' });
   };
   finishCriterionEvent = async () => {
     this.setState({loading:true});
@@ -154,7 +159,9 @@ class EdgeStage extends React.Component {
     lines.splice(lines.length - 1, 1, lastLine);
 
     const newShapesList = this.state.shapes.slice();
-    newShapesList[newShapesList.length - 1].line = lastLine;
+    if(newShapesList[newShapesList.length - 1]){
+      newShapesList[newShapesList.length - 1].line = lastLine;
+    }
 
     this.setState({
       lines: lines.concat(),

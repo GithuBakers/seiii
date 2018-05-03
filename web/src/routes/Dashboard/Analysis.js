@@ -211,29 +211,45 @@ export default class Analysis extends Component {
           bordered={false}
           bodyStyle={{ padding: '0 0 32px 0' }}
         >
+          {(!loading)&&tasks&&tasks.length!==0?
           <Tabs activeKey={activeKey} onChange={this.handleTabChange}>
             {tasks.map(item => (
               <TabPane tab={<CustomTab data={item} currentTabKey={activeKey} />} key={item.task_id}>
                 <div style={{ padding: '0 24px' }}>
-                  <TimelineChart
+                  {item.recent&&item.recent.length>0?<TimelineChart
                     height={500}
-                    data={item.recent}
-                    titleMap={{ y1: '时间段内新增完成度' }}
-                  />
+                    data={item.recent||[]}
+                    titleMap={currentAuthority==='INITIATOR'?{ y1: '时间段内新增完成度' }:{ y1: '时间段完成的任务量', y2: '时间段内获取的积分量' }}
+                  />:<h1
+                    style={{
+                      fontWeight: 'normal',
+                      fontSize: '50px',
+                      fontFamily: 'Lobster, cursive',
+                      lineHeight: '100px',
+                      color: '#d9d9d9',
+                      textAlign: 'center',
+                      margin: 0,
+                    }}
+                  >
+                    No Data
+                  </h1>}
 
                 </div>
               </TabPane>
             ))}
-          </Tabs>
-          {currentUser.recent ? (
-            <div style={{ padding: '0 24px' }}>
-              <TimelineChart
-                height={500}
-                data={currentUser.recent}
-                titleMap={{ y1: '时间段完成的任务量', y2: '时间段内获取的积分量' }}
-              />
-            </div>
-            ) :[]}
+          </Tabs>:<h1
+              style={{
+                fontWeight: 'normal',
+                fontSize: '50px',
+                fontFamily: 'Lobster, cursive',
+                lineHeight: '100px',
+                color: '#d9d9d9',
+                textAlign: 'center',
+                margin: 0,
+              }}
+            >
+              No Data
+            </h1>}
           {currentAuthority==='ADMIN'?<h1
             style={{
               fontWeight: 'normal',

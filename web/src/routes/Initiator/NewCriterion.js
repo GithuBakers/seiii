@@ -217,15 +217,15 @@ export default class NewCriterion extends PureComponent {
                 />
               )}
             </FormItem>
-            <FormItem {...formItemLayout} label="目标标注人数/张">
+            <FormItem {...formItemLayout} label="目标标注图片数/人">
               {getFieldDecorator('aim', {
                 rules: [
                   {
                     required: true,
-                    message: '请输入目标标注人数/张',
+                    message: '请输入目标标注图片数/人',
                   },
                 ],
-              })(<InputNumber precision={0} style={{width:"100%"}} min={1} max={100000000} placeholder="填入你的标注数量期望" />)}
+              })(<InputNumber precision={0} style={{width:"100%"}} min={1} max={100000000} placeholder="填入工人的通过条件（图片数/人）" />)}
             </FormItem>
             <FormItem {...formItemLayout} label="关键词" help="请使用回车或逗号分词">
               {getFieldDecorator('keywords')(<Select
