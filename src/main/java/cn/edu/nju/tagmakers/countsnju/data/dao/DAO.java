@@ -170,10 +170,11 @@ public abstract class DAO<T extends Entity, U extends Filter> {
 
      **********************************/
 
-    private void writeObject(ConcurrentHashMap<String, T> objMap, String path) {
+    synchronized private void writeObject(ConcurrentHashMap<String, T> objMap, String path) {
         FileCreator.createFile(path);
         try (ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(new File(path)))) {
             os.writeObject(objMap);
+            os.flush();
         } catch (IOException e) {
             Log.log("写对象异常", LogPriority.ERROR);
             e.printStackTrace();

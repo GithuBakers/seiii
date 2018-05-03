@@ -1,0 +1,7 @@
+#!/bin/bash
+cd $COUNT_HOME
+mkdir counts
+mv counts-2.jar counts/
+cd counts
+echo -e "# !/bin/bash \n nohup java -jar counts-2.jar > nohup.out 2>& 1 &">start
+nohup sh start
