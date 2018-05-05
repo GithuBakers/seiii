@@ -28,6 +28,7 @@ import styles from './Analysis.less';
 import Ellipsis from 'components/Ellipsis';
 import { Chart, Geom, Axis, Tooltip, Coord, Label, Legend, View, Guide, Shape, G2 } from 'bizcharts';
 import { DataSet } from '@antv/data-set';
+import { mockBing, mockLeida, mockTimeLine } from './workerTask';
 
 const { TabPane } = Tabs;
 
@@ -85,10 +86,10 @@ export default class Analysis extends Component {
   render() {
     const {currentUser,currentAuthority}=this.props.user;
     const loading = this.props.loading;
-    const tasks=currentUser.tasks?currentUser.tasks:[];
+    const tasks=mockTimeLine;
     const activeKey = this.state.currentTabKey || (tasks[0] && tasks[0].task_id);
     const { DataView } = DataSet;
-    const capability = currentUser.capability ? new DataView().source(currentUser.capability).transform({
+    const capability = currentUser.capability ? new DataView().source(mockLeida).transform({
       type: 'fold',
       fields: ['number'], // 展开字段集
       key: 'user', // key字段
@@ -176,7 +177,7 @@ export default class Analysis extends Component {
               </Card>) : []}
           </Col>
           <Col lg={12}>
-            {currentUser.tags?(
+            {mockLeida?(
               <Card
                 loading={loading}
                 className={styles.offlineCard}
@@ -196,7 +197,7 @@ export default class Analysis extends Component {
                     }}
                     />
                 )}
-                  data={tagsData}
+                  data={mockLeida}
                   valueFormat={val => <span dangerouslySetInnerHTML={{ __html: `${val}个` }} />}
                   height={300}
                 />,

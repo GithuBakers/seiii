@@ -7,6 +7,8 @@ import {
   Select,
   Tag,
   Card,
+  Col,
+  Row,
 } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import DescriptionList from '../../components/DescriptionList/DescriptionList';
@@ -15,6 +17,7 @@ import { Chart, Geom, Axis, Tooltip, Coord, Label, Legend, View, Guide, Shape,G2
 import { DataSet } from '@antv/data-set';
 import { routerRedux } from 'dva/router';
 import { getInitiatorTaskResult } from '../../services/apiList'
+import { mockHire1,mockDataAge } from '../Dashboard/generated'
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -94,7 +97,7 @@ export default class TaskResult extends PureComponent {
         </DescriptionList>)}
       </div>
     );
-    let hiveData = hive?new DataSet.View().source(hive||[])
+    let hiveData = mockHire1?new DataSet.View().source(mockHire1||[])
       .transform({
         sizeByCount: true, // calculate bin size by binning count
         type: 'bin.hexagon',
@@ -103,9 +106,9 @@ export default class TaskResult extends PureComponent {
       }):'';
 
     const { DataView } = DataSet;
-    const dv = sex_age?new DataView().source(sex_age).transform({
+    const dv = mockDataAge?new DataView().source(mockDataAge).transform({
       type: 'fold',
-      fields: [ 'under20','under30','under40','above' ], // 展开字段集
+      fields: [ 'age' ], // 展开字段集
       key: 'type',
       value: 'value'
     }).transform({
@@ -127,29 +130,33 @@ export default class TaskResult extends PureComponent {
         content={content}
         extraContent={avatarContainer}
       >
-        <Card title="单张图片标注用户数-标注聚集程度" loading={this.props.loading} style={{ marginBottom: 24 }} bordered={false}>
-          {hive?<Chart
-            height={500}
-            data={hiveData}
-            forceFit
-          >
-            <Axis
-              name="x"
-              grid={{
-                lineStyle: {
-                  stroke: '#d9d9d9',
-                  lineWidth: 1,
-                  lineDash: [2, 2],
-                },
-              }}
-            />
-            <Legend offset={40} />
-            <Tooltip showTitle={false} crosshairs={false} />
-            <Geom type="polygon" position="x*y" color={['count', '#BAE7FF-#1890FF-#0050B3']} style={{lineWidth: 1,stroke: '#fff'}} />
-          </Chart>:<div>没有数据</div>}
-        </Card>
+        <Row gutter={24}>
+          <Col md={16}>
+            <Card title="单张图片标注用户数-标注聚集程度" loading={this.props.loading} style={{ marginBottom: 24 }} bordered={false}>
+            {hive?<Chart
+              height={500}
+              data={hiveData}
+              forceFit
+            >
+              <Axis
+                name="x"
+                grid={{
+                  lineStyle: {
+                    stroke: '#d9d9d9',
+                    lineWidth: 1,
+                    lineDash: [2, 2],
+                  },
+                }}
+              />
+              <Legend offset={40} />
+              <Tooltip showTitle={false} crosshairs={false} />
+              <Geom type="polygon" position="x*y" color={['count', '#BAE7FF-#1890FF-#0050B3']} style={{lineWidth: 1,stroke: '#fff'}} />
+            </Chart>:<div>没有数据</div>}
+          </Card>
+        </Col>
+        <Col md={8}>
         <Card title="完成您任务工人的性别、年龄的分布" loading={this.props.loading} style={{ marginBottom: 24 }} bordered={false} >
-          {sex_age?<Chart height={500} data={dv} padding={[ 20, 120, 95 ]} forceFit>
+          {mockDataAge?<Chart height={500} data={dv} padding={[ 20, 120, 95 ]} forceFit>
             <Tooltip crosshairs={{type:'rect'}} />
             <Legend marker='circle' />
             <Geom type="schema" position="type*_bin" shape='box' color={['name', val => {
@@ -167,6 +174,9 @@ export default class TaskResult extends PureComponent {
 
           </Chart>:<div>没有数据</div>}
         </Card>
+        </Col>
+        </Row>
+
       </PageHeaderLayout>
     );
   }

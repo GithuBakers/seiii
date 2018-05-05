@@ -21,7 +21,6 @@ export default {
   disableDynamicImport: true,
   publicPath: '/',
   hash: true,
-  extraBabelIncludes:['/node_modules'],
   proxy: {
     "/api": {
       "target": "http://192.168.2.105:8888/",
