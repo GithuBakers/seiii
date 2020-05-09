@@ -105,8 +105,8 @@ export default class NewCriterion extends PureComponent {
     const client = () => {
       return new OSS.Wrapper({
         region: 'oss-cn-shanghai',
-        accessKeyId: 'LTAIg4CGHlXTTAqF',
-        accessKeySecret: 'e1JQWrRzf8iZb88xIJbNpbRzWoW8Ea',
+        accessKeyId: 'LTAIg233HlXTT233',
+        accessKeySecret: 'e1JQWrRzf8iZb88xIJbNpb233o2333',
         bucket: 'makers',
       });
     };
